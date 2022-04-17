@@ -13,15 +13,204 @@ import { ethers } from "ethers";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Greeter",
+      name: "ENS",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Greeter__factory>;
+    ): Promise<Contracts.ENS__factory>;
+    getContractFactory(
+      name: "ENSRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ENSRegistry__factory>;
+    getContractFactory(
+      name: "Ownable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: "ERC1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155__factory>;
+    getContractFactory(
+      name: "ERC1155Supply",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155Supply__factory>;
+    getContractFactory(
+      name: "IERC1155MetadataURI",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155MetadataURI__factory>;
+    getContractFactory(
+      name: "IERC1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155__factory>;
+    getContractFactory(
+      name: "IERC1155Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155Receiver__factory>;
+    getContractFactory(
+      name: "ERC1155Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155Receiver__factory>;
+    getContractFactory(
+      name: "ERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165__factory>;
+    getContractFactory(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165__factory>;
+    getContractFactory(
+      name: "TestRegistrar",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TestRegistrar__factory>;
+    getContractFactory(
+      name: "TestResolver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TestResolver__factory>;
+    getContractFactory(
+      name: "IENS",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IENS__factory>;
+    getContractFactory(
+      name: "Resolver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Resolver__factory>;
+    getContractFactory(
+      name: "IPhiMap",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPhiMap__factory>;
+    getContractFactory(
+      name: "IPhiObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPhiObject__factory>;
+    getContractFactory(
+      name: "IPhiRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPhiRegistry__factory>;
+    getContractFactory(
+      name: "PhiMap",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PhiMap__factory>;
+    getContractFactory(
+      name: "PhiObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PhiObject__factory>;
+    getContractFactory(
+      name: "PhiRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PhiRegistry__factory>;
+    getContractFactory(
+      name: "MultiOwner",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MultiOwner__factory>;
 
     getContractAt(
-      name: "Greeter",
+      name: "ENS",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Greeter>;
+    ): Promise<Contracts.ENS>;
+    getContractAt(
+      name: "ENSRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ENSRegistry>;
+    getContractAt(
+      name: "Ownable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "ERC1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155>;
+    getContractAt(
+      name: "ERC1155Supply",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155Supply>;
+    getContractAt(
+      name: "IERC1155MetadataURI",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155MetadataURI>;
+    getContractAt(
+      name: "IERC1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155>;
+    getContractAt(
+      name: "IERC1155Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155Receiver>;
+    getContractAt(
+      name: "ERC1155Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155Receiver>;
+    getContractAt(
+      name: "ERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165>;
+    getContractAt(
+      name: "IERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "TestRegistrar",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestRegistrar>;
+    getContractAt(
+      name: "TestResolver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestResolver>;
+    getContractAt(
+      name: "IENS",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IENS>;
+    getContractAt(
+      name: "Resolver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Resolver>;
+    getContractAt(
+      name: "IPhiMap",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPhiMap>;
+    getContractAt(
+      name: "IPhiObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPhiObject>;
+    getContractAt(
+      name: "IPhiRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPhiRegistry>;
+    getContractAt(
+      name: "PhiMap",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PhiMap>;
+    getContractAt(
+      name: "PhiObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PhiObject>;
+    getContractAt(
+      name: "PhiRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PhiRegistry>;
+    getContractAt(
+      name: "MultiOwner",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MultiOwner>;
 
     // default types
     getContractFactory(

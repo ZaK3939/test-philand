@@ -1,11 +1,11 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import type { Fixture } from "ethereum-waffle";
 
-import type { Greeter } from "../src/types/Greeter";
+import type { PhiObject } from "../src/types/contracts/PhiObject";
 
 declare module "mocha" {
   export interface Context {
-    greeter: Greeter;
+    phiObject: PhiObject;
     loadFixture: <T>(fixture: Fixture<T>) => Promise<T>;
     signers: Signers;
   }
@@ -13,4 +13,6 @@ declare module "mocha" {
 
 export interface Signers {
   admin: SignerWithAddress;
+  alice: SignerWithAddress;
+  bob: SignerWithAddress;
 }

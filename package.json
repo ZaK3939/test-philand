@@ -85,5 +85,12 @@
     "prettier:check": "prettier --check --config ./.prettierrc.yaml \"**/*.{js,json,md,sol,ts,yaml,yml}\"",
     "test": "hardhat test",
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain"
+  },
+  "dependencies": {
+    "@ensdomains/ens-contracts": "^0.0.11",
+    "@ensdomains/eth-ens-namehash": "^2.0.15",
+    "@openzeppelin/contracts": "^4.5.0",
+    "ethereumjs-util": "^7.1.4",
+    "ethereumjs-utils": "^5.2.5"
   }
 }
