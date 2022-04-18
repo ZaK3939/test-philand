@@ -71,7 +71,8 @@ export declare namespace PhiMap {
 
 export interface PhiMapInterface extends utils.Interface {
   functions: {
-    "claim_starter_object(string)": FunctionFragment;
+    "claimStarterObject(string)": FunctionFragment;
+    "create(string,address)": FunctionFragment;
     "deposit(uint256,uint256)": FunctionFragment;
     "depositInfo(address,uint256)": FunctionFragment;
     "depositTime(address,uint256)": FunctionFragment;
@@ -79,6 +80,8 @@ export interface PhiMapInterface extends utils.Interface {
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "owner(address)": FunctionFragment;
+    "ownerLists(string)": FunctionFragment;
+    "ownerOfPhiland(string)": FunctionFragment;
     "removeObjectToLand(string,uint256)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
@@ -89,7 +92,8 @@ export interface PhiMapInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "claim_starter_object"
+      | "claimStarterObject"
+      | "create"
       | "deposit"
       | "depositInfo"
       | "depositTime"
@@ -97,6 +101,8 @@ export interface PhiMapInterface extends utils.Interface {
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "owner"
+      | "ownerLists"
+      | "ownerOfPhiland"
       | "removeObjectToLand"
       | "removeOwner"
       | "setOwner"
@@ -106,8 +112,12 @@ export interface PhiMapInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "claim_starter_object",
+    functionFragment: "claimStarterObject",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "create",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
@@ -134,6 +144,11 @@ export interface PhiMapInterface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(functionFragment: "ownerLists", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "ownerOfPhiland",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "removeObjectToLand",
     values: [string, BigNumberish]
@@ -154,9 +169,10 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "claim_starter_object",
+    functionFragment: "claimStarterObject",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositInfo",
@@ -179,6 +195,11 @@ export interface PhiMapInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "ownerOfPhiland",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "removeObjectToLand",
     data: BytesLike
@@ -258,8 +279,14 @@ export interface PhiMap extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    claim_starter_object(
+    claimStarterObject(
       name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    create(
+      name: string,
+      caller: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -317,6 +344,10 @@ export interface PhiMap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    ownerLists(arg0: string, overrides?: CallOverrides): Promise<[string]>;
+
+    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<[string]>;
+
     removeObjectToLand(
       name: string,
       i: BigNumberish,
@@ -350,8 +381,14 @@ export interface PhiMap extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  claim_starter_object(
+  claimStarterObject(
     name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  create(
+    name: string,
+    caller: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -409,6 +446,10 @@ export interface PhiMap extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+  ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<string>;
+
   removeObjectToLand(
     name: string,
     i: BigNumberish,
@@ -442,8 +483,11 @@ export interface PhiMap extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    claim_starter_object(
+    claimStarterObject(name: string, overrides?: CallOverrides): Promise<void>;
+
+    create(
       name: string,
+      caller: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -498,6 +542,10 @@ export interface PhiMap extends BaseContract {
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
+    ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
+
+    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<string>;
+
     removeObjectToLand(
       name: string,
       i: BigNumberish,
@@ -543,8 +591,14 @@ export interface PhiMap extends BaseContract {
   };
 
   estimateGas: {
-    claim_starter_object(
+    claimStarterObject(
       name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    create(
+      name: string,
+      caller: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -591,6 +645,10 @@ export interface PhiMap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    ownerLists(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     removeObjectToLand(
       name: string,
       i: BigNumberish,
@@ -622,8 +680,14 @@ export interface PhiMap extends BaseContract {
   };
 
   populateTransaction: {
-    claim_starter_object(
+    claimStarterObject(
       name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    create(
+      name: string,
+      caller: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -668,6 +732,16 @@ export interface PhiMap extends BaseContract {
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    ownerLists(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    ownerOfPhiland(
+      name: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     removeObjectToLand(

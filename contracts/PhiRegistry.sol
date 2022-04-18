@@ -5,12 +5,12 @@ import { IENS } from "./interfaces/IENS.sol";
 import { IPhiMap } from "./interfaces/IPhiMap.sol";
 import { MultiOwner } from "./utils/MultiOwner.sol";
 import "./utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract PhiRegistry is MultiOwner {
     IENS private _ens;
     IPhiMap private _map;
     address private _adminSigner;
-    string public greeting;
 
     bytes32 public label;
 
@@ -54,12 +54,6 @@ contract PhiRegistry is MultiOwner {
     */
     function setEnsBaseNode(bytes32 _basenode) external onlyOwner {
         baseNode = _basenode;
-    }
-
-    /// @dev check that the user has already claimed Philand
-    function ownerOfPhiland(string memory name) external view returns (address) {
-        if (ownerLists[name] != address(0)) return ownerLists[name];
-        else return address(0);
     }
 
     /// @dev check that the coupon sent was signed by the admin signer
@@ -123,6 +117,7 @@ contract PhiRegistry is MultiOwner {
         ownerLists[name] = msg.sender;
         emit LogCreatePhiland(msg.sender, name);
         claimed++;
+        _map.create(name, msg.sender);
     }
 
     /*

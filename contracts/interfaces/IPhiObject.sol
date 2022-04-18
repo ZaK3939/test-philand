@@ -10,6 +10,10 @@ interface IPhiObject {
 
     function getSize(uint256 tokenId) external view returns (Size memory);
 
+    function balanceOf(address account, uint256 id) external view returns (uint256);
+
+    function setOwner(address newOwner) external;
+
     function mintObject(
         address to,
         uint256 id,

@@ -6,11 +6,10 @@ import { IPhiObject } from "./interfaces/IPhiObject.sol";
 import { IPhiRegistry } from "./interfaces/IPhiRegistry.sol";
 import { MultiOwner } from "./utils/MultiOwner.sol";
 import "./utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract PhiMap is MultiOwner {
-    IENS private _ens;
     IPhiObject private _object;
-    IPhiRegistry private _registry;
 
     struct MapSettings {
         uint256 minX;
@@ -42,27 +41,26 @@ contract PhiMap is MultiOwner {
         uint256 xEnd;
         uint256 yEnd;
     }
+    mapping(string => address) public ownerLists;
 
     error NotReadyPhiland(address sender, address owner);
     error NotDeposit(address sender, address owner, uint256 token_id);
     error OutofMapRange(uint256 a, string error_boader);
     error objectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
 
-    constructor(
-        IENS ens,
-        IPhiObject object,
-        IPhiRegistry registry
-    ) {
-        _ens = ens;
+    constructor(IPhiObject object) {
         _object = object;
-        _registry = registry;
         mapSettings = MapSettings(0, 0, 10, 10);
     }
 
     mapping(string => ObjectInfo[]) private userObject;
 
+    function create(string calldata name, address caller) external {
+        ownerLists[name] = caller;
+    }
+
     function writeObjectToLand(string calldata name, Object calldata objectdata) external {
-        address owner = _registry.ownerOfPhiland(name);
+        address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
@@ -105,11 +103,14 @@ contract PhiMap is MultiOwner {
         }
 
         for (uint256 i = 0; i < userObject[name].length; i++) {
-            if (objectInfo.xEnd <= userObject[name][i].xStart) {} else if (
-                userObject[name][i].xEnd <= objectInfo.xStart
-            ) {} else if (objectInfo.yEnd <= userObject[name][i].yStart) {} else if (
+            if (
+                objectInfo.xEnd <= userObject[name][i].xStart ||
+                userObject[name][i].xEnd <= objectInfo.xStart ||
+                objectInfo.yEnd <= userObject[name][i].yStart ||
                 userObject[name][i].yEnd <= objectInfo.yStart
-            ) {} else {
+            ) {
+                continue;
+            } else {
                 revert objectCollision({
                     writeObjectInfo: objectInfo,
                     userObjectInfo: userObject[name][i],
@@ -120,15 +121,15 @@ contract PhiMap is MultiOwner {
         return;
     }
 
-    function claim_starter_object(string calldata name) external {
-        address owner = _registry.ownerOfPhiland(name);
+    function claimStarterObject(string calldata name) external {
+        address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
-        uint256[] memory ids;
-        uint256[] memory amounts;
+        uint256[] memory ids = new uint256[](5);
+        uint256[] memory amounts = new uint256[](5);
 
-        for (uint256 i = 0; i < 5; ++i) {
+        for (uint256 i = 0; i < 5; i++) {
             ids[i] = i + 1;
             amounts[i] = 1;
         }
@@ -177,5 +178,11 @@ contract PhiMap is MultiOwner {
 
     function view_philand(string calldata user) external view returns (ObjectInfo[] memory) {
         return userObject[user];
+    }
+
+    /// @dev check that the user has already claimed Philand
+    function ownerOfPhiland(string memory name) public view returns (address) {
+        if (ownerLists[name] != address(0)) return ownerLists[name];
+        else return address(0);
     }
 }

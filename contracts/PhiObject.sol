@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
 import { MultiOwner } from "./utils/MultiOwner.sol";
 import "./utils/Strings.sol";
+import "hardhat/console.sol";
 
 contract PhiObject is ERC1155Supply, MultiOwner {
     string public baseMetadataURI;

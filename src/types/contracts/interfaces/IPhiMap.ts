@@ -16,6 +16,8 @@ import type {
   BigNumber,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -23,14 +25,17 @@ import type {
 
 export interface IPhiMapInterface extends utils.Interface {
   functions: {
-    "owner(bytes32)": FunctionFragment;
+    "create(string,address)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "owner"): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "create"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "owner", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "create",
+    values: [string, string]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
 
   events: {};
 }
@@ -62,25 +67,42 @@ export interface IPhiMap extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+    create(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  owner(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+  create(
+    name: string,
+    caller: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<string>;
+    create(
+      name: string,
+      caller: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    owner(node: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+    create(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    owner(
-      node: BytesLike,
-      overrides?: CallOverrides
+    create(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

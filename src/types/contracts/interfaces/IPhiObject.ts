@@ -40,20 +40,28 @@ export declare namespace IPhiObject {
 
 export interface IPhiObjectInterface extends utils.Interface {
   functions: {
+    "balanceOf(address,uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "mintObject(address,uint256,uint256,bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
+    "setOwner(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "balanceOf"
       | "getSize"
       | "mintBatchObject"
       | "mintObject"
       | "safeTransferFrom"
+      | "setOwner"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "getSize",
     values: [BigNumberish]
@@ -70,7 +78,9 @@ export interface IPhiObjectInterface extends utils.Interface {
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
 
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getSize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mintBatchObject",
@@ -81,6 +91,7 @@ export interface IPhiObjectInterface extends utils.Interface {
     functionFragment: "safeTransferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
 
   events: {};
 }
@@ -112,6 +123,12 @@ export interface IPhiObject extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    balanceOf(
+      account: string,
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -141,7 +158,18 @@ export interface IPhiObject extends BaseContract {
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    setOwner(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  balanceOf(
+    account: string,
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getSize(
     tokenId: BigNumberish,
@@ -173,7 +201,18 @@ export interface IPhiObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setOwner(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    balanceOf(
+      account: string,
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -203,11 +242,19 @@ export interface IPhiObject extends BaseContract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
+    balanceOf(
+      account: string,
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -235,11 +282,22 @@ export interface IPhiObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setOwner(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    balanceOf(
+      account: string,
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -267,6 +325,11 @@ export interface IPhiObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setOwner(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

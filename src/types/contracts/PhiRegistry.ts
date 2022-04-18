@@ -46,11 +46,9 @@ export interface PhiRegistryInterface extends utils.Interface {
     "couponType(string)": FunctionFragment;
     "createPhiland(string)": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
-    "greeting()": FunctionFragment;
     "label()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "ownerLists(string)": FunctionFragment;
-    "ownerOfPhiland(string)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "setCouponType(string,uint256)": FunctionFragment;
     "setEnsBaseNode(bytes32)": FunctionFragment;
@@ -65,11 +63,9 @@ export interface PhiRegistryInterface extends utils.Interface {
       | "couponType"
       | "createPhiland"
       | "getCouponType"
-      | "greeting"
       | "label"
       | "owner"
       | "ownerLists"
-      | "ownerOfPhiland"
       | "removeOwner"
       | "setCouponType"
       | "setEnsBaseNode"
@@ -94,14 +90,9 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "getCouponType",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "greeting", values?: undefined): string;
   encodeFunctionData(functionFragment: "label", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
   encodeFunctionData(functionFragment: "ownerLists", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "ownerOfPhiland",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setCouponType",
@@ -131,14 +122,9 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "getCouponType",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "greeting", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "label", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "ownerOfPhiland",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "removeOwner",
     data: BytesLike
@@ -281,8 +267,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    greeting(overrides?: CallOverrides): Promise<[string]>;
-
     label(overrides?: CallOverrides): Promise<[string]>;
 
     owner(
@@ -291,8 +275,6 @@ export interface PhiRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<[string]>;
-
-    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<[string]>;
 
     removeOwner(
       oldOwner: string,
@@ -343,8 +325,6 @@ export interface PhiRegistry extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  greeting(overrides?: CallOverrides): Promise<string>;
-
   label(overrides?: CallOverrides): Promise<string>;
 
   owner(
@@ -353,8 +333,6 @@ export interface PhiRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
-
-  ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<string>;
 
   removeOwner(
     oldOwner: string,
@@ -399,15 +377,11 @@ export interface PhiRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    greeting(overrides?: CallOverrides): Promise<string>;
-
     label(overrides?: CallOverrides): Promise<string>;
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
-
-    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<string>;
 
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
@@ -497,8 +471,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    greeting(overrides?: CallOverrides): Promise<BigNumber>;
-
     label(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(
@@ -507,8 +479,6 @@ export interface PhiRegistry extends BaseContract {
     ): Promise<BigNumber>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    ownerOfPhiland(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     removeOwner(
       oldOwner: string,
@@ -563,8 +533,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    greeting(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     label(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(
@@ -574,11 +542,6 @@ export interface PhiRegistry extends BaseContract {
 
     ownerLists(
       arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ownerOfPhiland(
-      name: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -14,20 +14,19 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "node",
-        type: "bytes32",
+        internalType: "string",
+        name: "name",
+        type: "string",
       },
-    ],
-    name: "owner",
-    outputs: [
       {
         internalType: "address",
-        name: "",
+        name: "caller",
         type: "address",
       },
     ],
-    stateMutability: "view",
+    name: "create",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

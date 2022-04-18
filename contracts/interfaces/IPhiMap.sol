@@ -2,5 +2,5 @@
 pragma solidity ^0.8.8;
 
 interface IPhiMap {
-    function owner(bytes32 node) external view returns (address);
+    function create(string calldata name, address caller) external;
 }
