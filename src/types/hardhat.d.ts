@@ -85,6 +85,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPhiRegistry__factory>;
     getContractFactory(
+      name: "PhiClaim",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PhiClaim__factory>;
+    getContractFactory(
       name: "PhiMap",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiMap__factory>;
@@ -191,6 +195,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IPhiRegistry>;
+    getContractAt(
+      name: "PhiClaim",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PhiClaim>;
     getContractAt(
       name: "PhiMap",
       address: string,

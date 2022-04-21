@@ -4,7 +4,14 @@ import type { Artifact } from "hardhat/types";
 
 import { PhiObject } from "../../src/types/contracts/PhiObject";
 import { Signers } from "../types";
-import { shouldBehaveMint, shouldBehaveSetSize } from "./PhiObject.behavior";
+import {
+  shouldBehaveMint,
+  shouldBehaveSetMaxClaimed,
+  shouldBehaveSetSize,
+  shouldBehaveSetTokenLink,
+  shouldBehaveSetbaseMetadataURI,
+  shouldInitToken,
+} from "./PhiObject.behavior";
 
 describe("Unit tests", function () {
   before(async function () {
@@ -20,8 +27,13 @@ describe("Unit tests", function () {
     beforeEach(async function () {
       const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
       this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
+      await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 1, 1, "0x");
     });
-    shouldBehaveMint();
+    shouldBehaveSetbaseMetadataURI();
+    shouldBehaveSetMaxClaimed();
+    shouldBehaveSetTokenLink();
     shouldBehaveSetSize();
+    shouldBehaveMint();
+    shouldInitToken();
   });
 });

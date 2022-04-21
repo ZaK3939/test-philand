@@ -4,6 +4,7 @@
 export * as ens from "./ens";
 export * as interfaces from "./interfaces";
 export * as utils from "./utils";
+export { PhiClaim__factory } from "./PhiClaim__factory";
 export { PhiMap__factory } from "./PhiMap__factory";
 export { PhiObject__factory } from "./PhiObject__factory";
 export { PhiRegistry__factory } from "./PhiRegistry__factory";

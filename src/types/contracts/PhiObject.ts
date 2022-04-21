@@ -49,9 +49,10 @@ export interface PhiObjectInterface extends utils.Interface {
     "baseMetadataURI()": FunctionFragment;
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
-    "getMaxClaimed()": FunctionFragment;
+    "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "getTokenLink(uint256)": FunctionFragment;
+    "initToken(uint256,uint256,string,(uint8,uint8,uint8))": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "mintObject(address,uint256,uint256,bytes)": FunctionFragment;
@@ -61,7 +62,7 @@ export interface PhiObjectInterface extends utils.Interface {
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setMaxClaimed(uint256)": FunctionFragment;
+    "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setSize(uint256,(uint8,uint8,uint8))": FunctionFragment;
     "setTokenLink(uint256,string)": FunctionFragment;
@@ -82,6 +83,7 @@ export interface PhiObjectInterface extends utils.Interface {
       | "getMaxClaimed"
       | "getSize"
       | "getTokenLink"
+      | "initToken"
       | "isApprovedForAll"
       | "mintBatchObject"
       | "mintObject"
@@ -124,7 +126,7 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getMaxClaimed",
-    values?: undefined
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getSize",
@@ -133,6 +135,10 @@ export interface PhiObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getTokenLink",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initToken",
+    values: [BigNumberish, BigNumberish, string, PhiObject.SizeStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -166,7 +172,7 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxClaimed",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
@@ -218,6 +224,7 @@ export interface PhiObjectInterface extends utils.Interface {
     functionFragment: "getTokenLink",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -404,7 +411,10 @@ export interface PhiObject extends BaseContract {
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
-    getMaxClaimed(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getMaxClaimed(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getSize(
       tokenId: BigNumberish,
@@ -415,6 +425,14 @@ export interface PhiObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    initToken(
+      tokenId: BigNumberish,
+      newMaxClaimed: BigNumberish,
+      _uri: string,
+      size: PhiObject.SizeStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     isApprovedForAll(
       account: string,
@@ -478,6 +496,7 @@ export interface PhiObject extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setMaxClaimed(
+      tokenId: BigNumberish,
       newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -537,7 +556,10 @@ export interface PhiObject extends BaseContract {
 
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
-  getMaxClaimed(overrides?: CallOverrides): Promise<BigNumber>;
+  getMaxClaimed(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getSize(
     tokenId: BigNumberish,
@@ -548,6 +570,14 @@ export interface PhiObject extends BaseContract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  initToken(
+    tokenId: BigNumberish,
+    newMaxClaimed: BigNumberish,
+    _uri: string,
+    size: PhiObject.SizeStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isApprovedForAll(
     account: string,
@@ -611,6 +641,7 @@ export interface PhiObject extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setMaxClaimed(
+    tokenId: BigNumberish,
     newMaxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -667,7 +698,10 @@ export interface PhiObject extends BaseContract {
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
-    getMaxClaimed(overrides?: CallOverrides): Promise<BigNumber>;
+    getMaxClaimed(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getSize(
       tokenId: BigNumberish,
@@ -678,6 +712,14 @@ export interface PhiObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    initToken(
+      tokenId: BigNumberish,
+      newMaxClaimed: BigNumberish,
+      _uri: string,
+      size: PhiObject.SizeStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     isApprovedForAll(
       account: string,
@@ -735,6 +777,7 @@ export interface PhiObject extends BaseContract {
     ): Promise<void>;
 
     setMaxClaimed(
+      tokenId: BigNumberish,
       newMaxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -859,7 +902,10 @@ export interface PhiObject extends BaseContract {
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getMaxClaimed(overrides?: CallOverrides): Promise<BigNumber>;
+    getMaxClaimed(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getSize(
       tokenId: BigNumberish,
@@ -869,6 +915,14 @@ export interface PhiObject extends BaseContract {
     getTokenLink(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initToken(
+      tokenId: BigNumberish,
+      newMaxClaimed: BigNumberish,
+      _uri: string,
+      size: PhiObject.SizeStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -933,6 +987,7 @@ export interface PhiObject extends BaseContract {
     ): Promise<BigNumber>;
 
     setMaxClaimed(
+      tokenId: BigNumberish,
       newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -998,7 +1053,10 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getMaxClaimed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getMaxClaimed(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getSize(
       tokenId: BigNumberish,
@@ -1008,6 +1066,14 @@ export interface PhiObject extends BaseContract {
     getTokenLink(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initToken(
+      tokenId: BigNumberish,
+      newMaxClaimed: BigNumberish,
+      _uri: string,
+      size: PhiObject.SizeStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
@@ -1072,6 +1138,7 @@ export interface PhiObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setMaxClaimed(
+      tokenId: BigNumberish,
       newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

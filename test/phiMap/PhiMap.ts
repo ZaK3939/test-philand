@@ -57,7 +57,6 @@ describe("Unit tests", function () {
     this.phiRegistry = <PhiRegistry>(
       await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
         this.ensRegistry.address,
-        this.signers.admin.address,
         this.phiMap.address,
       ])
     );

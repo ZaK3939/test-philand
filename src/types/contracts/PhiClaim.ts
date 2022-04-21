@@ -18,6 +18,7 @@ import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   BaseContract,
   BigNumber,
+  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -27,109 +28,106 @@ import type {
   utils,
 } from "ethers";
 
-export interface PhiRegistryInterface extends utils.Interface {
+export declare namespace PhiClaim {
+  export type CouponStruct = { r: BytesLike; s: BytesLike; v: BigNumberish };
+
+  export type CouponStructOutput = [string, string, number] & {
+    r: string;
+    s: string;
+    v: number;
+  };
+}
+
+export interface PhiClaimInterface extends utils.Interface {
   functions: {
-    "changePhilandOwner(string)": FunctionFragment;
-    "claimed()": FunctionFragment;
-    "createPhiland(string)": FunctionFragment;
-    "label()": FunctionFragment;
+    "claimObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
+    "claimedLists(address,uint256)": FunctionFragment;
+    "couponType(string)": FunctionFragment;
+    "getCouponType(string)": FunctionFragment;
     "owner(address)": FunctionFragment;
-    "ownerLists(string)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
-    "setEnsBaseNode(bytes32)": FunctionFragment;
+    "setCouponType(string,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "changePhilandOwner"
-      | "claimed"
-      | "createPhiland"
-      | "label"
+      | "claimObject"
+      | "claimedLists"
+      | "couponType"
+      | "getCouponType"
       | "owner"
-      | "ownerLists"
       | "removeOwner"
-      | "setEnsBaseNode"
+      | "setCouponType"
       | "setOwner"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "changePhilandOwner",
-    values: [string]
+    functionFragment: "claimObject",
+    values: [BigNumberish, string, PhiClaim.CouponStruct]
   ): string;
-  encodeFunctionData(functionFragment: "claimed", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "createPhiland",
+    functionFragment: "claimedLists",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "couponType", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getCouponType",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "label", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
-  encodeFunctionData(functionFragment: "ownerLists", values: [string]): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setEnsBaseNode",
-    values: [BytesLike]
+    functionFragment: "setCouponType",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
 
   decodeFunctionResult(
-    functionFragment: "changePhilandOwner",
+    functionFragment: "claimObject",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "claimed", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "createPhiland",
+    functionFragment: "claimedLists",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "label", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "couponType", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getCouponType",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setEnsBaseNode",
+    functionFragment: "setCouponType",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
 
   events: {
-    "LogChangePhilandOwner(address,string)": EventFragment;
-    "LogCreatePhiland(address,string)": EventFragment;
+    "LogClaimObject(address,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "LogChangePhilandOwner"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LogCreatePhiland"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogClaimObject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
 }
 
-export interface LogChangePhilandOwnerEventObject {
+export interface LogClaimObjectEventObject {
   sender: string;
-  name: string;
+  tokenid: BigNumber;
 }
-export type LogChangePhilandOwnerEvent = TypedEvent<
-  [string, string],
-  LogChangePhilandOwnerEventObject
+export type LogClaimObjectEvent = TypedEvent<
+  [string, BigNumber],
+  LogClaimObjectEventObject
 >;
 
-export type LogChangePhilandOwnerEventFilter =
-  TypedEventFilter<LogChangePhilandOwnerEvent>;
-
-export interface LogCreatePhilandEventObject {
-  sender: string;
-  name: string;
-}
-export type LogCreatePhilandEvent = TypedEvent<
-  [string, string],
-  LogCreatePhilandEventObject
->;
-
-export type LogCreatePhilandEventFilter =
-  TypedEventFilter<LogCreatePhilandEvent>;
+export type LogClaimObjectEventFilter = TypedEventFilter<LogClaimObjectEvent>;
 
 export interface OwnershipGrantedEventObject {
   operator: string;
@@ -155,12 +153,12 @@ export type OwnershipRemovedEvent = TypedEvent<
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
-export interface PhiRegistry extends BaseContract {
+export interface PhiClaim extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PhiRegistryInterface;
+  interface: PhiClaimInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -182,34 +180,39 @@ export interface PhiRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    changePhilandOwner(
-      name: string,
+    claimObject(
+      tokenId: BigNumberish,
+      condition: string,
+      coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    claimed(overrides?: CallOverrides): Promise<[BigNumber]>;
+    claimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
-    createPhiland(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    couponType(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    label(overrides?: CallOverrides): Promise<[string]>;
+    getCouponType(
+      condition: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    ownerLists(arg0: string, overrides?: CallOverrides): Promise<[string]>;
-
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setEnsBaseNode(
-      _basenode: BytesLike,
+    setCouponType(
+      condition: string,
+      tokenid: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -219,34 +222,39 @@ export interface PhiRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  changePhilandOwner(
-    name: string,
+  claimObject(
+    tokenId: BigNumberish,
+    condition: string,
+    coupon: PhiClaim.CouponStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  claimed(overrides?: CallOverrides): Promise<BigNumber>;
+  claimedLists(
+    arg0: string,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  createPhiland(
-    name: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  label(overrides?: CallOverrides): Promise<string>;
+  getCouponType(
+    condition: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   owner(
     targetAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
-
   removeOwner(
     oldOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setEnsBaseNode(
-    _basenode: BytesLike,
+  setCouponType(
+    condition: string,
+    tokenid: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -256,22 +264,33 @@ export interface PhiRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    changePhilandOwner(name: string, overrides?: CallOverrides): Promise<void>;
+    claimObject(
+      tokenId: BigNumberish,
+      condition: string,
+      coupon: PhiClaim.CouponStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    claimed(overrides?: CallOverrides): Promise<BigNumber>;
+    claimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    createPhiland(name: string, overrides?: CallOverrides): Promise<void>;
+    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    label(overrides?: CallOverrides): Promise<string>;
+    getCouponType(
+      condition: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
-    ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
-
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
-    setEnsBaseNode(
-      _basenode: BytesLike,
+    setCouponType(
+      condition: string,
+      tokenid: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -279,23 +298,11 @@ export interface PhiRegistry extends BaseContract {
   };
 
   filters: {
-    "LogChangePhilandOwner(address,string)"(
-      sender?: string | null,
-      name?: null
-    ): LogChangePhilandOwnerEventFilter;
-    LogChangePhilandOwner(
-      sender?: string | null,
-      name?: null
-    ): LogChangePhilandOwnerEventFilter;
-
-    "LogCreatePhiland(address,string)"(
-      sender?: string | null,
-      name?: null
-    ): LogCreatePhilandEventFilter;
-    LogCreatePhiland(
-      sender?: string | null,
-      name?: null
-    ): LogCreatePhilandEventFilter;
+    "LogClaimObject(address,uint256)"(
+      sender?: null,
+      tokenid?: null
+    ): LogClaimObjectEventFilter;
+    LogClaimObject(sender?: null, tokenid?: null): LogClaimObjectEventFilter;
 
     "OwnershipGranted(address,address)"(
       operator?: string | null,
@@ -317,34 +324,39 @@ export interface PhiRegistry extends BaseContract {
   };
 
   estimateGas: {
-    changePhilandOwner(
-      name: string,
+    claimObject(
+      tokenId: BigNumberish,
+      condition: string,
+      coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    claimed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    createPhiland(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    claimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    label(overrides?: CallOverrides): Promise<BigNumber>;
+    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCouponType(
+      condition: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    ownerLists(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setEnsBaseNode(
-      _basenode: BytesLike,
+    setCouponType(
+      condition: string,
+      tokenid: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -355,28 +367,32 @@ export interface PhiRegistry extends BaseContract {
   };
 
   populateTransaction: {
-    changePhilandOwner(
-      name: string,
+    claimObject(
+      tokenId: BigNumberish,
+      condition: string,
+      coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    claimed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    createPhiland(
-      name: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    claimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    label(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    couponType(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCouponType(
+      condition: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    ownerLists(
-      arg0: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     removeOwner(
@@ -384,8 +400,9 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setEnsBaseNode(
-      _basenode: BytesLike,
+    setCouponType(
+      condition: string,
+      tokenid: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

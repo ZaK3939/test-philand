@@ -49,6 +49,8 @@ export type { IPhiObject } from "./contracts/interfaces/IPhiObject";
 export { IPhiObject__factory } from "./factories/contracts/interfaces/IPhiObject__factory";
 export type { IPhiRegistry } from "./contracts/interfaces/IPhiRegistry";
 export { IPhiRegistry__factory } from "./factories/contracts/interfaces/IPhiRegistry__factory";
+export type { PhiClaim } from "./contracts/PhiClaim";
+export { PhiClaim__factory } from "./factories/contracts/PhiClaim__factory";
 export type { PhiMap } from "./contracts/PhiMap";
 export { PhiMap__factory } from "./factories/contracts/PhiMap__factory";
 export type { PhiObject } from "./contracts/PhiObject";

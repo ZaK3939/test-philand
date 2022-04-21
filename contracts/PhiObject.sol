@@ -21,7 +21,7 @@ contract PhiObject is ERC1155Supply, MultiOwner {
     mapping(uint256 => string) public tokenURL;
     mapping(uint256 => uint256) private _totalSupply;
     // Limit of supply
-    uint256 private maxClaimed = 1000;
+    mapping(uint256 => uint256) private maxClaimed;
     // Errors
     error InvalidTokenID();
     error NonExistentToken();
@@ -33,23 +33,24 @@ contract PhiObject is ERC1155Supply, MultiOwner {
     /**
      * @dev Returns the maxClaimed
      */
-    function getMaxClaimed() public view virtual returns (uint256) {
-        return maxClaimed;
+    function getMaxClaimed(uint256 tokenId) public view virtual returns (uint256) {
+        return maxClaimed[tokenId];
     }
 
     /**
      * @dev Set the new maxClaimed
      */
-    function setMaxClaimed(uint256 newMaxClaimed) public virtual onlyOwner {
-        maxClaimed = newMaxClaimed;
+    function setMaxClaimed(uint256 tokenId, uint256 newMaxClaimed) public virtual onlyOwner {
+        if (!exists(tokenId)) revert NonExistentToken();
+        maxClaimed[tokenId] = newMaxClaimed;
     }
 
     function getSize(uint256 tokenId) public view returns (Size memory) {
         return objectSize[tokenId];
     }
 
-    function setSize(uint256 tokenId, Size calldata size) external onlyOwner {
-        isValid(tokenId);
+    function setSize(uint256 tokenId, Size calldata size) public virtual onlyOwner {
+        if (!exists(tokenId)) revert NonExistentToken();
         objectSize[tokenId] = size;
     }
 
@@ -62,19 +63,29 @@ contract PhiObject is ERC1155Supply, MultiOwner {
     }
 
     function getTokenLink(uint256 tokenId) public view returns (string memory) {
-        isValid(tokenId);
         return tokenURL[tokenId];
     }
 
-    function setTokenLink(uint256 tokenId, string memory _uri) external onlyOwner {
-        isValid(tokenId);
+    function setTokenLink(uint256 tokenId, string memory _uri) public virtual onlyOwner {
+        if (!exists(tokenId)) revert NonExistentToken();
         tokenURL[tokenId] = _uri;
+    }
+
+    function initToken(
+        uint256 tokenId,
+        uint256 newMaxClaimed,
+        string memory _uri,
+        Size calldata size
+    ) external onlyOwner {
+        setMaxClaimed(tokenId, newMaxClaimed);
+        setTokenLink(tokenId, _uri);
+        setSize(tokenId, size);
     }
 
     /* Utility Functions */
     function isValid(uint256 tokenId) internal view {
         // Validate that the token is within range when querying
-        if (tokenId <= 0 || tokenId >= maxClaimed) revert InvalidTokenID();
+        if (tokenId <= 0 || totalSupply(tokenId) >= maxClaimed[tokenId]) revert InvalidTokenID();
         if (!exists(tokenId)) revert NonExistentToken();
     }
 
@@ -98,6 +109,7 @@ contract PhiObject is ERC1155Supply, MultiOwner {
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner {
+        // todo for loop check
         super._mintBatch(to, ids, amounts, data);
     }
 
