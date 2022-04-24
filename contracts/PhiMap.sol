@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.8.9;
-
-import { IENS } from "./interfaces/IENS.sol";
+import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
 import { IPhiObject } from "./interfaces/IPhiObject.sol";
 import { IPhiRegistry } from "./interfaces/IPhiRegistry.sol";
 import { MultiOwner } from "./utils/MultiOwner.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiMap is MultiOwner {
+contract PhiMap is MultiOwner, ERC1155Receiver {
     IPhiObject private _object;
 
     struct MapSettings {
@@ -50,7 +49,7 @@ contract PhiMap is MultiOwner {
 
     constructor(IPhiObject object) {
         _object = object;
-        mapSettings = MapSettings(0, 0, 10, 10);
+        mapSettings = MapSettings(0, 10, 0, 10);
     }
 
     mapping(string => ObjectInfo[]) private userObject;
@@ -59,25 +58,35 @@ contract PhiMap is MultiOwner {
         ownerLists[name] = caller;
     }
 
-    function writeObjectToLand(string calldata name, Object calldata objectdata) external {
+    function writeObjectToLand(string calldata name, Object calldata objectData) public {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
-        if (depositInfo[msg.sender][objectdata.tokenId].amount == 0) {
-            revert NotDeposit({ sender: msg.sender, owner: owner, token_id: objectdata.tokenId });
+        if (depositInfo[msg.sender][objectData.tokenId].amount == 0) {
+            revert NotDeposit({ sender: msg.sender, owner: owner, token_id: objectData.tokenId });
         }
-        IPhiObject.Size memory size = _object.getSize(objectdata.tokenId);
+        IPhiObject.Size memory size = _object.getSize(objectData.tokenId);
         ObjectInfo memory objectinfo = ObjectInfo(
-            objectdata.contractAddress,
-            objectdata.tokenId,
-            objectdata.xStart,
-            objectdata.yStart,
-            objectdata.xStart + size.x,
-            objectdata.yStart + size.y
+            objectData.contractAddress,
+            objectData.tokenId,
+            objectData.xStart,
+            objectData.yStart,
+            objectData.xStart + size.x,
+            objectData.yStart + size.y
         );
         checkCollision(name, objectinfo);
         userObject[name].push(objectinfo);
+    }
+
+    function batchWriteObjectToLand(string calldata name, Object[] calldata objectData) external {
+        address owner = ownerOfPhiland(name);
+        if (owner == address(0)) {
+            revert NotReadyPhiland({ sender: msg.sender, owner: owner });
+        }
+        for (uint256 i = 0; i < objectData.length; i++) {
+            writeObjectToLand(name, objectData[i]);
+        }
     }
 
     function removeObjectToLand(string calldata name, uint256 i) external {
@@ -150,6 +159,17 @@ contract PhiMap is MultiOwner {
         _object.safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "0x00");
     }
 
+    function batchDeposit(uint256[] memory _tokenIds, uint256[] memory _amounts) public {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            depositInfo[msg.sender][_tokenIds[i]] = Deposit(_amounts[i], block.timestamp);
+            _object.safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i], "0x00");
+        }
+    }
+
+    function checkDepositStatus(address sender, uint256 _tokenId) public view returns (Deposit memory) {
+        return depositInfo[sender][_tokenId];
+    }
+
     function undeposit(uint256 _tokenId) public {
         _object.safeTransferFrom(address(this), msg.sender, _tokenId, depositInfo[msg.sender][_tokenId].amount, "0x00");
         depositTime[msg.sender][_tokenId] += (block.timestamp - depositInfo[msg.sender][_tokenId].timestamp);
@@ -176,7 +196,7 @@ contract PhiMap is MultiOwner {
         return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
     }
 
-    function view_philand(string calldata user) external view returns (ObjectInfo[] memory) {
+    function viewPhiland(string calldata user) external view returns (ObjectInfo[] memory) {
         return userObject[user];
     }
 

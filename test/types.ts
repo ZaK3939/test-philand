@@ -2,9 +2,9 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import type { Fixture } from "ethereum-waffle";
 
 import { ENSRegistry } from "../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
-import type { PhiObject } from "../src/types/contracts/PhiObject";
 import { TestRegistrar } from "../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../src/types/contracts/ens/TestResolver";
+import type { PhiObject } from "../src/types/contracts/object/PhiObject";
 
 declare module "mocha" {
   export interface Context {

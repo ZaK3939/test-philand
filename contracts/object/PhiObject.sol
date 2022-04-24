@@ -3,9 +3,9 @@ pragma solidity ^0.8.8;
 
 // import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
-import { MultiOwner } from "./utils/MultiOwner.sol";
-import "./utils/Strings.sol";
+
+import { MultiOwner } from "../utils/MultiOwner.sol";
+import "../utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract PhiObject is ERC1155Supply, MultiOwner {
@@ -19,14 +19,13 @@ contract PhiObject is ERC1155Supply, MultiOwner {
 
     mapping(uint256 => Size) public objectSize;
     mapping(uint256 => string) public tokenURL;
-    mapping(uint256 => uint256) private _totalSupply;
-    // Limit of supply
     mapping(uint256 => uint256) private maxClaimed;
     // Errors
     error InvalidTokenID();
     error NonExistentToken();
+    error NoSetTokenSize();
 
-    constructor() public ERC1155("") MultiOwner() {
+    constructor() public ERC1155("") {
         baseMetadataURI = "https://www.arweave.net/";
     }
 
@@ -46,6 +45,9 @@ contract PhiObject is ERC1155Supply, MultiOwner {
     }
 
     function getSize(uint256 tokenId) public view returns (Size memory) {
+        if (!exists(tokenId)) revert NonExistentToken();
+        Size memory size = objectSize[tokenId];
+        if (size.x == 0) revert NoSetTokenSize();
         return objectSize[tokenId];
     }
 
@@ -62,11 +64,12 @@ contract PhiObject is ERC1155Supply, MultiOwner {
         baseMetadataURI = baseuri;
     }
 
-    function getTokenLink(uint256 tokenId) public view returns (string memory) {
+    function getTokenURI(uint256 tokenId) public view returns (string memory) {
+        if (!exists(tokenId)) revert NonExistentToken();
         return tokenURL[tokenId];
     }
 
-    function setTokenLink(uint256 tokenId, string memory _uri) public virtual onlyOwner {
+    function setTokenURI(uint256 tokenId, string memory _uri) public virtual onlyOwner {
         if (!exists(tokenId)) revert NonExistentToken();
         tokenURL[tokenId] = _uri;
     }
@@ -78,7 +81,7 @@ contract PhiObject is ERC1155Supply, MultiOwner {
         Size calldata size
     ) external onlyOwner {
         setMaxClaimed(tokenId, newMaxClaimed);
-        setTokenLink(tokenId, _uri);
+        setTokenURI(tokenId, _uri);
         setSize(tokenId, size);
     }
 
@@ -91,7 +94,7 @@ contract PhiObject is ERC1155Supply, MultiOwner {
 
     function uri(uint256 tokenId) public view override returns (string memory) {
         if (!exists(tokenId)) revert NonExistentToken();
-        return string(abi.encodePacked(baseMetadataURI, getTokenLink(tokenId)));
+        return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
     }
 
     function mintObject(
@@ -109,7 +112,7 @@ contract PhiObject is ERC1155Supply, MultiOwner {
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner {
-        // todo for loop check
+        // todo for loop check token supply
         super._mintBatch(to, ids, amounts, data);
     }
 

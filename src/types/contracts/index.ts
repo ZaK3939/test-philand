@@ -5,14 +5,16 @@
 /* eslint-disable */
 import type * as ens from "./ens";
 import type * as interfaces from "./interfaces";
+import type * as object from "./object";
 import type * as utils from "./utils";
 
 export type { ens };
 
 export type { interfaces };
 
+export type { object };
+
 export type { utils };
 export type { PhiClaim } from "./PhiClaim";
 export type { PhiMap } from "./PhiMap";
-export type { PhiObject } from "./PhiObject";
 export type { PhiRegistry } from "./PhiRegistry";

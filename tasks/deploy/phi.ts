@@ -2,8 +2,8 @@
 import { task } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { PhiObject } from "../../src/types/contracts/PhiObject";
-import { PhiObject__factory } from "../../src/types/factories/contracts/PhiObject__factory";
+import { PhiObject } from "../../src/types/contracts/object/PhiObject";
+import { PhiObject__factory } from "../../src/types/factories/contracts/object/PhiObject__factory";
 
 task("deploy:PhiObject")
   .addParam("greeting", "Say hello, be nice")

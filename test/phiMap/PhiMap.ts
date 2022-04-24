@@ -4,12 +4,21 @@ import type { Artifact } from "hardhat/types";
 
 import { ENSRegistry } from "../../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
 import { PhiMap } from "../../src/types/contracts/PhiMap";
-import { PhiObject } from "../../src/types/contracts/PhiObject";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
-import { shouldBehaveClaimStarterObject } from "./PhiMap.behavior";
+import {
+  shouldBehaveBatchDeposit,
+  shouldBehaveClaimStarterObject,
+  shouldBehaveDeposit,
+  shouldBehaveOwnerOfPhiland,
+  shouldBehaveRemoveObjectToLand,
+  shouldBehaveUnDeposit,
+  shouldBehaveViewPhiland,
+  shouldBehaveWriteObjectToLand,
+} from "./PhiMap.behavior";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const namehash = require("@ensdomains/eth-ens-namehash");
@@ -44,8 +53,11 @@ describe("Unit tests", function () {
     await this.ensRegistry
       .connect(this.signers.admin)
       .setSubnodeOwner(namehash.hash("eth"), sha3("zak3939"), this.signers.admin.address);
-    // await this.testRegistrar.register(sha3("test"), this.signers.alice.address, 86400);
     await this.testResolver.setAddr(namehash.hash("zak3939.eth"), this.signers.alice.address);
+    await this.ensRegistry
+      .connect(this.signers.admin)
+      .setSubnodeOwner(namehash.hash("eth"), sha3("test"), this.signers.alice.address);
+    await this.testResolver.setAddr(namehash.hash("test.eth"), this.signers.alice.address);
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
     this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
@@ -63,6 +75,12 @@ describe("Unit tests", function () {
 
     await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
+    await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
+    await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 0, 1, "0x");
+    await this.phiObject
+      .connect(this.signers.admin)
+      .initToken(0, 200, "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk", { x: 1, y: 2, z: 3 });
+    await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
 
   describe("PhiMap", function () {
@@ -71,5 +89,12 @@ describe("Unit tests", function () {
     // });
 
     shouldBehaveClaimStarterObject();
+    shouldBehaveDeposit();
+    shouldBehaveUnDeposit();
+    shouldBehaveBatchDeposit();
+    shouldBehaveOwnerOfPhiland();
+    shouldBehaveWriteObjectToLand();
+    shouldBehaveViewPhiland();
+    shouldBehaveRemoveObjectToLand();
   });
 });

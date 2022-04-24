@@ -85,6 +85,26 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPhiRegistry__factory>;
     getContractFactory(
+      name: "ISoulObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ISoulObject__factory>;
+    getContractFactory(
+      name: "FreeObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FreeObject__factory>;
+    getContractFactory(
+      name: "PaidObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PaidObject__factory>;
+    getContractFactory(
+      name: "PhiObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PhiObject__factory>;
+    getContractFactory(
+      name: "SoulObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SoulObject__factory>;
+    getContractFactory(
       name: "PhiClaim",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiClaim__factory>;
@@ -92,10 +112,6 @@ declare module "hardhat/types/runtime" {
       name: "PhiMap",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiMap__factory>;
-    getContractFactory(
-      name: "PhiObject",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.PhiObject__factory>;
     getContractFactory(
       name: "PhiRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -196,6 +212,31 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IPhiRegistry>;
     getContractAt(
+      name: "ISoulObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ISoulObject>;
+    getContractAt(
+      name: "FreeObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FreeObject>;
+    getContractAt(
+      name: "PaidObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PaidObject>;
+    getContractAt(
+      name: "PhiObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PhiObject>;
+    getContractAt(
+      name: "SoulObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SoulObject>;
+    getContractAt(
       name: "PhiClaim",
       address: string,
       signer?: ethers.Signer
@@ -205,11 +246,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiMap>;
-    getContractAt(
-      name: "PhiObject",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.PhiObject>;
     getContractAt(
       name: "PhiRegistry",
       address: string,

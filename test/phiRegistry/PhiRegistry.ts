@@ -4,10 +4,10 @@ import type { Artifact } from "hardhat/types";
 
 import { ENSRegistry } from "../../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
 import { PhiMap } from "../../src/types/contracts/PhiMap";
-import { PhiObject } from "../../src/types/contracts/PhiObject";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import { shouldBehaveCreatePhiland } from "./PhiRegistry.behavior";
 

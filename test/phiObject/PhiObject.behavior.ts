@@ -14,10 +14,10 @@ export function shouldBehaveSetbaseMetadataURI(): void {
   });
 }
 
-export function shouldBehaveSetTokenLink(): void {
-  it("should Set TokenLink", async function () {
-    await this.phiObject.connect(this.signers.admin).setTokenLink(1, "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk");
-    expect(await this.phiObject.connect(this.signers.alice).getTokenLink(1)).to.equal(
+export function shouldBehaveSetTokenURI(): void {
+  it("should Set TokenURI", async function () {
+    await this.phiObject.connect(this.signers.admin).setTokenURI(1, "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk");
+    expect(await this.phiObject.connect(this.signers.alice).getTokenURI(1)).to.equal(
       "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk",
     );
     expect(await this.phiObject.connect(this.signers.alice).uri(1)).to.equal(

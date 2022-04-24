@@ -2,16 +2,15 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import { PhiObject } from "../../src/types/contracts/object/PhiObject";
+import { PaidObject } from "../../src/types/contracts/object/PaidObject";
 import { Signers } from "../types";
 import {
-  shouldBehaveMint,
+  shouldBehaveCreateObject,
   shouldBehaveSetMaxClaimed,
   shouldBehaveSetSize,
   shouldBehaveSetTokenURI,
   shouldBehaveSetbaseMetadataURI,
-  shouldInitToken,
-} from "./PhiObject.behavior";
+} from "./PaidObject.behavior";
 
 describe("Unit tests", function () {
   before(async function () {
@@ -21,19 +20,27 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    const paidObjectArtifact: Artifact = await artifacts.readArtifact("PaidObject");
+    this.paidObject = <PaidObject>await waffle.deployContract(this.signers.admin, paidObjectArtifact, []);
   });
 
-  describe("PhiObject", function () {
+  describe("PaidObject", function () {
     beforeEach(async function () {
-      const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-      this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
-      await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 1, 1, "0x");
+      await this.paidObject
+        .connect(this.signers.admin)
+        .createObject(
+          1,
+          "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+          { x: 1, y: 1, z: 2 },
+          this.signers.bob.address,
+          200,
+          1,
+        );
     });
     shouldBehaveSetbaseMetadataURI();
     shouldBehaveSetMaxClaimed();
     shouldBehaveSetTokenURI();
     shouldBehaveSetSize();
-    shouldBehaveMint();
-    shouldInitToken();
+    shouldBehaveCreateObject();
   });
 });
