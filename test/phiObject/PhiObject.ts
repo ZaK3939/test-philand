@@ -5,7 +5,6 @@ import type { Artifact } from "hardhat/types";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import {
-  shouldBehaveMint,
   shouldBehaveSetMaxClaimed,
   shouldBehaveSetSize,
   shouldBehaveSetTokenURI,
@@ -13,7 +12,7 @@ import {
   shouldInitToken,
 } from "./PhiObject.behavior";
 
-describe("Unit tests", function () {
+describe("Unit tests PhiObject", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -21,19 +20,34 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.treasury = signers[3];
+
+    const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
+    this.phiObject = <PhiObject>(
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+    );
+    await this.phiObject
+      .connect(this.signers.admin)
+      .createObject(
+        1,
+        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+        { x: 1, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
   });
 
   describe("PhiObject", function () {
-    beforeEach(async function () {
-      const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-      this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
-      await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 1, 1, "0x");
-    });
+    // beforeEach(async function () {
+    //   const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
+    //   this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address,5]);
+    //   await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
+    // });
     shouldBehaveSetbaseMetadataURI();
     shouldBehaveSetMaxClaimed();
     shouldBehaveSetTokenURI();
     shouldBehaveSetSize();
-    shouldBehaveMint();
     shouldInitToken();
   });
 });

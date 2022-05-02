@@ -21,4 +21,5 @@ export interface Signers {
   admin: SignerWithAddress;
   alice: SignerWithAddress;
   bob: SignerWithAddress;
+  treasury: SignerWithAddress;
 }

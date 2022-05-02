@@ -41,9 +41,9 @@ export declare namespace IPhiObject {
 export interface IPhiObjectInterface extends utils.Interface {
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
+    "getPhiObject(address,uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
-    "mintObject(address,uint256,uint256,bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
   };
@@ -51,15 +51,19 @@ export interface IPhiObjectInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "balanceOf"
+      | "getPhiObject"
       | "getSize"
       | "mintBatchObject"
-      | "mintObject"
       | "safeTransferFrom"
       | "setOwner"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "balanceOf",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPhiObject",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -71,22 +75,21 @@ export interface IPhiObjectInterface extends utils.Interface {
     values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintObject",
-    values: [string, BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getPhiObject",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getSize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mintBatchObject",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "mintObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -129,6 +132,12 @@ export interface IPhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -138,14 +147,6 @@ export interface IPhiObject extends BaseContract {
       to: string,
       ids: BigNumberish[],
       amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -171,6 +172,12 @@ export interface IPhiObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getPhiObject(
+    to: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getSize(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -180,14 +187,6 @@ export interface IPhiObject extends BaseContract {
     to: string,
     ids: BigNumberish[],
     amounts: BigNumberish[],
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintObject(
-    to: string,
-    id: BigNumberish,
-    amount: BigNumberish,
     data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -213,6 +212,12 @@ export interface IPhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -222,14 +227,6 @@ export interface IPhiObject extends BaseContract {
       to: string,
       ids: BigNumberish[],
       amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -255,6 +252,12 @@ export interface IPhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -264,14 +267,6 @@ export interface IPhiObject extends BaseContract {
       to: string,
       ids: BigNumberish[],
       amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -298,6 +293,12 @@ export interface IPhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -307,14 +308,6 @@ export interface IPhiObject extends BaseContract {
       to: string,
       ids: BigNumberish[],
       amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

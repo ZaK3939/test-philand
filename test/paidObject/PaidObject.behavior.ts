@@ -46,7 +46,7 @@ export function shouldBehaveCreateObject(): void {
         { x: 1, y: 2, z: 3 },
         this.signers.bob.address,
         200,
-        1,
+        10,
       );
     expect(await this.paidObject.connect(this.signers.alice).getMaxClaimed(0)).to.equal(200);
     expect(await this.paidObject.connect(this.signers.alice).uri(0)).to.equal(

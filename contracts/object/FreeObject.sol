@@ -6,7 +6,10 @@ import { MultiOwner } from "../utils/MultiOwner.sol";
 
 // FreeObjects smart contract inherits ERC1155 interface
 contract FreeObject is ERC1155Supply, MultiOwner {
+    string public name;
+    string public symbol;
     string public baseMetadataURI;
+    uint256 public royalityFee;
     address payable private treasuryAddress;
 
     struct Size {
@@ -15,7 +18,7 @@ contract FreeObject is ERC1155Supply, MultiOwner {
         uint8 z;
     }
 
-    // define crypto boy struct
+    // define struct
     struct FreeObjects {
         string tokenURI;
         Size size;
@@ -23,16 +26,23 @@ contract FreeObject is ERC1155Supply, MultiOwner {
         bool forSale;
     }
 
-    // map cryptoboy's token id to Objects
+    // map token id to Objects
     mapping(uint256 => FreeObjects) public allObjects;
+    mapping(uint256 => bool) public created;
 
+    event Sale(address from, address to, uint256 value);
+
+    error InvalidTokenID();
     error ExistentToken();
     error NonExistentToken();
     error NoSetTokenSize();
 
     // initialize contract while deployment with contract's collection name and token
-    constructor() ERC1155("") {
+    constructor(uint256 _royalityFee) ERC1155("") {
+        name = "FreeObjects";
+        symbol = "FOS";
         baseMetadataURI = "https://www.arweave.net/";
+        royalityFee = _royalityFee;
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -79,7 +89,28 @@ contract FreeObject is ERC1155Supply, MultiOwner {
         allObjects[tokenId].creator = _creator;
     }
 
-    // mint a new crypto boy
+    function setRoyalityFee(uint256 _royalityFee) public onlyOwner {
+        royalityFee = _royalityFee;
+    }
+
+    function setTreasuryAddress(address payable _treasuryAddress) public onlyOwner {
+        treasuryAddress = _treasuryAddress;
+    }
+
+    function initObject(
+        uint256 tokenId,
+        string memory _uri,
+        Size calldata _size,
+        address payable _creator
+    ) external onlyOwner {
+        if (!exists(tokenId)) revert NonExistentToken();
+        setTokenURI(tokenId, _uri);
+        setSize(tokenId, _size);
+        setCreator(tokenId, _creator);
+        created[tokenId] = true;
+    }
+
+    // mint a Object
     function createObject(
         uint256 tokenId,
         string memory _uri,
@@ -92,15 +123,43 @@ contract FreeObject is ERC1155Supply, MultiOwner {
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
+        created[tokenId] = true;
     }
 
     // by a token by passing in the token's id
     function getFreeObject(uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-        // check if the token id of the token being bought exists or not
-        if (!exists(tokenId)) revert NonExistentToken();
+
+        if (!created[tokenId]) revert InvalidTokenID();
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public override {
+        _payLoyalty(from, to, id);
+        super.safeTransferFrom(from, to, id, amount, data);
+    }
+
+    function _payLoyalty(
+        address from,
+        address to,
+        uint256 id
+    ) internal {
+        if (msg.value > 0) {
+            uint256 royality = ((msg.value * royalityFee) / 100);
+            (bool success1, ) = payable(allObjects[id].creator).call{ value: royality }("");
+            require(success1);
+
+            (bool success2, ) = payable(from).call{ value: msg.value - royality }("");
+            require(success2);
+            emit Sale(from, to, msg.value);
+        }
     }
 }

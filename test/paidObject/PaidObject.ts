@@ -12,7 +12,7 @@ import {
   shouldBehaveSetbaseMetadataURI,
 } from "./PaidObject.behavior";
 
-describe("Unit tests", function () {
+describe("Unit tests PaidObject", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -20,23 +20,28 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.treasury = signers[3];
+
     const paidObjectArtifact: Artifact = await artifacts.readArtifact("PaidObject");
-    this.paidObject = <PaidObject>await waffle.deployContract(this.signers.admin, paidObjectArtifact, []);
+    this.paidObject = <PaidObject>(
+      await waffle.deployContract(this.signers.admin, paidObjectArtifact, [this.signers.treasury.address, 1])
+    );
+    await this.paidObject
+      .connect(this.signers.admin)
+      .createObject(
+        1,
+        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+        { x: 1, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+        10,
+      );
   });
 
   describe("PaidObject", function () {
-    beforeEach(async function () {
-      await this.paidObject
-        .connect(this.signers.admin)
-        .createObject(
-          1,
-          "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
-          { x: 1, y: 1, z: 2 },
-          this.signers.bob.address,
-          200,
-          1,
-        );
-    });
+    // beforeEach(async function () {
+
+    // });
     shouldBehaveSetbaseMetadataURI();
     shouldBehaveSetMaxClaimed();
     shouldBehaveSetTokenURI();

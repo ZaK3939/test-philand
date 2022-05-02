@@ -14,7 +14,7 @@ contract SoulObject is ERC1155Supply, MultiOwner {
         uint8 z;
     }
 
-    // define crypto boy struct
+    // define  struct
     struct SoulObjects {
         string tokenURI;
         Size size;
@@ -23,7 +23,7 @@ contract SoulObject is ERC1155Supply, MultiOwner {
         bool forSale;
     }
 
-    // map cryptoboy's token id to Objects
+    // map token id to Objects
     mapping(uint256 => SoulObjects) public allObjects;
 
     error ExistentToken();

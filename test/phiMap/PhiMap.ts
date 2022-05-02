@@ -25,7 +25,7 @@ const namehash = require("@ensdomains/eth-ens-namehash");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sha3 = require("web3-utils").sha3;
 
-describe("Unit tests", function () {
+describe("Unit tests PhiMap", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -33,6 +33,7 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.treasury = signers[3];
 
     const ENSRegistryArtifact: Artifact = await artifacts.readArtifact("ENSRegistry");
     this.ensRegistry = <ENSRegistry>await waffle.deployContract(this.signers.admin, ENSRegistryArtifact, []);
@@ -60,7 +61,9 @@ describe("Unit tests", function () {
     await this.testResolver.setAddr(namehash.hash("test.eth"), this.signers.alice.address);
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-    this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
+    this.phiObject = <PhiObject>(
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+    );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
     this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);
@@ -72,14 +75,20 @@ describe("Unit tests", function () {
         this.phiMap.address,
       ])
     );
-
-    await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
     await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
-    await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 0, 1, "0x");
+
+    await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
     await this.phiObject
       .connect(this.signers.admin)
-      .initToken(0, 200, "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk", { x: 1, y: 2, z: 3 });
+      .createObject(
+        1,
+        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+        { x: 1, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
 
