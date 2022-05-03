@@ -16,7 +16,7 @@ const namehash = require("@ensdomains/eth-ens-namehash");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sha3 = require("web3-utils").sha3;
 
-describe("Unit tests", function () {
+describe("Unit tests PhiRegistry", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -24,6 +24,8 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.carol = signers[3];
+    this.signers.treasury = signers[4];
 
     const ENSRegistryArtifact: Artifact = await artifacts.readArtifact("ENSRegistry");
     this.ensRegistry = <ENSRegistry>await waffle.deployContract(this.signers.admin, ENSRegistryArtifact, []);
@@ -48,7 +50,9 @@ describe("Unit tests", function () {
     await this.testResolver.setAddr(namehash.hash("zak3939.eth"), this.signers.alice.address);
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-    this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
+    this.phiObject = <PhiObject>(
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+    );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
     this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);

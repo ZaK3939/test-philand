@@ -19,6 +19,8 @@ export type { ENSRegistry } from "./@ensdomains/ens-contracts/contracts/registry
 export { ENSRegistry__factory } from "./factories/@ensdomains/ens-contracts/contracts/registry/ENSRegistry__factory";
 export type { Ownable } from "./@openzeppelin/contracts/access/Ownable";
 export { Ownable__factory } from "./factories/@openzeppelin/contracts/access/Ownable__factory";
+export type { IERC2981 } from "./@openzeppelin/contracts/interfaces/IERC2981";
+export { IERC2981__factory } from "./factories/@openzeppelin/contracts/interfaces/IERC2981__factory";
 export type { ERC1155 } from "./@openzeppelin/contracts/token/ERC1155/ERC1155";
 export { ERC1155__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/ERC1155__factory";
 export type { ERC1155Supply } from "./@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply";

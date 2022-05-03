@@ -52,25 +52,32 @@ export interface PaidObjectInterface extends utils.Interface {
     "buyObject(uint256)": FunctionFragment;
     "changeTokenPrice(uint256,uint256)": FunctionFragment;
     "createObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
+    "created(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "getTokenURI(uint256)": FunctionFragment;
+    "initObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
+    "royalityFee()": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
+    "setRoyalityFee(uint256)": FunctionFragment;
     "setSize(uint256,(uint8,uint8,uint8))": FunctionFragment;
     "setTokenURI(uint256,string)": FunctionFragment;
+    "setTreasuryAddress(address)": FunctionFragment;
     "setbaseMetadataURI(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
+    "symbol()": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
   };
@@ -84,25 +91,32 @@ export interface PaidObjectInterface extends utils.Interface {
       | "buyObject"
       | "changeTokenPrice"
       | "createObject"
+      | "created"
       | "exists"
       | "getBaseMetadataURI"
       | "getCreator"
       | "getMaxClaimed"
       | "getSize"
       | "getTokenURI"
+      | "initObject"
       | "isApprovedForAll"
+      | "name"
       | "owner"
       | "removeOwner"
+      | "royalityFee"
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
       | "setApprovalForAll"
       | "setCreator"
       | "setMaxClaimed"
       | "setOwner"
+      | "setRoyalityFee"
       | "setSize"
       | "setTokenURI"
+      | "setTreasuryAddress"
       | "setbaseMetadataURI"
       | "supportsInterface"
+      | "symbol"
       | "totalSupply"
       | "uri"
   ): FunctionFragment;
@@ -143,6 +157,10 @@ export interface PaidObjectInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "created",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "exists",
     values: [BigNumberish]
   ): string;
@@ -167,11 +185,27 @@ export interface PaidObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "initObject",
+    values: [
+      BigNumberish,
+      string,
+      PaidObject.SizeStruct,
+      string,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "royalityFee",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -194,12 +228,20 @@ export interface PaidObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "setRoyalityFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setSize",
     values: [BigNumberish, PaidObject.SizeStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenURI",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTreasuryAddress",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setbaseMetadataURI",
@@ -209,6 +251,7 @@ export interface PaidObjectInterface extends utils.Interface {
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values: [BigNumberish]
@@ -234,6 +277,7 @@ export interface PaidObjectInterface extends utils.Interface {
     functionFragment: "createObject",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "created", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getBaseMetadataURI",
@@ -249,13 +293,19 @@ export interface PaidObjectInterface extends utils.Interface {
     functionFragment: "getTokenURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "royalityFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -276,9 +326,17 @@ export interface PaidObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setRoyalityFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setSize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTokenURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTreasuryAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -289,6 +347,7 @@ export interface PaidObjectInterface extends utils.Interface {
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -299,6 +358,7 @@ export interface PaidObjectInterface extends utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
+    "Sale(address,address,uint256)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
@@ -307,6 +367,7 @@ export interface PaidObjectInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Sale"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -347,6 +408,18 @@ export type OwnershipRemovedEvent = TypedEvent<
 
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
+
+export interface SaleEventObject {
+  from: string;
+  to: string;
+  value: BigNumber;
+}
+export type SaleEvent = TypedEvent<
+  [string, string, BigNumber],
+  SaleEventObject
+>;
+
+export type SaleEventFilter = TypedEventFilter<SaleEvent>;
 
 export interface TransferBatchEventObject {
   operator: string;
@@ -467,6 +540,8 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
@@ -491,11 +566,23 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    initObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: PaidObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      _price: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(
       targetAddress: string,
@@ -506,6 +593,8 @@ export interface PaidObject extends BaseContract {
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    royalityFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     safeBatchTransferFrom(
       from: string,
@@ -548,6 +637,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setSize(
       tokenId: BigNumberish,
       _size: PaidObject.SizeStruct,
@@ -560,6 +654,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setbaseMetadataURI(
       baseuri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -569,6 +668,8 @@ export interface PaidObject extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(
       id: BigNumberish,
@@ -634,6 +735,8 @@ export interface PaidObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  created(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
   exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
@@ -655,11 +758,23 @@ export interface PaidObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  initObject(
+    tokenId: BigNumberish,
+    _uri: string,
+    _size: PaidObject.SizeStruct,
+    _creator: string,
+    _maxClaimed: BigNumberish,
+    _price: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedForAll(
     account: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  name(overrides?: CallOverrides): Promise<string>;
 
   owner(
     targetAddress: string,
@@ -670,6 +785,8 @@ export interface PaidObject extends BaseContract {
     oldOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   safeBatchTransferFrom(
     from: string,
@@ -712,6 +829,11 @@ export interface PaidObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setRoyalityFee(
+    _royalityFee: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setSize(
     tokenId: BigNumberish,
     _size: PaidObject.SizeStruct,
@@ -724,6 +846,11 @@ export interface PaidObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setTreasuryAddress(
+    _treasuryAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setbaseMetadataURI(
     baseuri: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -733,6 +860,8 @@ export interface PaidObject extends BaseContract {
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -792,6 +921,8 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
@@ -816,15 +947,29 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    initObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: PaidObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      _price: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    name(overrides?: CallOverrides): Promise<string>;
+
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
+
+    royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     safeBatchTransferFrom(
       from: string,
@@ -864,6 +1009,11 @@ export interface PaidObject extends BaseContract {
 
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setSize(
       tokenId: BigNumberish,
       _size: PaidObject.SizeStruct,
@@ -876,6 +1026,11 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setbaseMetadataURI(
       baseuri: string,
       overrides?: CallOverrides
@@ -885,6 +1040,8 @@ export interface PaidObject extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(
       id: BigNumberish,
@@ -923,6 +1080,13 @@ export interface PaidObject extends BaseContract {
       operator?: string | null,
       target?: string | null
     ): OwnershipRemovedEventFilter;
+
+    "Sale(address,address,uint256)"(
+      from?: null,
+      to?: null,
+      value?: null
+    ): SaleEventFilter;
+    Sale(from?: null, to?: null, value?: null): SaleEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -1002,6 +1166,8 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1026,11 +1192,23 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: PaidObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      _price: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(
       targetAddress: string,
@@ -1041,6 +1219,8 @@ export interface PaidObject extends BaseContract {
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     safeBatchTransferFrom(
       from: string,
@@ -1083,6 +1263,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setSize(
       tokenId: BigNumberish,
       _size: PaidObject.SizeStruct,
@@ -1095,6 +1280,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setbaseMetadataURI(
       baseuri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1104,6 +1294,8 @@ export interface PaidObject extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(
       id: BigNumberish,
@@ -1154,6 +1346,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    created(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     exists(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -1183,11 +1380,23 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    initObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: PaidObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      _price: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       account: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(
       targetAddress: string,
@@ -1198,6 +1407,8 @@ export interface PaidObject extends BaseContract {
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    royalityFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     safeBatchTransferFrom(
       from: string,
@@ -1240,6 +1451,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setSize(
       tokenId: BigNumberish,
       _size: PaidObject.SizeStruct,
@@ -1252,6 +1468,11 @@ export interface PaidObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setbaseMetadataURI(
       baseuri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1261,6 +1482,8 @@ export interface PaidObject extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(
       id: BigNumberish,

@@ -26,14 +26,6 @@ export function shouldBehaveSetTokenURI(): void {
   });
 }
 
-export function shouldBehaveMint(): void {
-  it("should mint id=1 once admin calls", async function () {
-    await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 2, 1, "0x");
-    expect(await this.phiObject.connect(this.signers.alice).balanceOf(this.signers.alice.address, 2)).to.equal(1);
-    expect(await this.phiObject.connect(this.signers.alice).totalSupply(1)).to.equal(1);
-  });
-}
-
 export function shouldBehaveSetSize(): void {
   it("should return the new size once it's changed", async function () {
     await this.phiObject.connect(this.signers.admin).setSize(1, { x: 1, y: 2, z: 3 });
@@ -48,7 +40,13 @@ export function shouldInitToken(): void {
   it("should set token settings", async function () {
     await this.phiObject
       .connect(this.signers.admin)
-      .initToken(1, 200, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 2, z: 3 });
+      .initObject(
+        1,
+        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+        { x: 1, y: 2, z: 3 },
+        this.signers.bob.address,
+        200,
+      );
     expect(await this.phiObject.connect(this.signers.alice).getMaxClaimed(1)).to.equal(200);
     expect(await this.phiObject.connect(this.signers.alice).uri(1)).to.equal(
       "https://www.arweave.net/FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",

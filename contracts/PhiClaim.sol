@@ -91,7 +91,7 @@ contract PhiClaim is MultiOwner {
         }
         claimedLists[msg.sender][tokenId] = true;
         emit LogClaimObject(msg.sender, tokenId);
-        _object.mintObject(msg.sender, tokenId, 1, "");
+        _object.getPhiObject(msg.sender, tokenId);
     }
 
     /*

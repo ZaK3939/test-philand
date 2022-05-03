@@ -46,7 +46,7 @@ export function shouldBehaveCreateObject(): void {
         { x: 1, y: 2, z: 3 },
         this.signers.bob.address,
         200,
-        1,
+        10,
       );
     expect(await this.paidObject.connect(this.signers.alice).getMaxClaimed(0)).to.equal(200);
     expect(await this.paidObject.connect(this.signers.alice).uri(0)).to.equal(
@@ -55,6 +55,13 @@ export function shouldBehaveCreateObject(): void {
     const size = await this.paidObject.connect(this.signers.admin).getSize(0);
     expect(size.x).to.equal(1);
     expect(size.y).to.equal(2);
+    expect(size.z).to.equal(3);
+  });
+}
+
+export function shouldBehaveSafeTransferFrom(): void {
+  it("should createObject", async function () {
+    await this.paidObject.connect(this.signers.alice).safeTransferFrom();
     expect(size.z).to.equal(3);
   });
 }
