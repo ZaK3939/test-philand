@@ -24,7 +24,8 @@ describe("Unit tests PhiRegistry", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
-    this.signers.treasury = signers[3];
+    this.signers.carol = signers[3];
+    this.signers.treasury = signers[4];
 
     const ENSRegistryArtifact: Artifact = await artifacts.readArtifact("ENSRegistry");
     this.ensRegistry = <ENSRegistry>await waffle.deployContract(this.signers.admin, ENSRegistryArtifact, []);

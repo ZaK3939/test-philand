@@ -38,10 +38,11 @@ contract FreeObject is ERC1155Supply, MultiOwner {
     error NoSetTokenSize();
 
     // initialize contract while deployment with contract's collection name and token
-    constructor(uint256 _royalityFee) ERC1155("") {
+    constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
         name = "FreeObjects";
         symbol = "FOS";
         baseMetadataURI = "https://www.arweave.net/";
+        treasuryAddress = _treasuryAddress;
         royalityFee = _royalityFee;
     }
 

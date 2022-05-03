@@ -58,3 +58,10 @@ export function shouldBehaveCreateObject(): void {
     expect(size.z).to.equal(3);
   });
 }
+
+export function shouldBehaveSafeTransferFrom(): void {
+  it("should createObject", async function () {
+    await this.paidObject.connect(this.signers.alice).safeTransferFrom();
+    expect(size.z).to.equal(3);
+  });
+}

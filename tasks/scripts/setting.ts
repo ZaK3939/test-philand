@@ -1,6 +1,10 @@
+import { readFileSync } from "fs";
 import hre from "hardhat";
 
 import { getAddress } from "../deploy/utils";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const CSV = require("comma-separated-values");
 
 settingPhi()
   .then(() => console.log("Successfully invoked"))
@@ -48,13 +52,43 @@ export async function settingPhi(): Promise<void> {
   const phiObjectContractInstance = await phiObjectContractFactory.attach(phiObjectAddress);
   const soulObjectContractInstance = await soulObjectContractFactory.attach(soulObjectAddress);
 
+  const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
+    encoding: "utf8",
+  });
+  const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
   funcName = "setCouponType";
-  calldata = ["lootbalance", 1];
-  res = await phiClaimContractInstance[funcName](...calldata);
-  console.log("phiClaim setCouponType Response:", res);
+  for (let i = 0; i < conditionRowList.length; i++) {
+    calldata = [
+      String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
+      String(conditionRowList[i].TokenId),
+    ];
+    console.log(calldata);
+    res = await phiClaimContractInstance[funcName](...calldata);
+    console.log("phiClaim setCouponType Response:", res);
+  }
+
+  const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
+    encoding: "utf8",
+  });
+  const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
+  funcName = "createObject";
+  for (let i = 0; i < objectRowList.length; i++) {
+    const size = String(objectRowList[i].size);
+    calldata = [
+      String(objectRowList[i].tokenId),
+      String(objectRowList[i].json_url),
+      { x: size[1], y: size[3], z: "1" },
+      l1Signer.address,
+      String(objectRowList[i].maxClaimed),
+    ];
+    console.log(calldata);
+    res = await phiObjectContractInstance[funcName](...calldata);
+    console.log("create Object Response:", res);
+  }
 
   funcName = "createObject";
   calldata = [0, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, l1Signer.address, 200, 1];
+  console.log(calldata);
   res = await paidObjectContractInstance[funcName](...calldata);
   console.log("create Object Response:", res);
 

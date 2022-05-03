@@ -142,10 +142,10 @@ contract PaidObject is ERC1155Supply, MultiOwner {
         // check if thic fucntion caller is not an zero address account
         require(msg.sender != address(0));
         if (exists(tokenId)) revert ExistentToken();
-        setMaxClaimed(tokenId, _maxClaimed);
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
+        setMaxClaimed(tokenId, _maxClaimed);
         changeTokenPrice(tokenId, _price);
         allObjects[tokenId].forSale = false;
         created[tokenId] = true;
@@ -189,11 +189,11 @@ contract PaidObject is ERC1155Supply, MultiOwner {
         uint256 amount,
         bytes memory data
     ) public override {
-        _payLoyalty(from, to, id);
+        _payRoyalty(from, to, id);
         super.safeTransferFrom(from, to, id, amount, data);
     }
 
-    function _payLoyalty(
+    function _payRoyalty(
         address from,
         address to,
         uint256 id

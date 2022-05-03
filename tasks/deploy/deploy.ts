@@ -23,10 +23,10 @@ export async function deployPhi(): Promise<void> {
   console.log(`Deploying from:`);
   console.log(`\tl1: ${(await l1Signer.getAddress()).toString()}`);
 
-  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, []);
-  const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, []);
+  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, [l1Signer.address, 1]);
+  const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address, 1]);
   const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
-  const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, []);
+  const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address, 5]);
   const phiMap = await deployL1(NETWORK, "PhiMap", BLOCK_NUMBER, [phiObject.address]);
   const phiRegistry = await deployL1(NETWORK, "PhiRegistry", BLOCK_NUMBER, [ENS_ADDRESS, phiMap.address]);
   const phiClaim = await deployL1(NETWORK, "PhiClaim", BLOCK_NUMBER, [

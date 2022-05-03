@@ -144,15 +144,15 @@ contract PhiObject is ERC1155Supply, IERC2981, MultiOwner {
         string memory _uri,
         Size calldata _size,
         address payable _creator,
-        uint256 _newMaxClaimed
+        uint256 _maxClaimed
     ) external onlyOwner {
         // check if thic fucntion caller is not an zero address account
         require(msg.sender != address(0));
         if (exists(tokenId)) revert ExistentToken();
-        setMaxClaimed(tokenId, _newMaxClaimed);
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
+        setMaxClaimed(tokenId, _maxClaimed);
         created[tokenId] = true;
     }
 

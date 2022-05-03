@@ -514,7 +514,7 @@ export interface PhiObject extends BaseContract {
       _uri: string,
       _size: PhiObject.SizeStruct,
       _creator: string,
-      _newMaxClaimed: BigNumberish,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -709,7 +709,7 @@ export interface PhiObject extends BaseContract {
     _uri: string,
     _size: PhiObject.SizeStruct,
     _creator: string,
-    _newMaxClaimed: BigNumberish,
+    _maxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -898,7 +898,7 @@ export interface PhiObject extends BaseContract {
       _uri: string,
       _size: PhiObject.SizeStruct,
       _creator: string,
-      _newMaxClaimed: BigNumberish,
+      _maxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1152,7 +1152,7 @@ export interface PhiObject extends BaseContract {
       _uri: string,
       _size: PhiObject.SizeStruct,
       _creator: string,
-      _newMaxClaimed: BigNumberish,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1339,7 +1339,7 @@ export interface PhiObject extends BaseContract {
       _uri: string,
       _size: PhiObject.SizeStruct,
       _creator: string,
-      _newMaxClaimed: BigNumberish,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
