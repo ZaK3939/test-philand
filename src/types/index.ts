@@ -67,5 +67,7 @@ export type { PhiMap } from "./contracts/PhiMap";
 export { PhiMap__factory } from "./factories/contracts/PhiMap__factory";
 export type { PhiRegistry } from "./contracts/PhiRegistry";
 export { PhiRegistry__factory } from "./factories/contracts/PhiRegistry__factory";
+export type { BaseObject } from "./contracts/utils/BaseObject";
+export { BaseObject__factory } from "./factories/contracts/utils/BaseObject__factory";
 export type { MultiOwner } from "./contracts/utils/MultiOwner";
 export { MultiOwner__factory } from "./factories/contracts/utils/MultiOwner__factory";
