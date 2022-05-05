@@ -29,7 +29,7 @@ import type {
   utils,
 } from "ethers";
 
-export declare namespace PaidObject {
+export declare namespace BaseObject {
   export type SizeStruct = {
     x: BigNumberish;
     y: BigNumberish;
@@ -79,6 +79,7 @@ export interface PaidObjectInterface extends utils.Interface {
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
+    "treasuryAddress()": FunctionFragment;
     "uri(uint256)": FunctionFragment;
   };
 
@@ -118,6 +119,7 @@ export interface PaidObjectInterface extends utils.Interface {
       | "supportsInterface"
       | "symbol"
       | "totalSupply"
+      | "treasuryAddress"
       | "uri"
   ): FunctionFragment;
 
@@ -150,7 +152,7 @@ export interface PaidObjectInterface extends utils.Interface {
     values: [
       BigNumberish,
       string,
-      PaidObject.SizeStruct,
+      BaseObject.SizeStruct,
       string,
       BigNumberish,
       BigNumberish
@@ -189,7 +191,7 @@ export interface PaidObjectInterface extends utils.Interface {
     values: [
       BigNumberish,
       string,
-      PaidObject.SizeStruct,
+      BaseObject.SizeStruct,
       string,
       BigNumberish,
       BigNumberish
@@ -233,7 +235,7 @@ export interface PaidObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setSize",
-    values: [BigNumberish, PaidObject.SizeStruct]
+    values: [BigNumberish, BaseObject.SizeStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenURI",
@@ -255,6 +257,10 @@ export interface PaidObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "totalSupply",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "treasuryAddress",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
 
@@ -350,6 +356,10 @@ export interface PaidObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "treasuryAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
@@ -490,14 +500,14 @@ export interface PaidObject extends BaseContract {
     ): Promise<
       [
         string,
-        PaidObject.SizeStructOutput,
+        BaseObject.SizeStructOutput,
         string,
         BigNumber,
         BigNumber,
         boolean
       ] & {
         tokenURI: string;
-        size: PaidObject.SizeStructOutput;
+        size: BaseObject.SizeStructOutput;
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
@@ -533,7 +543,7 @@ export interface PaidObject extends BaseContract {
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -559,7 +569,7 @@ export interface PaidObject extends BaseContract {
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PaidObject.SizeStructOutput]>;
+    ): Promise<[BaseObject.SizeStructOutput]>;
 
     getTokenURI(
       tokenId: BigNumberish,
@@ -569,7 +579,7 @@ export interface PaidObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -644,7 +654,7 @@ export interface PaidObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -676,6 +686,8 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<[string]>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
 
@@ -685,14 +697,14 @@ export interface PaidObject extends BaseContract {
   ): Promise<
     [
       string,
-      PaidObject.SizeStructOutput,
+      BaseObject.SizeStructOutput,
       string,
       BigNumber,
       BigNumber,
       boolean
     ] & {
       tokenURI: string;
-      size: PaidObject.SizeStructOutput;
+      size: BaseObject.SizeStructOutput;
       creator: string;
       maxClaimed: BigNumber;
       price: BigNumber;
@@ -728,7 +740,7 @@ export interface PaidObject extends BaseContract {
   createObject(
     tokenId: BigNumberish,
     _uri: string,
-    _size: PaidObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     _creator: string,
     _maxClaimed: BigNumberish,
     _price: BigNumberish,
@@ -751,7 +763,7 @@ export interface PaidObject extends BaseContract {
   getSize(
     tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PaidObject.SizeStructOutput>;
+  ): Promise<BaseObject.SizeStructOutput>;
 
   getTokenURI(
     tokenId: BigNumberish,
@@ -761,7 +773,7 @@ export interface PaidObject extends BaseContract {
   initObject(
     tokenId: BigNumberish,
     _uri: string,
-    _size: PaidObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     _creator: string,
     _maxClaimed: BigNumberish,
     _price: BigNumberish,
@@ -836,7 +848,7 @@ export interface PaidObject extends BaseContract {
 
   setSize(
     tokenId: BigNumberish,
-    _size: PaidObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -865,6 +877,8 @@ export interface PaidObject extends BaseContract {
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+  treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -874,14 +888,14 @@ export interface PaidObject extends BaseContract {
     ): Promise<
       [
         string,
-        PaidObject.SizeStructOutput,
+        BaseObject.SizeStructOutput,
         string,
         BigNumber,
         BigNumber,
         boolean
       ] & {
         tokenURI: string;
-        size: PaidObject.SizeStructOutput;
+        size: BaseObject.SizeStructOutput;
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
@@ -914,7 +928,7 @@ export interface PaidObject extends BaseContract {
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -940,7 +954,7 @@ export interface PaidObject extends BaseContract {
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PaidObject.SizeStructOutput>;
+    ): Promise<BaseObject.SizeStructOutput>;
 
     getTokenURI(
       tokenId: BigNumberish,
@@ -950,7 +964,7 @@ export interface PaidObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -1016,7 +1030,7 @@ export interface PaidObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1047,6 +1061,8 @@ export interface PaidObject extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    treasuryAddress(overrides?: CallOverrides): Promise<string>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
@@ -1159,7 +1175,7 @@ export interface PaidObject extends BaseContract {
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -1195,7 +1211,7 @@ export interface PaidObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -1270,7 +1286,7 @@ export interface PaidObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1301,6 +1317,8 @@ export interface PaidObject extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    treasuryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -1339,7 +1357,7 @@ export interface PaidObject extends BaseContract {
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -1383,7 +1401,7 @@ export interface PaidObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       _price: BigNumberish,
@@ -1458,7 +1476,7 @@ export interface PaidObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PaidObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1489,6 +1507,8 @@ export interface PaidObject extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    treasuryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     uri(
       tokenId: BigNumberish,

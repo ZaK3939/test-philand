@@ -121,6 +121,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiRegistry__factory>;
     getContractFactory(
+      name: "BaseObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BaseObject__factory>;
+    getContractFactory(
       name: "MultiOwner",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MultiOwner__factory>;
@@ -260,6 +264,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiRegistry>;
+    getContractAt(
+      name: "BaseObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BaseObject>;
     getContractAt(
       name: "MultiOwner",
       address: string,

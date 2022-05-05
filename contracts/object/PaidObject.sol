@@ -3,42 +3,10 @@ pragma solidity >=0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import { MultiOwner } from "../utils/MultiOwner.sol";
+import { BaseObject } from "../utils/BaseObject.sol";
 
 // PaidObjects smart contract inherits ERC1155 interface
-contract PaidObject is ERC1155Supply, MultiOwner {
-    string public name;
-    string public symbol;
-    string public baseMetadataURI;
-    uint256 public royalityFee;
-    address payable private treasuryAddress;
-
-    struct Size {
-        uint8 x;
-        uint8 y;
-        uint8 z;
-    }
-
-    // define object struct
-    struct PaidObjects {
-        string tokenURI;
-        Size size;
-        address payable creator;
-        uint256 maxClaimed;
-        uint256 price;
-        bool forSale;
-    }
-
-    // map token id to Objects
-    mapping(uint256 => PaidObjects) public allObjects;
-    mapping(uint256 => bool) public created;
-
-    event Sale(address from, address to, uint256 value);
-
-    error InvalidTokenID();
-    error ExistentToken();
-    error NonExistentToken();
-    error NoSetTokenSize();
-
+contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
     // initialize contract while deployment with contract's collection name and token
     constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
         name = "PaidObjects";
@@ -52,72 +20,10 @@ contract PaidObject is ERC1155Supply, MultiOwner {
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
     }
 
-    function getBaseMetadataURI() public view returns (string memory) {
-        return baseMetadataURI;
-    }
-
-    function setbaseMetadataURI(string memory baseuri) external onlyOwner {
-        baseMetadataURI = baseuri;
-    }
-
-    /**
-     * @dev Returns the maxClaimed
-     */
-    function getMaxClaimed(uint256 tokenId) public view virtual returns (uint256) {
-        return allObjects[tokenId].maxClaimed;
-    }
-
-    /**
-     * @dev Set the new maxClaimed
-     */
-    function setMaxClaimed(uint256 tokenId, uint256 newMaxClaimed) public virtual onlyOwner {
-        allObjects[tokenId].maxClaimed = newMaxClaimed;
-    }
-
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        return allObjects[tokenId].tokenURI;
-    }
-
-    function setTokenURI(uint256 tokenId, string memory _uri) public virtual onlyOwner {
-        allObjects[tokenId].tokenURI = _uri;
-    }
-
-    function getSize(uint256 tokenId) public view returns (Size memory) {
-        if (allObjects[tokenId].size.x == 0) revert NoSetTokenSize();
-        return allObjects[tokenId].size;
-    }
-
-    function setSize(uint256 tokenId, Size calldata _size) public virtual onlyOwner {
-        allObjects[tokenId].size = _size;
-    }
-
-    function getCreator(uint256 tokenId) public view returns (address payable) {
-        return allObjects[tokenId].creator;
-    }
-
-    function setCreator(uint256 tokenId, address payable _creator) public virtual onlyOwner {
-        allObjects[tokenId].creator = _creator;
-    }
-
-    function changeTokenPrice(uint256 tokenId, uint256 _newPrice) public onlyOwner {
-        // require caller of the function is not an empty address
-        require(msg.sender != address(0));
-        // update token's price with new price
-        allObjects[tokenId].price = _newPrice;
-    }
-
-    function setRoyalityFee(uint256 _royalityFee) public onlyOwner {
-        royalityFee = _royalityFee;
-    }
-
-    function setTreasuryAddress(address payable _treasuryAddress) public onlyOwner {
-        treasuryAddress = _treasuryAddress;
-    }
-
     function initObject(
         uint256 tokenId,
         string memory _uri,
-        Size calldata _size,
+        BaseObject.Size calldata _size,
         address payable _creator,
         uint256 _maxClaimed,
         uint256 _price
@@ -134,7 +40,7 @@ contract PaidObject is ERC1155Supply, MultiOwner {
     function createObject(
         uint256 tokenId,
         string memory _uri,
-        Size calldata _size,
+        BaseObject.Size calldata _size,
         address payable _creator,
         uint256 _maxClaimed,
         uint256 _price

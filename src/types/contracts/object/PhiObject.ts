@@ -29,7 +29,7 @@ import type {
   utils,
 } from "ethers";
 
-export declare namespace PhiObject {
+export declare namespace BaseObject {
   export type SizeStruct = {
     x: BigNumberish;
     y: BigNumberish;
@@ -49,6 +49,7 @@ export interface PhiObjectInterface extends utils.Interface {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
+    "changeTokenPrice(uint256,uint256)": FunctionFragment;
     "createObject(uint256,string,(uint8,uint8,uint8),address,uint256)": FunctionFragment;
     "created(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
@@ -80,6 +81,7 @@ export interface PhiObjectInterface extends utils.Interface {
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
+    "treasuryAddress()": FunctionFragment;
     "uri(uint256)": FunctionFragment;
   };
 
@@ -89,6 +91,7 @@ export interface PhiObjectInterface extends utils.Interface {
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
+      | "changeTokenPrice"
       | "createObject"
       | "created"
       | "exists"
@@ -120,6 +123,7 @@ export interface PhiObjectInterface extends utils.Interface {
       | "supportsInterface"
       | "symbol"
       | "totalSupply"
+      | "treasuryAddress"
       | "uri"
   ): FunctionFragment;
 
@@ -140,8 +144,12 @@ export interface PhiObjectInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "changeTokenPrice",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "createObject",
-    values: [BigNumberish, string, PhiObject.SizeStruct, string, BigNumberish]
+    values: [BigNumberish, string, BaseObject.SizeStruct, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "created",
@@ -177,7 +185,7 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initObject",
-    values: [BigNumberish, string, PhiObject.SizeStruct, string, BigNumberish]
+    values: [BigNumberish, string, BaseObject.SizeStruct, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -225,7 +233,7 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setSize",
-    values: [BigNumberish, PhiObject.SizeStruct]
+    values: [BigNumberish, BaseObject.SizeStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenURI",
@@ -248,6 +256,10 @@ export interface PhiObjectInterface extends utils.Interface {
     functionFragment: "totalSupply",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "treasuryAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "allObjects", data: BytesLike): Result;
@@ -258,6 +270,10 @@ export interface PhiObjectInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "baseMetadataURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeTokenPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -349,6 +365,10 @@ export interface PhiObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "treasuryAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
@@ -487,11 +507,20 @@ export interface PhiObject extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, PhiObject.SizeStructOutput, string, BigNumber] & {
+      [
+        string,
+        BaseObject.SizeStructOutput,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
         tokenURI: string;
-        size: PhiObject.SizeStructOutput;
+        size: BaseObject.SizeStructOutput;
         creator: string;
         maxClaimed: BigNumber;
+        price: BigNumber;
+        forSale: boolean;
       }
     >;
 
@@ -509,10 +538,16 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -543,7 +578,7 @@ export interface PhiObject extends BaseContract {
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PhiObject.SizeStructOutput]>;
+    ): Promise<[BaseObject.SizeStructOutput]>;
 
     getTokenURI(
       tokenId: BigNumberish,
@@ -553,7 +588,7 @@ export interface PhiObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -643,7 +678,7 @@ export interface PhiObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -675,6 +710,8 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<[string]>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
   };
 
@@ -682,11 +719,20 @@ export interface PhiObject extends BaseContract {
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [string, PhiObject.SizeStructOutput, string, BigNumber] & {
+    [
+      string,
+      BaseObject.SizeStructOutput,
+      string,
+      BigNumber,
+      BigNumber,
+      boolean
+    ] & {
       tokenURI: string;
-      size: PhiObject.SizeStructOutput;
+      size: BaseObject.SizeStructOutput;
       creator: string;
       maxClaimed: BigNumber;
+      price: BigNumber;
+      forSale: boolean;
     }
   >;
 
@@ -704,10 +750,16 @@ export interface PhiObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+  changeTokenPrice(
+    tokenId: BigNumberish,
+    _newPrice: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   createObject(
     tokenId: BigNumberish,
     _uri: string,
-    _size: PhiObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     _creator: string,
     _maxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -735,7 +787,7 @@ export interface PhiObject extends BaseContract {
   getSize(
     tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PhiObject.SizeStructOutput>;
+  ): Promise<BaseObject.SizeStructOutput>;
 
   getTokenURI(
     tokenId: BigNumberish,
@@ -745,7 +797,7 @@ export interface PhiObject extends BaseContract {
   initObject(
     tokenId: BigNumberish,
     _uri: string,
-    _size: PhiObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     _creator: string,
     _maxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -835,7 +887,7 @@ export interface PhiObject extends BaseContract {
 
   setSize(
     tokenId: BigNumberish,
-    _size: PhiObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -864,6 +916,8 @@ export interface PhiObject extends BaseContract {
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+  treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
@@ -871,11 +925,20 @@ export interface PhiObject extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, PhiObject.SizeStructOutput, string, BigNumber] & {
+      [
+        string,
+        BaseObject.SizeStructOutput,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
         tokenURI: string;
-        size: PhiObject.SizeStructOutput;
+        size: BaseObject.SizeStructOutput;
         creator: string;
         maxClaimed: BigNumber;
+        price: BigNumber;
+        forSale: boolean;
       }
     >;
 
@@ -893,10 +956,16 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: CallOverrides
@@ -927,7 +996,7 @@ export interface PhiObject extends BaseContract {
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PhiObject.SizeStructOutput>;
+    ): Promise<BaseObject.SizeStructOutput>;
 
     getTokenURI(
       tokenId: BigNumberish,
@@ -937,7 +1006,7 @@ export interface PhiObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: CallOverrides
@@ -1018,7 +1087,7 @@ export interface PhiObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1049,6 +1118,8 @@ export interface PhiObject extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    treasuryAddress(overrides?: CallOverrides): Promise<string>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
   };
@@ -1147,10 +1218,16 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1191,7 +1268,7 @@ export interface PhiObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1279,7 +1356,7 @@ export interface PhiObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1311,6 +1388,8 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
@@ -1334,10 +1413,16 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     createObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1386,7 +1471,7 @@ export interface PhiObject extends BaseContract {
     initObject(
       tokenId: BigNumberish,
       _uri: string,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       _creator: string,
       _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1474,7 +1559,7 @@ export interface PhiObject extends BaseContract {
 
     setSize(
       tokenId: BigNumberish,
-      _size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1505,6 +1590,8 @@ export interface PhiObject extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    treasuryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     uri(
       tokenId: BigNumberish,
