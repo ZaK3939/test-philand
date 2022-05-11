@@ -33,24 +33,26 @@ export async function settingPhi(): Promise<void> {
   const phiClaimAbiName = "PhiClaim";
   const phiMapAbiName = "PhiMap";
   const paidObjectAbiName = "PaidObject";
-  const soulObjectAbiName = "SoulObject";
   const phiObjectAbiName = "PhiObject";
+  const freeObjectAbiName = "FreeObject";
 
   const phiClaimAddress = getAddress(phiClaimAbiName, NETWORK);
-  const phiObjectAddress = getAddress(phiObjectAbiName, NETWORK);
   const phiMapAddress = getAddress(phiMapAbiName, NETWORK);
   const paidObjectAddress = getAddress(paidObjectAbiName, NETWORK);
-  const soulObjectAddress = getAddress(soulObjectAbiName, NETWORK);
+  const phiObjectAddress = getAddress(phiObjectAbiName, NETWORK);
+  const freeObjectAddress = getAddress(freeObjectAbiName, NETWORK);
 
   const phiClaimContractFactory = (await hre.ethers.getContractFactory(phiClaimAbiName)) as any;
+  const phiMapContractFactory = (await hre.ethers.getContractFactory(phiMapAbiName)) as any;
   const paidObjectContractFactory = (await hre.ethers.getContractFactory(paidObjectAbiName)) as any;
   const phiObjectContractFactory = (await hre.ethers.getContractFactory(phiObjectAbiName)) as any;
-  const soulObjectContractFactory = (await hre.ethers.getContractFactory(soulObjectAbiName)) as any;
+  const freeObjectContractFactory = (await hre.ethers.getContractFactory(freeObjectAbiName)) as any;
 
   const phiClaimContractInstance = await phiClaimContractFactory.attach(phiClaimAddress);
+  const phiMapContractInstance = await phiMapContractFactory.attach(phiMapAddress);
   const paidObjectContractInstance = await paidObjectContractFactory.attach(paidObjectAddress);
   const phiObjectContractInstance = await phiObjectContractFactory.attach(phiObjectAddress);
-  const soulObjectContractInstance = await soulObjectContractFactory.attach(soulObjectAddress);
+  const freeObjectContractInstance = await freeObjectContractFactory.attach(freeObjectAddress);
 
   const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
     encoding: "utf8",
@@ -74,9 +76,10 @@ export async function settingPhi(): Promise<void> {
   funcName = "createObject";
   for (let i = 0; i < objectRowList.length; i++) {
     const size = String(objectRowList[i].size);
+    const metadataURL = String(objectRowList[i].json_url).split("/");
     calldata = [
       String(objectRowList[i].tokenId),
-      String(objectRowList[i].json_url),
+      metadataURL.slice(-1)[0],
       { x: size[1], y: size[3], z: "1" },
       l1Signer.address,
       String(objectRowList[i].maxClaimed),
@@ -103,10 +106,19 @@ export async function settingPhi(): Promise<void> {
 
   funcName = "setOwner";
   calldata = [phiMapAddress];
-  res = await soulObjectContractInstance[funcName](...calldata);
+  res = await freeObjectContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
 
   calldata = [phiClaimAddress];
-  res = await soulObjectContractInstance[funcName](...calldata);
+  res = await freeObjectContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
+
+  // for oji3 test
+  funcName = "setOwner";
+  calldata = ["0xFe3DdB7883c3f09e1fdc9908B570C6C79fB25f7C"];
+  res = await phiObjectContractInstance[funcName](...calldata);
+  res = await paidObjectContractInstance[funcName](...calldata);
+  res = await freeObjectContractInstance[funcName](...calldata);
+  res = await phiMapContractInstance[funcName](...calldata);
+  res = await phiClaimContractInstance[funcName](...calldata);
 }

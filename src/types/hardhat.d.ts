@@ -77,6 +77,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Resolver__factory>;
     getContractFactory(
+      name: "IObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IObject__factory>;
+    getContractFactory(
       name: "IPhiMap",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPhiMap__factory>;
@@ -209,6 +213,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Resolver>;
+    getContractAt(
+      name: "IObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IObject>;
     getContractAt(
       name: "IPhiMap",
       address: string,

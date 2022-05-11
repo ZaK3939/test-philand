@@ -87,31 +87,4 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x");
     }
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public override {
-        _payRoyalty(from, to, id);
-        super.safeTransferFrom(from, to, id, amount, data);
-    }
-
-    function _payRoyalty(
-        address from,
-        address to,
-        uint256 id
-    ) internal {
-        if (msg.value > 0) {
-            uint256 royality = ((msg.value * royalityFee) / 100);
-            (bool success1, ) = payable(allObjects[id].creator).call{ value: royality }("");
-            require(success1);
-
-            (bool success2, ) = payable(from).call{ value: msg.value - royality }("");
-            require(success2);
-            emit Sale(from, to, msg.value);
-        }
-    }
 }

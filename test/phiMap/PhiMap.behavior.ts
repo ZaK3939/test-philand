@@ -4,22 +4,22 @@ import { ethers } from "hardhat";
 export function shouldBehaveClaimStarterObject(): void {
   it("should mint claimStarterObject", async function () {
     await this.phiMap.connect(this.signers.admin).claimStarterObject("zak3939");
-    expect(await this.phiObject.balanceOf(this.signers.admin.address, 1)).to.equal(1);
-    expect(await this.phiObject.balanceOf(this.signers.admin.address, 2)).to.equal(1);
-    expect(await this.phiObject.balanceOf(this.signers.admin.address, 3)).to.equal(1);
-    expect(await this.phiObject.balanceOf(this.signers.admin.address, 4)).to.equal(1);
-    expect(await this.phiObject.balanceOf(this.signers.admin.address, 5)).to.equal(1);
+    expect(await this.freeObject.balanceOf(this.signers.admin.address, 1)).to.equal(1);
+    expect(await this.freeObject.balanceOf(this.signers.admin.address, 2)).to.equal(1);
+    expect(await this.freeObject.balanceOf(this.signers.admin.address, 3)).to.equal(1);
+    expect(await this.freeObject.balanceOf(this.signers.admin.address, 4)).to.equal(1);
+    expect(await this.freeObject.balanceOf(this.signers.admin.address, 5)).to.equal(1);
   });
 }
 
 export function shouldBehaveDeposit(): void {
   it("should deposit and balance 1->0", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
-    await this.phiMap.connect(this.signers.alice).deposit(1, 1);
+    await this.phiMap.connect(this.signers.alice).deposit(this.phiObject.address, 1, 1, this.phiObject.address);
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
-    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, 1);
+    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, this.phiObject.address, 1);
     expect(status.amount).to.equal(1);
     expect(status.timestamp).to.equal(timestampBefore);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
@@ -29,7 +29,7 @@ export function shouldBehaveDeposit(): void {
 export function shouldBehaveUnDeposit(): void {
   it("should undeposit and balance 0->1", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
-    await this.phiMap.connect(this.signers.alice).undeposit(1);
+    await this.phiMap.connect(this.signers.alice).undeposit(this.phiObject.address, 1, this.phiObject.address);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
   });
 }
@@ -37,14 +37,16 @@ export function shouldBehaveUnDeposit(): void {
 export function shouldBehaveBatchDeposit(): void {
   it("should batch deposit and balance of batch 1->0", async function () {
     await this.phiMap.connect(this.signers.alice).claimStarterObject("test");
-    await this.phiMap.connect(this.signers.alice).batchDeposit([1, 2, 3, 4, 5], [1, 1, 1, 1, 1]);
+    await this.phiMap
+      .connect(this.signers.alice)
+      .batchDeposit(this.freeObject.address, [1, 2, 3, 4, 5], [1, 1, 1, 1, 1], this.freeObject.address);
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
-    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, 4);
+    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, this.freeObject.address, 4);
     expect(status.amount).to.equal(1);
     expect(status.timestamp).to.equal(timestampBefore);
-    expect(await this.phiObject.balanceOf(this.signers.alice.address, 4)).to.equal(0);
+    expect(await this.freeObject.balanceOf(this.signers.alice.address, 4)).to.equal(0);
   });
 }
 
@@ -58,10 +60,14 @@ export function shouldBehaveOwnerOfPhiland(): void {
 
 export function shouldBehaveWriteObjectToLand(): void {
   it("should write object to land", async function () {
-    await this.phiMap.connect(this.signers.alice).deposit(1, 1);
+    await this.phiMap.connect(this.signers.alice).deposit(this.phiObject.address, 1, 1, this.phiObject.address);
     await this.phiMap
       .connect(this.signers.alice)
-      .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 });
+      .writeObjectToLand(
+        "test",
+        { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 },
+        this.phiObject.address,
+      );
   });
 }
 

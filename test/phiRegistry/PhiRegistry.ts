@@ -7,6 +7,7 @@ import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import { shouldBehaveCreatePhiland } from "./PhiRegistry.behavior";
@@ -51,11 +52,15 @@ describe("Unit tests PhiRegistry", function () {
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
     this.phiObject = <PhiObject>(
-      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
+    );
+    const freeObjectArtifact: Artifact = await artifacts.readArtifact("FreeObject");
+    this.freeObject = <FreeObject>(
+      await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
     );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
-    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);
+    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
   });
 
   describe("PhiRegistry", function () {

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
-import { IPhiObject } from "./interfaces/IPhiObject.sol";
+import { IObject } from "./interfaces/IObject.sol";
 import { IPhiRegistry } from "./interfaces/IPhiRegistry.sol";
 import { MultiOwner } from "./utils/MultiOwner.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract PhiMap is MultiOwner, ERC1155Receiver {
-    IPhiObject private _object;
+    IObject public freeObject;
 
     struct MapSettings {
         uint256 minX;
@@ -47,8 +47,8 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
     error OutofMapRange(uint256 a, string error_boader);
     error objectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
 
-    constructor(IPhiObject object) {
-        _object = object;
+    constructor(IObject _freeObject) {
+        freeObject = _freeObject;
         mapSettings = MapSettings(0, 10, 0, 10);
     }
 
@@ -58,15 +58,19 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         ownerLists[name] = caller;
     }
 
-    function writeObjectToLand(string calldata name, Object calldata objectData) public {
+    function writeObjectToLand(
+        string calldata name,
+        Object calldata objectData,
+        IObject _object
+    ) public {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
-        if (depositInfo[msg.sender][objectData.tokenId].amount == 0) {
+        if (depositInfo[msg.sender][objectData.contractAddress][objectData.tokenId].amount == 0) {
             revert NotDeposit({ sender: msg.sender, owner: owner, token_id: objectData.tokenId });
         }
-        IPhiObject.Size memory size = _object.getSize(objectData.tokenId);
+        IObject.Size memory size = _object.getSize(objectData.tokenId);
         ObjectInfo memory objectinfo = ObjectInfo(
             objectData.contractAddress,
             objectData.tokenId,
@@ -79,13 +83,17 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         userObject[name].push(objectinfo);
     }
 
-    function batchWriteObjectToLand(string calldata name, Object[] calldata objectData) external {
+    function batchWriteObjectToLand(
+        string calldata name,
+        Object[] calldata objectData,
+        IObject _object
+    ) external {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
         for (uint256 i = 0; i < objectData.length; i++) {
-            writeObjectToLand(name, objectData[i]);
+            writeObjectToLand(name, objectData[i], _object);
         }
     }
 
@@ -142,38 +150,64 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
             ids[i] = i + 1;
             amounts[i] = 1;
         }
-        _object.mintBatchObject(msg.sender, ids, amounts, "");
+        freeObject.mintBatchObject(msg.sender, ids, amounts, "");
     }
 
     struct Deposit {
         uint256 amount;
         uint256 timestamp;
     }
-    // map staker address to stake details
-    mapping(address => mapping(uint256 => Deposit)) public depositInfo;
-    // map staker to total staking time
-    mapping(address => mapping(uint256 => uint256)) public depositTime;
 
-    function deposit(uint256 _tokenId, uint256 _amount) public {
-        depositInfo[msg.sender][_tokenId] = Deposit(_amount, block.timestamp);
+    // map staker address to stake details
+    mapping(address => mapping(address => mapping(uint256 => Deposit))) public depositInfo;
+    // map staker to total staking time
+    mapping(address => mapping(address => mapping(uint256 => uint256))) public depositTime;
+
+    function deposit(
+        address _contractAddress,
+        uint256 _tokenId,
+        uint256 _amount,
+        IObject _object
+    ) public {
+        depositInfo[msg.sender][_contractAddress][_tokenId] = Deposit(_amount, block.timestamp);
         _object.safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "0x00");
     }
 
-    function batchDeposit(uint256[] memory _tokenIds, uint256[] memory _amounts) public {
+    function batchDeposit(
+        address _contractAddresses,
+        uint256[] memory _tokenIds,
+        uint256[] memory _amounts,
+        IObject _object
+    ) public {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            depositInfo[msg.sender][_tokenIds[i]] = Deposit(_amounts[i], block.timestamp);
+            depositInfo[msg.sender][_contractAddresses][_tokenIds[i]] = Deposit(_amounts[i], block.timestamp);
             _object.safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i], "0x00");
         }
     }
 
-    function checkDepositStatus(address sender, uint256 _tokenId) public view returns (Deposit memory) {
-        return depositInfo[sender][_tokenId];
+    function checkDepositStatus(
+        address sender,
+        address _contractAddresses,
+        uint256 _tokenId
+    ) public view returns (Deposit memory) {
+        return depositInfo[sender][_contractAddresses][_tokenId];
     }
 
-    function undeposit(uint256 _tokenId) public {
-        _object.safeTransferFrom(address(this), msg.sender, _tokenId, depositInfo[msg.sender][_tokenId].amount, "0x00");
-        depositTime[msg.sender][_tokenId] += (block.timestamp - depositInfo[msg.sender][_tokenId].timestamp);
-        delete depositInfo[msg.sender][_tokenId];
+    function undeposit(
+        address _contractAddresses,
+        uint256 _tokenId,
+        IObject _object
+    ) public {
+        _object.safeTransferFrom(
+            address(this),
+            msg.sender,
+            _tokenId,
+            depositInfo[msg.sender][_contractAddresses][_tokenId].amount,
+            "0x00"
+        );
+        depositTime[msg.sender][_contractAddresses][_tokenId] += (block.timestamp -
+            depositInfo[msg.sender][_contractAddresses][_tokenId].timestamp);
+        delete depositInfo[msg.sender][_contractAddresses][_tokenId];
     }
 
     function onERC1155Received(

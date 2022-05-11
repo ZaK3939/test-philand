@@ -8,12 +8,11 @@ import { BaseObject } from "../utils/BaseObject.sol";
 // FreeObjects smart contract inherits ERC1155 interface
 contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
     // initialize contract while deployment with contract's collection name and token
-    constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
+    constructor(address payable _treasuryAddress) ERC1155("") {
         name = "FreeObjects";
         symbol = "FOS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
-        royalityFee = _royalityFee;
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -64,30 +63,13 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
         super._mint(msg.sender, tokenId, 1, "0x00");
     }
 
-    function safeTransferFrom(
-        address from,
+    function mintBatchObject(
         address to,
-        uint256 id,
-        uint256 amount,
+        uint256[] memory ids,
+        uint256[] memory amounts,
         bytes memory data
-    ) public override {
-        _payLoyalty(from, to, id);
-        super.safeTransferFrom(from, to, id, amount, data);
-    }
-
-    function _payLoyalty(
-        address from,
-        address to,
-        uint256 id
-    ) internal {
-        if (msg.value > 0) {
-            uint256 royality = ((msg.value * royalityFee) / 100);
-            (bool success1, ) = payable(allObjects[id].creator).call{ value: royality }("");
-            require(success1);
-
-            (bool success2, ) = payable(from).call{ value: msg.value - royality }("");
-            require(success2);
-            emit Sale(from, to, msg.value);
-        }
+    ) external onlyOwner {
+        // todo for loop check token supply
+        super._mintBatch(to, ids, amounts, data);
     }
 }

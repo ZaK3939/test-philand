@@ -6,6 +6,7 @@
 import type * as iensSol from "./IENS.sol";
 
 export type { iensSol };
+export type { IObject } from "./IObject";
 export type { IPhiMap } from "./IPhiMap";
 export type { IPhiObject } from "./IPhiObject";
 export type { IPhiRegistry } from "./IPhiRegistry";

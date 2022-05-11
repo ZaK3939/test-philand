@@ -41,43 +41,31 @@ export declare namespace PhiClaim {
 export interface PhiClaimInterface extends utils.Interface {
   functions: {
     "claimObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
-    "claimSoulObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
     "claimedLists(address,uint256)": FunctionFragment;
     "claimedSoulLists(address,uint256)": FunctionFragment;
     "couponType(string)": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
-    "getSoulCouponType(string)": FunctionFragment;
     "owner(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "setCouponType(string,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
-    "setSoulCouponType(string,uint256)": FunctionFragment;
-    "soulCouponType(string)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "claimObject"
-      | "claimSoulObject"
       | "claimedLists"
       | "claimedSoulLists"
       | "couponType"
       | "getCouponType"
-      | "getSoulCouponType"
       | "owner"
       | "removeOwner"
       | "setCouponType"
       | "setOwner"
-      | "setSoulCouponType"
-      | "soulCouponType"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "claimObject",
-    values: [BigNumberish, string, PhiClaim.CouponStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimSoulObject",
     values: [BigNumberish, string, PhiClaim.CouponStruct]
   ): string;
   encodeFunctionData(
@@ -93,10 +81,6 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "getCouponType",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getSoulCouponType",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
@@ -104,21 +88,9 @@ export interface PhiClaimInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setSoulCouponType",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "soulCouponType",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "claimObject",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimSoulObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -134,10 +106,6 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "getCouponType",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSoulCouponType",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeOwner",
@@ -148,24 +116,14 @@ export interface PhiClaimInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setSoulCouponType",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "soulCouponType",
-    data: BytesLike
-  ): Result;
 
   events: {
     "LogClaimObject(address,uint256)": EventFragment;
-    "LogClaimSoulObject(address,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "LogClaimObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LogClaimSoulObject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
 }
@@ -180,18 +138,6 @@ export type LogClaimObjectEvent = TypedEvent<
 >;
 
 export type LogClaimObjectEventFilter = TypedEventFilter<LogClaimObjectEvent>;
-
-export interface LogClaimSoulObjectEventObject {
-  sender: string;
-  tokenid: BigNumber;
-}
-export type LogClaimSoulObjectEvent = TypedEvent<
-  [string, BigNumber],
-  LogClaimSoulObjectEventObject
->;
-
-export type LogClaimSoulObjectEventFilter =
-  TypedEventFilter<LogClaimSoulObjectEvent>;
 
 export interface OwnershipGrantedEventObject {
   operator: string;
@@ -251,13 +197,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     claimedLists(
       arg0: string,
       arg1: BigNumberish,
@@ -273,11 +212,6 @@ export interface PhiClaim extends BaseContract {
     couponType(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getCouponType(
-      condition: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getSoulCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -302,27 +236,9 @@ export interface PhiClaim extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    soulCouponType(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
   };
 
   claimObject(
-    tokenId: BigNumberish,
-    condition: string,
-    coupon: PhiClaim.CouponStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  claimSoulObject(
     tokenId: BigNumberish,
     condition: string,
     coupon: PhiClaim.CouponStruct,
@@ -348,11 +264,6 @@ export interface PhiClaim extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getSoulCouponType(
-    condition: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   owner(
     targetAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -374,23 +285,8 @@ export interface PhiClaim extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setSoulCouponType(
-    condition: string,
-    tokenid: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
   callStatic: {
     claimObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    claimSoulObject(
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
@@ -416,11 +312,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSoulCouponType(
-      condition: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
@@ -432,14 +323,6 @@ export interface PhiClaim extends BaseContract {
     ): Promise<void>;
 
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -448,15 +331,6 @@ export interface PhiClaim extends BaseContract {
       tokenid?: null
     ): LogClaimObjectEventFilter;
     LogClaimObject(sender?: null, tokenid?: null): LogClaimObjectEventFilter;
-
-    "LogClaimSoulObject(address,uint256)"(
-      sender?: null,
-      tokenid?: null
-    ): LogClaimSoulObjectEventFilter;
-    LogClaimSoulObject(
-      sender?: null,
-      tokenid?: null
-    ): LogClaimSoulObjectEventFilter;
 
     "OwnershipGranted(address,address)"(
       operator?: string | null,
@@ -485,13 +359,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     claimedLists(
       arg0: string,
       arg1: BigNumberish,
@@ -507,11 +374,6 @@ export interface PhiClaim extends BaseContract {
     couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getCouponType(
-      condition: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getSoulCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -536,25 +398,10 @@ export interface PhiClaim extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     claimObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimSoulObject(
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
@@ -583,11 +430,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSoulCouponType(
-      condition: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -607,17 +449,6 @@ export interface PhiClaim extends BaseContract {
     setOwner(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    soulCouponType(
-      arg0: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

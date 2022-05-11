@@ -7,6 +7,7 @@ import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import {
@@ -63,11 +64,15 @@ describe("Unit tests PhiMap", function () {
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
     this.phiObject = <PhiObject>(
-      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
+    );
+    const freeObjectArtifact: Artifact = await artifacts.readArtifact("FreeObject");
+    this.freeObject = <FreeObject>(
+      await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
     );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
-    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);
+    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
 
     const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
     this.phiRegistry = <PhiRegistry>(
@@ -79,7 +84,9 @@ describe("Unit tests PhiMap", function () {
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
     await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
 
+    await this.freeObject.connect(this.signers.admin).setOwner(this.phiMap.address);
     await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
+
     await this.phiObject
       .connect(this.signers.admin)
       .createObject(
@@ -90,6 +97,7 @@ describe("Unit tests PhiMap", function () {
         200,
       );
     await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
+    await this.freeObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
 
