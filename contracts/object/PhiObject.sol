@@ -3,35 +3,18 @@ pragma solidity ^0.8.8;
 
 // import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 
 import { MultiOwner } from "../utils/MultiOwner.sol";
 import { BaseObject } from "../utils/BaseObject.sol";
 import "../utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiObject is ERC1155Supply, IERC2981, MultiOwner, BaseObject {
-    constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
+contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
+    constructor(address payable _treasuryAddress) ERC1155("") {
         name = "Onchain PhiObjects";
         symbol = "OOS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
-        royalityFee = _royalityFee;
-    }
-
-    // EIP2981 standard Interface return. Adds to ERC1155 and ERC165 Interface returns.
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155, IERC165) returns (bool) {
-        return (interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId));
-    }
-
-    // EIP2981 standard royalties return.
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        external
-        view
-        override
-        returns (address receiver, uint256 royaltyAmount)
-    {
-        return (treasuryAddress, (_salePrice * royalityFee));
     }
 
     function uri(uint256 tokenId) public view override returns (string memory) {
@@ -99,32 +82,5 @@ contract PhiObject is ERC1155Supply, IERC2981, MultiOwner, BaseObject {
     ) external onlyOwner {
         // todo for loop check token supply
         super._mintBatch(to, ids, amounts, data);
-    }
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public override {
-        _payLoyalty(from, to, id);
-        super.safeTransferFrom(from, to, id, amount, data);
-    }
-
-    function _payLoyalty(
-        address from,
-        address to,
-        uint256 id
-    ) internal {
-        if (msg.value > 0) {
-            uint256 royality = ((msg.value * royalityFee) / 100);
-            (bool success1, ) = payable(allObjects[id].creator).call{ value: royality }("");
-            require(success1);
-
-            (bool success2, ) = payable(from).call{ value: msg.value - royality }("");
-            require(success2);
-            emit Sale(from, to, msg.value);
-        }
     }
 }

@@ -61,6 +61,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "getTokenURI(uint256)": FunctionFragment;
     "initObject(uint256,string,(uint8,uint8,uint8),address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
@@ -101,6 +102,7 @@ export interface FreeObjectInterface extends utils.Interface {
       | "getTokenURI"
       | "initObject"
       | "isApprovedForAll"
+      | "mintBatchObject"
       | "name"
       | "owner"
       | "removeOwner"
@@ -186,6 +188,10 @@ export interface FreeObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintBatchObject",
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
@@ -291,6 +297,10 @@ export interface FreeObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintBatchObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -577,6 +587,14 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(
@@ -767,6 +785,14 @@ export interface FreeObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  mintBatchObject(
+    to: string,
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   owner(
@@ -956,6 +982,14 @@ export interface FreeObject extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1200,6 +1234,14 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(
@@ -1384,6 +1426,14 @@ export interface FreeObject extends BaseContract {
       account: string,
       operator: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;

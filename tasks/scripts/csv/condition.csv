@@ -12,7 +12,6 @@ SwapOnUniswap,1,10
 SwapOnUniswap,5,11
 SwapOnUniswap,10,12
 SwapOnUniswap,30,13
-LiquidityProvidingOnUniswap,604800,14
-LiquidityProvidingOnUniswap,1036800,15
-LiquidityProvidingOnUniswap,4147200,16
-
+DAILiquidityProvidingOnUniswap,100,14,
+DAILiquidityProvidingOnUniswap,1000,15,
+DAILiquidityProvidingOnUniswap,10000,16,

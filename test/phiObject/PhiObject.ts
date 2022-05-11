@@ -25,7 +25,7 @@ describe("Unit tests PhiObject", function () {
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
     this.phiObject = <PhiObject>(
-      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
     );
     await this.phiObject
       .connect(this.signers.admin)

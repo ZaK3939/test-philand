@@ -45,6 +45,8 @@ export type { IENS } from "./contracts/interfaces/IENS.sol/IENS";
 export { IENS__factory } from "./factories/contracts/interfaces/IENS.sol/IENS__factory";
 export type { Resolver } from "./contracts/interfaces/IENS.sol/Resolver";
 export { Resolver__factory } from "./factories/contracts/interfaces/IENS.sol/Resolver__factory";
+export type { IObject } from "./contracts/interfaces/IObject";
+export { IObject__factory } from "./factories/contracts/interfaces/IObject__factory";
 export type { IPhiMap } from "./contracts/interfaces/IPhiMap";
 export { IPhiMap__factory } from "./factories/contracts/interfaces/IPhiMap__factory";
 export type { IPhiObject } from "./contracts/interfaces/IPhiObject";

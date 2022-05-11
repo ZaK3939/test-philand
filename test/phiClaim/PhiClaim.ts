@@ -21,7 +21,7 @@ describe("Unit tests PhiClaim", function () {
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
     this.phiObject = <PhiObject>(
-      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address, 5])
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
     );
     await this.phiObject
       .connect(this.signers.admin)
@@ -32,8 +32,6 @@ describe("Unit tests PhiClaim", function () {
         this.signers.bob.address,
         200,
       );
-    const soulObjectArtifact: Artifact = await artifacts.readArtifact("SoulObject");
-    this.soulObject = <SoulObject>await waffle.deployContract(this.signers.admin, soulObjectArtifact, []);
   });
 
   describe("PhiClaim", function () {
@@ -43,11 +41,9 @@ describe("Unit tests PhiClaim", function () {
         await waffle.deployContract(this.signers.admin, phiClaimArtifact, [
           this.signers.admin.address,
           this.phiObject.address,
-          this.soulObject.address,
         ])
       );
       await this.phiObject.connect(this.signers.admin).setOwner(this.phiClaim.address);
-      await this.soulObject.connect(this.signers.admin).setOwner(this.phiClaim.address);
       await this.phiClaim.connect(this.signers.admin).setCouponType("lootbalance", 1);
     });
     shouldBehaveSetCouponType();

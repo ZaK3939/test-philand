@@ -66,7 +66,6 @@ export interface PhiObjectInterface extends utils.Interface {
     "owner(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "royalityFee()": FunctionFragment;
-    "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -108,7 +107,6 @@ export interface PhiObjectInterface extends utils.Interface {
       | "owner"
       | "removeOwner"
       | "royalityFee"
-      | "royaltyInfo"
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
       | "setApprovalForAll"
@@ -201,10 +199,6 @@ export interface PhiObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "royalityFee",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "royaltyInfo",
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
@@ -317,10 +311,6 @@ export interface PhiObjectInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "royalityFee",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "royaltyInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -622,14 +612,6 @@ export interface PhiObject extends BaseContract {
 
     royalityFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    royaltyInfo(
-      _tokenId: BigNumberish,
-      _salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-    >;
-
     safeBatchTransferFrom(
       from: string,
       to: string,
@@ -831,14 +813,6 @@ export interface PhiObject extends BaseContract {
 
   royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-  royaltyInfo(
-    _tokenId: BigNumberish,
-    _salePrice: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-  >;
-
   safeBatchTransferFrom(
     from: string,
     to: string,
@@ -1033,14 +1007,6 @@ export interface PhiObject extends BaseContract {
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    royaltyInfo(
-      _tokenId: BigNumberish,
-      _salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
-    >;
 
     safeBatchTransferFrom(
       from: string,
@@ -1302,12 +1268,6 @@ export interface PhiObject extends BaseContract {
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    royaltyInfo(
-      _tokenId: BigNumberish,
-      _salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     safeBatchTransferFrom(
       from: string,
       to: string,
@@ -1504,12 +1464,6 @@ export interface PhiObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     royalityFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    royaltyInfo(
-      _tokenId: BigNumberish,
-      _salePrice: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     safeBatchTransferFrom(
       from: string,
