@@ -94,22 +94,23 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
     function batchWriteObjectToLand(
         string calldata name,
         Object[] calldata objectData,
-        IObject _object
-    ) external {
+        IObject[] calldata _object
+    ) public {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
         for (uint256 i = 0; i < objectData.length; i++) {
-            writeObjectToLand(name, objectData[i], _object);
+            writeObjectToLand(name, objectData[i], _object[i]);
         }
     }
 
     function removeObjectFromLand(string calldata name, uint256 i) external {
         delete userObject[name][i];
+        delete userObjectLink[name][i];
     }
 
-    function batchRemoveObjectFromLand(string calldata name, uint256[] calldata index_array) external {
+    function batchRemoveObjectFromLand(string calldata name, uint256[] calldata index_array) public {
         for (uint256 i = 0; i < index_array.length; i++) {
             uint256 tmp = index_array[i];
             delete userObject[name][tmp];
@@ -274,8 +275,18 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         userObjectLink[name][object_index].push(objectLinkInfo);
     }
 
-    function removeLinkfromObject(string calldata name, uint256 object_index) external {
+    function removeLinkFromObject(string calldata name, uint256 object_index) external {
         delete userObjectLink[name][object_index];
+    }
+
+    function batchRemoveAndWrite(
+        string calldata name,
+        uint256[] calldata remove_index_array,
+        Object[] calldata objectData,
+        IObject[] calldata _object
+    ) external {
+        batchRemoveObjectFromLand(name, remove_index_array);
+        batchWriteObjectToLand(name, objectData, _object);
     }
 
     /// @dev check that the user has already claimed Philand

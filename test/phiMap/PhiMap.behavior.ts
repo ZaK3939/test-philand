@@ -108,7 +108,7 @@ export function shouldBehaveBatchWriteObjectToLand(): void {
         { contractAddress: this.phiObject.address, tokenId: 2, xStart: 2, yStart: 2 },
         { contractAddress: this.phiObject.address, tokenId: 3, xStart: 4, yStart: 3 },
       ],
-      this.phiObject.address,
+      [this.phiObject.address, this.phiObject.address, this.phiObject.address],
     );
     const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
   });
@@ -125,7 +125,7 @@ export function shouldBehaveWriteLinkToObject(): void {
 
 export function shouldBehaveRemoveLinkfromObject(): void {
   it("should remove link from object 1", async function () {
-    await this.phiMap.connect(this.signers.alice).removeLinkfromObject("test", 1);
+    await this.phiMap.connect(this.signers.alice).removeLinkFromObject("test", 1);
     const objectLink = await this.phiMap.connect(this.signers.admin).viewObjectLink("test", 1);
     expect(objectLink).to.deep.equal([]);
   });
