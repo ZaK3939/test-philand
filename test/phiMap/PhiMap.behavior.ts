@@ -83,9 +83,9 @@ export function shouldBehaveViewPhiland(): void {
   });
 }
 
-export function shouldBehaveRemoveObjectToLand(): void {
+export function shouldBehaveRemoveObjectFromLand(): void {
   it("should remove object from land", async function () {
-    await this.phiMap.connect(this.signers.alice).removeObjectToLand("test", 0);
+    await this.phiMap.connect(this.signers.alice).removeObjectFromLand("test", 0);
     const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
     expect(land[0].contractAddress).to.equal("0x0000000000000000000000000000000000000000");
     expect(land[0].tokenId).to.equal(0);
@@ -93,5 +93,47 @@ export function shouldBehaveRemoveObjectToLand(): void {
     expect(land[0].yStart).to.equal(0);
     expect(land[0].xEnd).to.equal(0);
     expect(land[0].yEnd).to.equal(0);
+  });
+}
+
+export function shouldBehaveBatchWriteObjectToLand(): void {
+  it("should batch write object from land", async function () {
+    await this.phiMap
+      .connect(this.signers.alice)
+      .batchDeposit(this.phiObject.address, [2, 3], [1, 1], this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).batchWriteObjectToLand(
+      "test",
+      [
+        { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 },
+        { contractAddress: this.phiObject.address, tokenId: 2, xStart: 2, yStart: 2 },
+        { contractAddress: this.phiObject.address, tokenId: 3, xStart: 4, yStart: 3 },
+      ],
+      this.phiObject.address,
+    );
+    const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
+  });
+}
+
+export function shouldBehaveWriteLinkToObject(): void {
+  it("should write link to object 1", async function () {
+    await this.phiMap.connect(this.signers.alice).writeLinkToObject("test", 1, "zak3939", "zak3939.eth");
+    const objectLink = await this.phiMap.connect(this.signers.admin).viewObjectLink("test", 1);
+    expect(objectLink[0].title).to.equal("zak3939");
+    expect(objectLink[0].url).to.equal("zak3939.eth");
+  });
+}
+
+export function shouldBehaveRemoveLinkfromObject(): void {
+  it("should remove link from object 1", async function () {
+    await this.phiMap.connect(this.signers.alice).removeLinkfromObject("test", 1);
+    const objectLink = await this.phiMap.connect(this.signers.admin).viewObjectLink("test", 1);
+    expect(objectLink).to.deep.equal([]);
+  });
+}
+
+export function shouldBehaveBatchRemoveObjectFromLand(): void {
+  it("should batch remove object from land", async function () {
+    await this.phiMap.connect(this.signers.alice).batchRemoveObjectFromLand("test", [1, 3]);
+    const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
   });
 }

@@ -65,7 +65,7 @@ contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
     }
 
     // by a token by passing in the token's id
-    function getPhiObject(address to, uint256 tokenId) public payable {
+    function getPhiObject(address to, uint256 tokenId) public payable onlyOwner {
         // check if the function caller is not an zero account address
         require(to != address(0));
         // check if the token id of the token being bought exists or not

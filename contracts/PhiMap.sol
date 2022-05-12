@@ -40,9 +40,16 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         uint256 xEnd;
         uint256 yEnd;
     }
+
+    struct ObjectLinkInfo {
+        string title;
+        string url;
+    }
+
     mapping(string => address) public ownerLists;
 
     error NotReadyPhiland(address sender, address owner);
+    error NotReadyObject(address sender, uint256 object_index);
     error NotDeposit(address sender, address owner, uint256 token_id);
     error OutofMapRange(uint256 a, string error_boader);
     error objectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
@@ -52,7 +59,8 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         mapSettings = MapSettings(0, 10, 0, 10);
     }
 
-    mapping(string => ObjectInfo[]) private userObject;
+    mapping(string => ObjectInfo[]) public userObject;
+    mapping(string => mapping(uint256 => ObjectLinkInfo[])) public userObjectLink;
 
     function create(string calldata name, address caller) external {
         ownerLists[name] = caller;
@@ -97,8 +105,15 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         }
     }
 
-    function removeObjectToLand(string calldata name, uint256 i) external {
+    function removeObjectFromLand(string calldata name, uint256 i) external {
         delete userObject[name][i];
+    }
+
+    function batchRemoveObjectFromLand(string calldata name, uint256[] calldata index_array) external {
+        for (uint256 i = 0; i < index_array.length; i++) {
+            uint256 tmp = index_array[i];
+            delete userObject[name][tmp];
+        }
     }
 
     function checkCollision(string calldata name, ObjectInfo memory objectInfo) private view {
@@ -232,6 +247,35 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
 
     function viewPhiland(string calldata user) external view returns (ObjectInfo[] memory) {
         return userObject[user];
+    }
+
+    function viewObjectLink(string calldata user, uint256 object_index)
+        external
+        view
+        returns (ObjectLinkInfo[] memory)
+    {
+        return userObjectLink[user][object_index];
+    }
+
+    function writeLinkToObject(
+        string calldata name,
+        uint256 object_index,
+        string calldata title,
+        string calldata url
+    ) public {
+        address owner = ownerOfPhiland(name);
+        if (owner == address(0)) {
+            revert NotReadyPhiland({ sender: msg.sender, owner: owner });
+        }
+        if (userObject[name][object_index].contractAddress == address(0)) {
+            revert NotReadyObject({ sender: msg.sender, object_index: object_index });
+        }
+        ObjectLinkInfo memory objectLinkInfo = ObjectLinkInfo(title, url);
+        userObjectLink[name][object_index].push(objectLinkInfo);
+    }
+
+    function removeLinkfromObject(string calldata name, uint256 object_index) external {
+        delete userObjectLink[name][object_index];
     }
 
     /// @dev check that the user has already claimed Philand

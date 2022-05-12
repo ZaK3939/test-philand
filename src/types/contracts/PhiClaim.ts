@@ -42,8 +42,6 @@ export interface PhiClaimInterface extends utils.Interface {
   functions: {
     "claimObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
     "claimedLists(address,uint256)": FunctionFragment;
-    "claimedSoulLists(address,uint256)": FunctionFragment;
-    "couponType(string)": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
     "owner(address)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
@@ -55,8 +53,6 @@ export interface PhiClaimInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "claimObject"
       | "claimedLists"
-      | "claimedSoulLists"
-      | "couponType"
       | "getCouponType"
       | "owner"
       | "removeOwner"
@@ -72,11 +68,6 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "claimedLists",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "claimedSoulLists",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "couponType", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getCouponType",
     values: [string]
@@ -97,11 +88,6 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "claimedLists",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimedSoulLists",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "couponType", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getCouponType",
     data: BytesLike
@@ -203,14 +189,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
     getCouponType(
       condition: string,
       overrides?: CallOverrides
@@ -251,14 +229,6 @@ export interface PhiClaim extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  claimedSoulLists(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
   getCouponType(
     condition: string,
     overrides?: CallOverrides
@@ -298,14 +268,6 @@ export interface PhiClaim extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getCouponType(
       condition: string,
@@ -365,14 +327,6 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     getCouponType(
       condition: string,
       overrides?: CallOverrides
@@ -411,17 +365,6 @@ export interface PhiClaim extends BaseContract {
     claimedLists(
       arg0: string,
       arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    couponType(
-      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
