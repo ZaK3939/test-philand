@@ -13,8 +13,7 @@ contract PhiClaim is MultiOwner {
     IPhiObject private _phiObject;
 
     mapping(address => mapping(uint256 => bool)) public claimedLists;
-    mapping(address => mapping(uint256 => bool)) public claimedSoulLists;
-    mapping(string => uint256) public couponType;
+    mapping(string => uint256) private couponType;
 
     error AllreadyClaimedObject(address sender, uint256 tokenId);
     event LogClaimObject(address sender, uint256 tokenid);

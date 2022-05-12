@@ -12,12 +12,16 @@ import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import {
   shouldBehaveBatchDeposit,
+  shouldBehaveBatchRemoveObjectFromLand,
+  shouldBehaveBatchWriteObjectToLand,
   shouldBehaveClaimStarterObject,
   shouldBehaveDeposit,
   shouldBehaveOwnerOfPhiland,
-  shouldBehaveRemoveObjectToLand,
+  shouldBehaveRemoveLinkfromObject,
+  shouldBehaveRemoveObjectFromLand,
   shouldBehaveUnDeposit,
   shouldBehaveViewPhiland,
+  shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
 } from "./PhiMap.behavior";
 
@@ -96,7 +100,27 @@ describe("Unit tests PhiMap", function () {
         this.signers.bob.address,
         200,
       );
+    await this.phiObject
+      .connect(this.signers.admin)
+      .createObject(
+        2,
+        "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU",
+        { x: 2, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject
+      .connect(this.signers.admin)
+      .createObject(
+        3,
+        "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU",
+        { x: 1, y: 2, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
     await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 2);
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 3);
     await this.freeObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
@@ -113,6 +137,10 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveOwnerOfPhiland();
     shouldBehaveWriteObjectToLand();
     shouldBehaveViewPhiland();
-    shouldBehaveRemoveObjectToLand();
+    shouldBehaveRemoveObjectFromLand();
+    shouldBehaveBatchWriteObjectToLand();
+    shouldBehaveWriteLinkToObject();
+    shouldBehaveRemoveLinkfromObject();
+    shouldBehaveBatchRemoveObjectFromLand();
   });
 });
