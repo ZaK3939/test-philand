@@ -20,6 +20,7 @@ import {
   shouldBehaveRemoveLinkfromObject,
   shouldBehaveRemoveObjectFromLand,
   shouldBehaveUnDeposit,
+  shouldBehaveViewLinks,
   shouldBehaveViewPhiland,
   shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
@@ -140,6 +141,7 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveRemoveObjectFromLand();
     shouldBehaveBatchWriteObjectToLand();
     shouldBehaveWriteLinkToObject();
+    shouldBehaveViewLinks();
     shouldBehaveRemoveLinkfromObject();
     shouldBehaveBatchRemoveObjectFromLand();
   });

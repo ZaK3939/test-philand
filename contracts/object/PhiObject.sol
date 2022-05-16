@@ -12,7 +12,7 @@ import "hardhat/console.sol";
 contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
     constructor(address payable _treasuryAddress) ERC1155("") {
         name = "Onchain PhiObjects";
-        symbol = "OOS";
+        symbol = "OPS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
     }

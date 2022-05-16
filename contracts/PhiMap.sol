@@ -46,6 +46,12 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         string url;
     }
 
+    struct Links {
+        uint256 index;
+        string title;
+        string url;
+    }
+
     mapping(string => address) public ownerLists;
 
     error NotReadyPhiland(address sender, address owner);
@@ -185,18 +191,23 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         uint256 _amount,
         IObject _object
     ) public {
-        depositInfo[msg.sender][_contractAddress][_tokenId] = Deposit(_amount, block.timestamp);
+        uint256 currentAmount = depositInfo[msg.sender][_contractAddress][_tokenId].amount;
+        depositInfo[msg.sender][_contractAddress][_tokenId] = Deposit(currentAmount + _amount, block.timestamp);
         _object.safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "0x00");
     }
 
     function batchDeposit(
-        address _contractAddresses,
+        address[] calldata _contractAddresses,
         uint256[] memory _tokenIds,
         uint256[] memory _amounts,
         IObject _object
     ) public {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            depositInfo[msg.sender][_contractAddresses][_tokenIds[i]] = Deposit(_amounts[i], block.timestamp);
+            uint256 currentAmount = depositInfo[msg.sender][_contractAddresses[i]][_tokenIds[i]].amount;
+            depositInfo[msg.sender][_contractAddresses[i]][_tokenIds[i]] = Deposit(
+                currentAmount + _amounts[i],
+                block.timestamp
+            );
             _object.safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i], "0x00");
         }
     }
@@ -246,16 +257,27 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
     }
 
-    function viewPhiland(string calldata user) external view returns (ObjectInfo[] memory) {
-        return userObject[user];
+    function viewPhiland(string calldata name) external view returns (ObjectInfo[] memory) {
+        return userObject[name];
     }
 
-    function viewObjectLink(string calldata user, uint256 object_index)
+    function viewObjectLink(string calldata name, uint256 object_index)
         external
         view
         returns (ObjectLinkInfo[] memory)
     {
-        return userObjectLink[user][object_index];
+        return userObjectLink[name][object_index];
+    }
+
+    function viewLinks(string calldata name) external view returns (Links[] memory) {
+        Links[] memory links = new Links[](userObject[name].length);
+        for (uint256 i = 0; i < userObject[name].length; i++) {
+            if (userObjectLink[name][i].length != 0) {
+                Links memory objectLink = Links(i, userObjectLink[name][i][0].title, userObjectLink[name][i][0].url);
+                links[i] = objectLink;
+            }
+        }
+        return links;
     }
 
     function writeLinkToObject(

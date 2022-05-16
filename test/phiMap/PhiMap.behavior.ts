@@ -39,7 +39,18 @@ export function shouldBehaveBatchDeposit(): void {
     await this.phiMap.connect(this.signers.alice).claimStarterObject("test");
     await this.phiMap
       .connect(this.signers.alice)
-      .batchDeposit(this.freeObject.address, [1, 2, 3, 4, 5], [1, 1, 1, 1, 1], this.freeObject.address);
+      .batchDeposit(
+        [
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+        ],
+        [1, 2, 3, 4, 5],
+        [1, 1, 1, 1, 1],
+        this.freeObject.address,
+      );
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
@@ -100,7 +111,7 @@ export function shouldBehaveBatchWriteObjectToLand(): void {
   it("should batch write object from land", async function () {
     await this.phiMap
       .connect(this.signers.alice)
-      .batchDeposit(this.phiObject.address, [2, 3], [1, 1], this.phiObject.address);
+      .batchDeposit([this.phiObject.address, this.phiObject.address], [2, 3], [1, 1], this.phiObject.address);
     await this.phiMap.connect(this.signers.alice).batchWriteObjectToLand(
       "test",
       [
@@ -120,6 +131,16 @@ export function shouldBehaveWriteLinkToObject(): void {
     const objectLink = await this.phiMap.connect(this.signers.admin).viewObjectLink("test", 1);
     expect(objectLink[0].title).to.equal("zak3939");
     expect(objectLink[0].url).to.equal("zak3939.eth");
+  });
+}
+
+export function shouldBehaveViewLinks(): void {
+  it("should write link to object 2 and check 1,2 link", async function () {
+    await this.phiMap.connect(this.signers.alice).writeLinkToObject("test", 2, "zak3939", "zak3939.eth");
+    const Links = await this.phiMap.connect(this.signers.admin).viewLinks("test");
+    expect(Links[2].index).to.equal(2);
+    expect(Links[2].title).to.equal("zak3939");
+    expect(Links[2].url).to.equal("zak3939.eth");
   });
 }
 
