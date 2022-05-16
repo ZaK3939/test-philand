@@ -50,6 +50,14 @@ export declare namespace PhiMap {
     timestamp: BigNumber;
   };
 
+  export type LinksStruct = { index: BigNumberish; title: string; url: string };
+
+  export type LinksStructOutput = [BigNumber, string, string] & {
+    index: BigNumber;
+    title: string;
+    url: string;
+  };
+
   export type ObjectLinkInfoStruct = { title: string; url: string };
 
   export type ObjectLinkInfoStructOutput = [string, string] & {
@@ -85,7 +93,7 @@ export declare namespace PhiMap {
 
 export interface PhiMapInterface extends utils.Interface {
   functions: {
-    "batchDeposit(address,uint256[],uint256[],address)": FunctionFragment;
+    "batchDeposit(address[],uint256[],uint256[],address)": FunctionFragment;
     "batchRemoveAndWrite(string,uint256[],(address,uint256,uint256,uint256)[],address[])": FunctionFragment;
     "batchRemoveObjectFromLand(string,uint256[])": FunctionFragment;
     "batchWriteObjectToLand(string,(address,uint256,uint256,uint256)[],address[])": FunctionFragment;
@@ -110,6 +118,7 @@ export interface PhiMapInterface extends utils.Interface {
     "undeposit(address,uint256,address)": FunctionFragment;
     "userObject(string,uint256)": FunctionFragment;
     "userObjectLink(string,uint256,uint256)": FunctionFragment;
+    "viewLinks(string)": FunctionFragment;
     "viewObjectLink(string,uint256)": FunctionFragment;
     "viewPhiland(string)": FunctionFragment;
     "writeLinkToObject(string,uint256,string,string)": FunctionFragment;
@@ -143,6 +152,7 @@ export interface PhiMapInterface extends utils.Interface {
       | "undeposit"
       | "userObject"
       | "userObjectLink"
+      | "viewLinks"
       | "viewObjectLink"
       | "viewPhiland"
       | "writeLinkToObject"
@@ -151,7 +161,7 @@ export interface PhiMapInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "batchDeposit",
-    values: [string, BigNumberish[], BigNumberish[], string]
+    values: [string[], BigNumberish[], BigNumberish[], string]
   ): string;
   encodeFunctionData(
     functionFragment: "batchRemoveAndWrite",
@@ -237,6 +247,7 @@ export interface PhiMapInterface extends utils.Interface {
     functionFragment: "userObjectLink",
     values: [string, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "viewLinks", values: [string]): string;
   encodeFunctionData(
     functionFragment: "viewObjectLink",
     values: [string, BigNumberish]
@@ -327,6 +338,7 @@ export interface PhiMapInterface extends utils.Interface {
     functionFragment: "userObjectLink",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "viewLinks", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "viewObjectLink",
     data: BytesLike
@@ -405,7 +417,7 @@ export interface PhiMap extends BaseContract {
 
   functions: {
     batchDeposit(
-      _contractAddresses: string,
+      _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
       _object: string,
@@ -571,14 +583,19 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string, string] & { title: string; url: string }>;
 
+    viewLinks(
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<[PhiMap.LinksStructOutput[]]>;
+
     viewObjectLink(
-      user: string,
+      name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[PhiMap.ObjectLinkInfoStructOutput[]]>;
 
     viewPhiland(
-      user: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<[PhiMap.ObjectInfoStructOutput[]]>;
 
@@ -599,7 +616,7 @@ export interface PhiMap extends BaseContract {
   };
 
   batchDeposit(
-    _contractAddresses: string,
+    _contractAddresses: string[],
     _tokenIds: BigNumberish[],
     _amounts: BigNumberish[],
     _object: string,
@@ -765,14 +782,19 @@ export interface PhiMap extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[string, string] & { title: string; url: string }>;
 
+  viewLinks(
+    name: string,
+    overrides?: CallOverrides
+  ): Promise<PhiMap.LinksStructOutput[]>;
+
   viewObjectLink(
-    user: string,
+    name: string,
     object_index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<PhiMap.ObjectLinkInfoStructOutput[]>;
 
   viewPhiland(
-    user: string,
+    name: string,
     overrides?: CallOverrides
   ): Promise<PhiMap.ObjectInfoStructOutput[]>;
 
@@ -793,7 +815,7 @@ export interface PhiMap extends BaseContract {
 
   callStatic: {
     batchDeposit(
-      _contractAddresses: string,
+      _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
       _object: string,
@@ -947,14 +969,19 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string, string] & { title: string; url: string }>;
 
+    viewLinks(
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<PhiMap.LinksStructOutput[]>;
+
     viewObjectLink(
-      user: string,
+      name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PhiMap.ObjectLinkInfoStructOutput[]>;
 
     viewPhiland(
-      user: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<PhiMap.ObjectInfoStructOutput[]>;
 
@@ -996,7 +1023,7 @@ export interface PhiMap extends BaseContract {
 
   estimateGas: {
     batchDeposit(
-      _contractAddresses: string,
+      _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
       _object: string,
@@ -1142,13 +1169,15 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    viewLinks(name: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     viewObjectLink(
-      user: string,
+      name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    viewPhiland(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+    viewPhiland(name: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     writeLinkToObject(
       name: string,
@@ -1168,7 +1197,7 @@ export interface PhiMap extends BaseContract {
 
   populateTransaction: {
     batchDeposit(
-      _contractAddresses: string,
+      _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
       _object: string,
@@ -1320,14 +1349,19 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    viewLinks(
+      name: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     viewObjectLink(
-      user: string,
+      name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     viewPhiland(
-      user: string,
+      name: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
