@@ -95,17 +95,26 @@ export interface PhiRegistryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
 
   events: {
+    "Hello()": EventFragment;
     "LogChangePhilandOwner(address,string)": EventFragment;
     "LogCreatePhiland(address,string)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
+    "SetENS(bytes32)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogChangePhilandOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogCreatePhiland"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetENS"): EventFragment;
 }
+
+export interface HelloEventObject {}
+export type HelloEvent = TypedEvent<[], HelloEventObject>;
+
+export type HelloEventFilter = TypedEventFilter<HelloEvent>;
 
 export interface LogChangePhilandOwnerEventObject {
   sender: string;
@@ -154,6 +163,13 @@ export type OwnershipRemovedEvent = TypedEvent<
 
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
+
+export interface SetENSEventObject {
+  basenode: string;
+}
+export type SetENSEvent = TypedEvent<[string], SetENSEventObject>;
+
+export type SetENSEventFilter = TypedEventFilter<SetENSEvent>;
 
 export interface PhiRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -279,6 +295,9 @@ export interface PhiRegistry extends BaseContract {
   };
 
   filters: {
+    "Hello()"(): HelloEventFilter;
+    Hello(): HelloEventFilter;
+
     "LogChangePhilandOwner(address,string)"(
       sender?: string | null,
       name?: null
@@ -314,6 +333,9 @@ export interface PhiRegistry extends BaseContract {
       operator?: string | null,
       target?: string | null
     ): OwnershipRemovedEventFilter;
+
+    "SetENS(bytes32)"(basenode?: null): SetENSEventFilter;
+    SetENS(basenode?: null): SetENSEventFilter;
   };
 
   estimateGas: {

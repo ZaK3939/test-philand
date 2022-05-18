@@ -40,6 +40,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_newPrice",
+        type: "uint256",
+      },
+    ],
+    name: "ChangeTokenPrice",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "operator",
@@ -79,24 +98,131 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "address",
-        name: "from",
-        type: "address",
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "to",
+        internalType: "address payable",
+        name: "_creator",
         type: "address",
+      },
+    ],
+    name: "SetCreator",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "value",
+        name: "newMaxClaimed",
         type: "uint256",
       },
     ],
-    name: "Sale",
+    name: "SetMaxClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_royalityFee",
+        type: "uint256",
+      },
+    ],
+    name: "SetRoyalityFee",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "uint8",
+            name: "x",
+            type: "uint8",
+          },
+          {
+            internalType: "uint8",
+            name: "y",
+            type: "uint8",
+          },
+          {
+            internalType: "uint8",
+            name: "z",
+            type: "uint8",
+          },
+        ],
+        indexed: false,
+        internalType: "struct BaseObject.Size",
+        name: "_size",
+        type: "tuple",
+      },
+    ],
+    name: "SetSize",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "_uri",
+        type: "string",
+      },
+    ],
+    name: "SetTokenURI",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address payable",
+        name: "_treasuryAddress",
+        type: "address",
+      },
+    ],
+    name: "SetTreasuryAddress",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "string",
+        name: "baseuri",
+        type: "string",
+      },
+    ],
+    name: "SetbaseMetadataURI",
     type: "event",
   },
   {
@@ -292,6 +418,25 @@ const _abi = [
         internalType: "struct BaseObject.Size",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getTokenPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

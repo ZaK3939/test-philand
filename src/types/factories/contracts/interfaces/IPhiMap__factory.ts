@@ -24,6 +24,24 @@ const _abi = [
         type: "address",
       },
     ],
+    name: "changePhilandOwner",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "caller",
+        type: "address",
+      },
+    ],
     name: "create",
     outputs: [],
     stateMutability: "nonpayable",
