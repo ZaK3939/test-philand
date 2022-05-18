@@ -86,6 +86,7 @@ describe("Unit tests PhiMap", function () {
         this.phiMap.address,
       ])
     );
+    await this.phiMap.connect(this.signers.admin).setOwner(this.phiRegistry.address);
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
     await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
 

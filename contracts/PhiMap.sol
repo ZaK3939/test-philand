@@ -8,30 +8,32 @@ import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract PhiMap is MultiOwner, ERC1155Receiver {
-    IObject public freeObject;
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   CONFIG                                   */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- Map ----------------------------------- */
+    MapSettings public mapSettings;
     struct MapSettings {
         uint256 minX;
         uint256 maxX;
         uint256 minY;
         uint256 maxY;
     }
-
-    MapSettings public mapSettings;
-
+    /* --------------------------------- OBJECT --------------------------------- */
+    IObject public freeObject;
     struct Size {
         uint8 x;
         uint8 y;
         uint8 z;
     }
-
     struct Object {
         address contractAddress;
         uint256 tokenId;
         uint256 xStart;
         uint256 yStart;
     }
-
     struct ObjectInfo {
         address contractAddress;
         uint256 tokenId;
@@ -40,50 +42,188 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         uint256 xEnd;
         uint256 yEnd;
     }
-
+    /* --------------------------------- DEPOSIT -------------------------------- */
+    struct Deposit {
+        uint256 amount;
+        uint256 used;
+        uint256 timestamp;
+    }
+    struct DepositInfo {
+        address contractAddress;
+        uint256 tokenId;
+    }
+    /* --------------------------------- LINK ----------------------------------- */
     struct ObjectLinkInfo {
         string title;
         string url;
     }
-
     struct Links {
         uint256 index;
         string title;
         string url;
     }
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   STORAGE                                  */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- Map ----------------------------------- */
     mapping(string => address) public ownerLists;
+    /* --------------------------------- OBJECT --------------------------------- */
+    mapping(string => ObjectInfo[]) public userObject;
+    /* --------------------------------- DEPOSIT -------------------------------- */
+    mapping(string => DepositInfo[]) public userObjectDeposit;
+    mapping(string => mapping(address => mapping(uint256 => Deposit))) public depositInfo;
+    mapping(string => mapping(address => mapping(uint256 => uint256))) public depositTime;
+    /* --------------------------------- LINK ----------------------------------- */
+    mapping(string => mapping(uint256 => ObjectLinkInfo[])) public userObjectLink;
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
+    event Hello();
+    /* ---------------------------------- Map ----------------------------------- */
+    event CreatedMap(string name, address indexed sender);
+    event ChangePhilandOwner(string name, address indexed sender);
+    /* --------------------------------- OBJECT --------------------------------- */
+    event WriteObject(string name, ObjectInfo writeObjectInfo);
+    event RemoveObject(string name, uint256 index);
+    /* --------------------------------- DEPOSIT -------------------------------- */
+    event DepositSuccess(address indexed sender, string name, address contractAddress, uint256 tokenId, uint256 amount);
+    event UnDepositSuccess(
+        address indexed sender,
+        string name,
+        address contractAddress,
+        uint256 tokenId,
+        uint256 amount
+    );
+    /* ---------------------------------- LINK ---------------------------------- */
+    event WriteLink(string name, uint256 index, string title, string url);
+    event RemoveLink(string name, uint256 index);
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- Map ----------------------------------- */
     error NotReadyPhiland(address sender, address owner);
-    error NotReadyObject(address sender, uint256 object_index);
-    error NotDeposit(address sender, address owner, uint256 token_id);
+    error NotPhilandOwner(address sender, address owner);
+    error NotDepositEnough(string name, Object objectData, uint256 used, uint256 amount);
     error OutofMapRange(uint256 a, string error_boader);
-    error objectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
+    error ObjectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
+    /* --------------------------------- OBJECT --------------------------------- */
+    error NotReadyObject(address sender, uint256 object_index);
+    /* --------------------------------- DEPOSIT -------------------------------- */
+    error NotDeposit(address sender, address owner, uint256 token_id);
+    error NotBalanceEnough(
+        string name,
+        address sender,
+        address contractAddress,
+        uint256 tokenId,
+        uint256 currentDepositAmount,
+        uint256 currentDepositUsed,
+        uint256 updateDepositAmount,
+        uint256 userBalance
+    );
+    error UnDepositError(uint256 amount, uint256 mapUnUsedBalance);
 
+    /* ---------------------------------- LINK ---------------------------------- */
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     constructor(IObject _freeObject) {
         freeObject = _freeObject;
-        mapSettings = MapSettings(0, 10, 0, 10);
+        mapSettings = MapSettings(0, 16, 0, 16);
+        emit Hello();
     }
 
-    mapping(string => ObjectInfo[]) public userObject;
-    mapping(string => mapping(uint256 => ObjectLinkInfo[])) public userObjectLink;
+    /* --------------------------------- ****** --------------------------------- */
 
-    function create(string calldata name, address caller) external {
-        ownerLists[name] = caller;
-    }
-
-    function writeObjectToLand(
-        string calldata name,
-        Object calldata objectData,
-        IObject _object
-    ) public {
+    /* -------------------------------------------------------------------------- */
+    /*                                  MODIFIERS                                 */
+    /* -------------------------------------------------------------------------- */
+    modifier onlyIfNotPhilandCreated(string memory name) {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
         }
-        if (depositInfo[msg.sender][objectData.contractAddress][objectData.tokenId].amount == 0) {
+        _;
+    }
+
+    modifier onlyIfNotPhilandOwner(string memory name) {
+        address owner = ownerOfPhiland(name);
+        if (owner != msg.sender) {
+            revert NotPhilandOwner({ sender: msg.sender, owner: owner });
+        }
+        _;
+    }
+
+    modifier onlyIfNotDepositObject(string memory name, Object memory objectData) {
+        address owner = ownerOfPhiland(name);
+        if (depositInfo[name][objectData.contractAddress][objectData.tokenId].amount == 0) {
             revert NotDeposit({ sender: msg.sender, owner: owner, token_id: objectData.tokenId });
         }
+        _;
+    }
+
+    modifier onlyIfNotReadyObject(string memory name, uint256 object_index) {
+        address owner = ownerOfPhiland(name);
+        if (userObject[name][object_index].contractAddress == address(0)) {
+            revert NotReadyObject({ sender: msg.sender, object_index: object_index });
+        }
+        _;
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                     Map                                    */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- ADMIN --------------------------------- */
+    function create(string memory name, address caller) external onlyOwner {
+        ownerLists[name] = caller;
+        emit CreatedMap(name, caller);
+    }
+
+    function changePhilandOwner(string memory name, address caller) external onlyOwner onlyIfNotPhilandCreated(name) {
+        ownerLists[name] = caller;
+        emit ChangePhilandOwner(name, caller);
+    }
+
+    /* ----------------------------------- VIEW --------------------------------- */
+    /// @dev check that the user has already claimed Philand
+    function ownerOfPhiland(string memory name) public view returns (address) {
+        if (ownerLists[name] != address(0)) return ownerLists[name];
+        else return address(0);
+    }
+
+    function viewPhiland(string memory name) external view returns (ObjectInfo[] memory) {
+        return userObject[name];
+    }
+
+    /* ----------------------------------- WRITE -------------------------------- */
+    function writeObjectToLand(
+        string memory name,
+        Object memory objectData,
+        IObject _object
+    ) public onlyIfNotPhilandOwner(name) onlyIfNotDepositObject(name, objectData) {
+        if (
+            depositInfo[name][objectData.contractAddress][objectData.tokenId].used + 1 <
+            depositInfo[name][objectData.contractAddress][objectData.tokenId].amount
+        ) {
+            revert NotDepositEnough(
+                name,
+                objectData,
+                depositInfo[name][objectData.contractAddress][objectData.tokenId].used,
+                depositInfo[name][objectData.contractAddress][objectData.tokenId].amount
+            );
+        }
+        depositInfo[name][objectData.contractAddress][objectData.tokenId].used++;
+
         IObject.Size memory size = _object.getSize(objectData.tokenId);
         ObjectInfo memory objectinfo = ObjectInfo(
             objectData.contractAddress,
@@ -95,35 +235,50 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         );
         checkCollision(name, objectinfo);
         userObject[name].push(objectinfo);
+        emit WriteObject(name, objectinfo);
     }
 
     function batchWriteObjectToLand(
-        string calldata name,
-        Object[] calldata objectData,
-        IObject[] calldata _object
+        string memory name,
+        Object[] memory objectData,
+        IObject[] memory _object
     ) public {
-        address owner = ownerOfPhiland(name);
-        if (owner == address(0)) {
-            revert NotReadyPhiland({ sender: msg.sender, owner: owner });
-        }
         for (uint256 i = 0; i < objectData.length; i++) {
             writeObjectToLand(name, objectData[i], _object[i]);
         }
     }
 
-    function removeObjectFromLand(string calldata name, uint256 i) external {
+    /* ----------------------------------- REMOVE -------------------------------- */
+    function removeObjectFromLand(string memory name, uint256 i)
+        public
+        onlyIfNotPhilandCreated(name)
+        onlyIfNotPhilandOwner(name)
+    {
         delete userObject[name][i];
+        emit RemoveObject(name, i);
         delete userObjectLink[name][i];
+        emit RemoveLink(name, i);
     }
 
-    function batchRemoveObjectFromLand(string calldata name, uint256[] calldata index_array) public {
+    function batchRemoveObjectFromLand(string memory name, uint256[] memory index_array) public {
         for (uint256 i = 0; i < index_array.length; i++) {
-            uint256 tmp = index_array[i];
-            delete userObject[name][tmp];
+            removeObjectFromLand(name, index_array[i]);
         }
     }
 
-    function checkCollision(string calldata name, ObjectInfo memory objectInfo) private view {
+    /* -------------------------------- WRITE/REMOVE ----------------------------- */
+    function batchRemoveAndWrite(
+        string memory name,
+        uint256[] memory remove_index_array,
+        Object[] memory objectData,
+        IObject[] memory _object
+    ) external {
+        batchRemoveObjectFromLand(name, remove_index_array);
+        batchWriteObjectToLand(name, objectData, _object);
+    }
+
+    /* ----------------------------------- INTERNAL ------------------------------ */
+    function checkCollision(string memory name, ObjectInfo memory objectInfo) private view {
         if (objectInfo.xStart < mapSettings.minX || objectInfo.xStart > mapSettings.maxX) {
             revert OutofMapRange({ a: objectInfo.xStart, error_boader: "invalid xStart" });
         }
@@ -150,7 +305,7 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
             ) {
                 continue;
             } else {
-                revert objectCollision({
+                revert ObjectCollision({
                     writeObjectInfo: objectInfo,
                     userObjectInfo: userObject[name][i],
                     error_boader: "invalid objectInfo"
@@ -160,7 +315,11 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return;
     }
 
-    function claimStarterObject(string calldata name) external {
+    /* -------------------------------------------------------------------------- */
+    /*                                    OBJECT                                  */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- ADMIN --------------------------------- */
+    function claimStarterObject(string memory name) external {
         address owner = ownerOfPhiland(name);
         if (owner == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: owner });
@@ -175,68 +334,112 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         freeObject.mintBatchObject(msg.sender, ids, amounts, "");
     }
 
-    struct Deposit {
-        uint256 amount;
-        uint256 timestamp;
+    /* -------------------------------------------------------------------------- */
+    /*                                   DEPOSIT                                  */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- VIEW ---------------------------------- */
+    function checkDepositStatus(
+        string memory name,
+        address _contractAddress,
+        uint256 _tokenId
+    ) public view returns (Deposit memory) {
+        return depositInfo[name][_contractAddress][_tokenId];
     }
 
-    // map staker address to stake details
-    mapping(address => mapping(address => mapping(uint256 => Deposit))) public depositInfo;
-    // map staker to total staking time
-    mapping(address => mapping(address => mapping(uint256 => uint256))) public depositTime;
+    function checkAllDepositStatus(string memory name) public view returns (Deposit[] memory) {
+        Deposit[] memory deposits = new Deposit[](userObjectDeposit[name].length);
+        for (uint256 i = 0; i < userObjectDeposit[name].length; i++) {
+            DepositInfo memory depositObjectInfo = userObjectDeposit[name][i];
+            Deposit memory item = depositInfo[name][depositObjectInfo.contractAddress][depositObjectInfo.tokenId];
+            deposits[i] = item;
+        }
+        return deposits;
+    }
 
+    /* --------------------------------- deposit -------------------------------- */
     function deposit(
+        string memory name,
         address _contractAddress,
         uint256 _tokenId,
         uint256 _amount,
         IObject _object
-    ) public {
-        uint256 currentAmount = depositInfo[msg.sender][_contractAddress][_tokenId].amount;
-        depositInfo[msg.sender][_contractAddress][_tokenId] = Deposit(currentAmount + _amount, block.timestamp);
+    ) public onlyIfNotPhilandOwner(name) {
+        uint256 currentDepositAmount = depositInfo[name][_contractAddress][_tokenId].amount;
+        uint256 updateDepositAmount = currentDepositAmount + _amount;
+        uint256 currentDepositUsed = depositInfo[name][_contractAddress][_tokenId].used;
+        uint256 userBalance = _object.balanceOf(msg.sender, _tokenId);
+        if (userBalance < updateDepositAmount) {
+            revert NotBalanceEnough({
+                name: name,
+                sender: msg.sender,
+                contractAddress: _contractAddress,
+                tokenId: _tokenId,
+                currentDepositAmount: currentDepositAmount,
+                currentDepositUsed: currentDepositUsed,
+                updateDepositAmount: updateDepositAmount,
+                userBalance: userBalance
+            });
+        }
+        depositInfo[name][_contractAddress][_tokenId] = Deposit(
+            updateDepositAmount,
+            currentDepositUsed,
+            block.timestamp
+        );
+        DepositInfo memory depositObjectInfo = DepositInfo(_contractAddress, _tokenId);
+        userObjectDeposit[name].push(depositObjectInfo);
         _object.safeTransferFrom(msg.sender, address(this), _tokenId, _amount, "0x00");
+        emit DepositSuccess(msg.sender, name, _contractAddress, _tokenId, _amount);
     }
 
     function batchDeposit(
-        address[] calldata _contractAddresses,
+        string memory name,
+        address[] memory _contractAddresses,
         uint256[] memory _tokenIds,
         uint256[] memory _amounts,
-        IObject _object
-    ) public {
+        IObject[] memory _object
+    ) public onlyIfNotPhilandOwner(name) {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            uint256 currentAmount = depositInfo[msg.sender][_contractAddresses[i]][_tokenIds[i]].amount;
-            depositInfo[msg.sender][_contractAddresses[i]][_tokenIds[i]] = Deposit(
-                currentAmount + _amounts[i],
-                block.timestamp
-            );
-            _object.safeTransferFrom(msg.sender, address(this), _tokenIds[i], _amounts[i], "0x00");
+            deposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i], _object[i]);
         }
     }
 
-    function checkDepositStatus(
-        address sender,
-        address _contractAddresses,
-        uint256 _tokenId
-    ) public view returns (Deposit memory) {
-        return depositInfo[sender][_contractAddresses][_tokenId];
-    }
-
-    function undeposit(
-        address _contractAddresses,
+    /* --------------------------------- unDeposit ------------------------------ */
+    function unDeposit(
+        string memory name,
+        address _contractAddress,
         uint256 _tokenId,
+        uint256 _amount,
         IObject _object
-    ) public {
-        _object.safeTransferFrom(
-            address(this),
-            msg.sender,
-            _tokenId,
-            depositInfo[msg.sender][_contractAddresses][_tokenId].amount,
-            "0x00"
-        );
-        depositTime[msg.sender][_contractAddresses][_tokenId] += (block.timestamp -
-            depositInfo[msg.sender][_contractAddresses][_tokenId].timestamp);
-        delete depositInfo[msg.sender][_contractAddresses][_tokenId];
+    ) public onlyIfNotPhilandOwner(name) {
+        uint256 used = depositInfo[name][_contractAddress][_tokenId].used;
+        uint256 mapUnusedAmount = depositInfo[name][_contractAddress][_tokenId].amount - used;
+        if (_amount > mapUnusedAmount) {
+            revert UnDepositError(_amount, mapUnusedAmount);
+        }
+        _object.safeTransferFrom(address(this), msg.sender, _tokenId, _amount, "0x00");
+        depositTime[name][_contractAddress][_tokenId] += (block.timestamp -
+            depositInfo[name][_contractAddress][_tokenId].timestamp);
+        depositInfo[name][_contractAddress][_tokenId].amount =
+            depositInfo[name][_contractAddress][_tokenId].amount -
+            _amount;
+
+        // delete depositInfo[msg.sender][_contractAddresses][_tokenId];
+        emit UnDepositSuccess(msg.sender, name, _contractAddress, _tokenId, _amount);
     }
 
+    function batchUnDeposit(
+        string memory name,
+        address[] memory _contractAddresses,
+        uint256[] memory _tokenIds,
+        uint256[] memory _amounts,
+        IObject[] memory _object
+    ) public onlyIfNotPhilandOwner(name) {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            unDeposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i], _object[i]);
+        }
+    }
+
+    /* ----------------------------------- RECEIVE ------------------------------ */
     function onERC1155Received(
         address operator,
         address from,
@@ -257,19 +460,16 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
     }
 
-    function viewPhiland(string calldata name) external view returns (ObjectInfo[] memory) {
-        return userObject[name];
-    }
+    /* -------------------------------------------------------------------------- */
+    /*                                    LINK                                    */
+    /* -------------------------------------------------------------------------- */
+    /* ---------------------------------- VIEW ---------------------------------- */
 
-    function viewObjectLink(string calldata name, uint256 object_index)
-        external
-        view
-        returns (ObjectLinkInfo[] memory)
-    {
+    function viewObjectLink(string memory name, uint256 object_index) external view returns (ObjectLinkInfo[] memory) {
         return userObjectLink[name][object_index];
     }
 
-    function viewLinks(string calldata name) external view returns (Links[] memory) {
+    function viewLinks(string memory name) external view returns (Links[] memory) {
         Links[] memory links = new Links[](userObject[name].length);
         for (uint256 i = 0; i < userObject[name].length; i++) {
             if (userObjectLink[name][i].length != 0) {
@@ -280,40 +480,21 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return links;
     }
 
+    /* ---------------------------------- WRITE --------------------------------- */
     function writeLinkToObject(
-        string calldata name,
+        string memory name,
         uint256 object_index,
-        string calldata title,
-        string calldata url
-    ) public {
-        address owner = ownerOfPhiland(name);
-        if (owner == address(0)) {
-            revert NotReadyPhiland({ sender: msg.sender, owner: owner });
-        }
-        if (userObject[name][object_index].contractAddress == address(0)) {
-            revert NotReadyObject({ sender: msg.sender, object_index: object_index });
-        }
+        string memory title,
+        string memory url
+    ) public onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) onlyIfNotReadyObject(name, object_index) {
         ObjectLinkInfo memory objectLinkInfo = ObjectLinkInfo(title, url);
         userObjectLink[name][object_index].push(objectLinkInfo);
+        emit WriteLink(name, object_index, title, url);
     }
 
-    function removeLinkFromObject(string calldata name, uint256 object_index) external {
+    /* ---------------------------------- REMOVE --------------------------------- */
+    function removeLinkFromObject(string memory name, uint256 object_index) external onlyIfNotPhilandOwner(name) {
         delete userObjectLink[name][object_index];
-    }
-
-    function batchRemoveAndWrite(
-        string calldata name,
-        uint256[] calldata remove_index_array,
-        Object[] calldata objectData,
-        IObject[] calldata _object
-    ) external {
-        batchRemoveObjectFromLand(name, remove_index_array);
-        batchWriteObjectToLand(name, objectData, _object);
-    }
-
-    /// @dev check that the user has already claimed Philand
-    function ownerOfPhiland(string memory name) public view returns (address) {
-        if (ownerLists[name] != address(0)) return ownerLists[name];
-        else return address(0);
+        emit RemoveLink(name, object_index);
     }
 }

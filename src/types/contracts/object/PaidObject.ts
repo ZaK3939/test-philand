@@ -58,6 +58,7 @@ export interface PaidObjectInterface extends utils.Interface {
     "getCreator(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
+    "getTokenPrice(uint256)": FunctionFragment;
     "getTokenURI(uint256)": FunctionFragment;
     "initObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -98,6 +99,7 @@ export interface PaidObjectInterface extends utils.Interface {
       | "getCreator"
       | "getMaxClaimed"
       | "getSize"
+      | "getTokenPrice"
       | "getTokenURI"
       | "initObject"
       | "isApprovedForAll"
@@ -180,6 +182,10 @@ export interface PaidObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getSize",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenPrice",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -296,6 +302,10 @@ export interface PaidObjectInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "getSize", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "getTokenPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getTokenURI",
     data: BytesLike
   ): Result;
@@ -366,18 +376,32 @@ export interface PaidObjectInterface extends utils.Interface {
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "ChangeTokenPrice(uint256,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
-    "Sale(address,address,uint256)": EventFragment;
+    "SetCreator(uint256,address)": EventFragment;
+    "SetMaxClaimed(uint256,uint256)": EventFragment;
+    "SetRoyalityFee(uint256)": EventFragment;
+    "SetSize(uint256,tuple)": EventFragment;
+    "SetTokenURI(uint256,string)": EventFragment;
+    "SetTreasuryAddress(address)": EventFragment;
+    "SetbaseMetadataURI(string)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ChangeTokenPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Sale"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSize"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTokenURI"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTreasuryAddress"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetbaseMetadataURI"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -394,6 +418,18 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export interface ChangeTokenPriceEventObject {
+  tokenId: BigNumber;
+  _newPrice: BigNumber;
+}
+export type ChangeTokenPriceEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  ChangeTokenPriceEventObject
+>;
+
+export type ChangeTokenPriceEventFilter =
+  TypedEventFilter<ChangeTokenPriceEvent>;
 
 export interface OwnershipGrantedEventObject {
   operator: string;
@@ -419,17 +455,81 @@ export type OwnershipRemovedEvent = TypedEvent<
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
-export interface SaleEventObject {
-  from: string;
-  to: string;
-  value: BigNumber;
+export interface SetCreatorEventObject {
+  tokenId: BigNumber;
+  _creator: string;
 }
-export type SaleEvent = TypedEvent<
-  [string, string, BigNumber],
-  SaleEventObject
+export type SetCreatorEvent = TypedEvent<
+  [BigNumber, string],
+  SetCreatorEventObject
 >;
 
-export type SaleEventFilter = TypedEventFilter<SaleEvent>;
+export type SetCreatorEventFilter = TypedEventFilter<SetCreatorEvent>;
+
+export interface SetMaxClaimedEventObject {
+  tokenId: BigNumber;
+  newMaxClaimed: BigNumber;
+}
+export type SetMaxClaimedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  SetMaxClaimedEventObject
+>;
+
+export type SetMaxClaimedEventFilter = TypedEventFilter<SetMaxClaimedEvent>;
+
+export interface SetRoyalityFeeEventObject {
+  _royalityFee: BigNumber;
+}
+export type SetRoyalityFeeEvent = TypedEvent<
+  [BigNumber],
+  SetRoyalityFeeEventObject
+>;
+
+export type SetRoyalityFeeEventFilter = TypedEventFilter<SetRoyalityFeeEvent>;
+
+export interface SetSizeEventObject {
+  tokenId: BigNumber;
+  _size: BaseObject.SizeStructOutput;
+}
+export type SetSizeEvent = TypedEvent<
+  [BigNumber, BaseObject.SizeStructOutput],
+  SetSizeEventObject
+>;
+
+export type SetSizeEventFilter = TypedEventFilter<SetSizeEvent>;
+
+export interface SetTokenURIEventObject {
+  tokenId: BigNumber;
+  _uri: string;
+}
+export type SetTokenURIEvent = TypedEvent<
+  [BigNumber, string],
+  SetTokenURIEventObject
+>;
+
+export type SetTokenURIEventFilter = TypedEventFilter<SetTokenURIEvent>;
+
+export interface SetTreasuryAddressEventObject {
+  _treasuryAddress: string;
+}
+export type SetTreasuryAddressEvent = TypedEvent<
+  [string],
+  SetTreasuryAddressEventObject
+>;
+
+export type SetTreasuryAddressEventFilter =
+  TypedEventFilter<SetTreasuryAddressEvent>;
+
+export interface SetbaseMetadataURIEventObject {
+  baseuri: string;
+}
+export type SetbaseMetadataURIEvent = TypedEvent<
+  [string],
+  SetbaseMetadataURIEventObject
+>;
+
+export type SetbaseMetadataURIEventFilter =
+  TypedEventFilter<SetbaseMetadataURIEvent>;
 
 export interface TransferBatchEventObject {
   operator: string;
@@ -570,6 +670,11 @@ export interface PaidObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BaseObject.SizeStructOutput]>;
+
+    getTokenPrice(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getTokenURI(
       tokenId: BigNumberish,
@@ -765,6 +870,11 @@ export interface PaidObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BaseObject.SizeStructOutput>;
 
+  getTokenPrice(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getTokenURI(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -956,6 +1066,11 @@ export interface PaidObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BaseObject.SizeStructOutput>;
 
+    getTokenPrice(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1079,6 +1194,15 @@ export interface PaidObject extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
+    "ChangeTokenPrice(uint256,uint256)"(
+      tokenId?: null,
+      _newPrice?: null
+    ): ChangeTokenPriceEventFilter;
+    ChangeTokenPrice(
+      tokenId?: null,
+      _newPrice?: null
+    ): ChangeTokenPriceEventFilter;
+
     "OwnershipGranted(address,address)"(
       operator?: string | null,
       target?: string | null
@@ -1097,12 +1221,40 @@ export interface PaidObject extends BaseContract {
       target?: string | null
     ): OwnershipRemovedEventFilter;
 
-    "Sale(address,address,uint256)"(
-      from?: null,
-      to?: null,
-      value?: null
-    ): SaleEventFilter;
-    Sale(from?: null, to?: null, value?: null): SaleEventFilter;
+    "SetCreator(uint256,address)"(
+      tokenId?: null,
+      _creator?: null
+    ): SetCreatorEventFilter;
+    SetCreator(tokenId?: null, _creator?: null): SetCreatorEventFilter;
+
+    "SetMaxClaimed(uint256,uint256)"(
+      tokenId?: null,
+      newMaxClaimed?: null
+    ): SetMaxClaimedEventFilter;
+    SetMaxClaimed(
+      tokenId?: null,
+      newMaxClaimed?: null
+    ): SetMaxClaimedEventFilter;
+
+    "SetRoyalityFee(uint256)"(_royalityFee?: null): SetRoyalityFeeEventFilter;
+    SetRoyalityFee(_royalityFee?: null): SetRoyalityFeeEventFilter;
+
+    "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
+    SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
+
+    "SetTokenURI(uint256,string)"(
+      tokenId?: null,
+      _uri?: null
+    ): SetTokenURIEventFilter;
+    SetTokenURI(tokenId?: null, _uri?: null): SetTokenURIEventFilter;
+
+    "SetTreasuryAddress(address)"(
+      _treasuryAddress?: null
+    ): SetTreasuryAddressEventFilter;
+    SetTreasuryAddress(_treasuryAddress?: null): SetTreasuryAddressEventFilter;
+
+    "SetbaseMetadataURI(string)"(baseuri?: null): SetbaseMetadataURIEventFilter;
+    SetbaseMetadataURI(baseuri?: null): SetbaseMetadataURIEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -1199,6 +1351,11 @@ export interface PaidObject extends BaseContract {
     ): Promise<BigNumber>;
 
     getSize(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokenPrice(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1389,6 +1546,11 @@ export interface PaidObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getSize(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokenPrice(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

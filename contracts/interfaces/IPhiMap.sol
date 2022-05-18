@@ -3,4 +3,6 @@ pragma solidity ^0.8.8;
 
 interface IPhiMap {
     function create(string calldata name, address caller) external;
+
+    function changePhilandOwner(string calldata name, address caller) external;
 }

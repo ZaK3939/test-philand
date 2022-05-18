@@ -25,16 +25,27 @@ import type {
 
 export interface IPhiMapInterface extends utils.Interface {
   functions: {
+    "changePhilandOwner(string,address)": FunctionFragment;
     "create(string,address)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: "create"): FunctionFragment;
+  getFunction(
+    nameOrSignatureOrTopic: "changePhilandOwner" | "create"
+  ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "changePhilandOwner",
+    values: [string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "create",
     values: [string, string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "changePhilandOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "create", data: BytesLike): Result;
 
   events: {};
@@ -67,12 +78,24 @@ export interface IPhiMap extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    changePhilandOwner(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     create(
       name: string,
       caller: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  changePhilandOwner(
+    name: string,
+    caller: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   create(
     name: string,
@@ -81,6 +104,12 @@ export interface IPhiMap extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    changePhilandOwner(
+      name: string,
+      caller: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     create(
       name: string,
       caller: string,
@@ -91,6 +120,12 @@ export interface IPhiMap extends BaseContract {
   filters: {};
 
   estimateGas: {
+    changePhilandOwner(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     create(
       name: string,
       caller: string,
@@ -99,6 +134,12 @@ export interface IPhiMap extends BaseContract {
   };
 
   populateTransaction: {
+    changePhilandOwner(
+      name: string,
+      caller: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     create(
       name: string,
       caller: string,

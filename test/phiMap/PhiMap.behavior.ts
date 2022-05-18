@@ -15,11 +15,11 @@ export function shouldBehaveClaimStarterObject(): void {
 export function shouldBehaveDeposit(): void {
   it("should deposit and balance 1->0", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
-    await this.phiMap.connect(this.signers.alice).deposit(this.phiObject.address, 1, 1, this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
-    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, this.phiObject.address, 1);
+    const status = await this.phiMap.checkDepositStatus("test", this.phiObject.address, 1);
     expect(status.amount).to.equal(1);
     expect(status.timestamp).to.equal(timestampBefore);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
@@ -29,7 +29,9 @@ export function shouldBehaveDeposit(): void {
 export function shouldBehaveUnDeposit(): void {
   it("should undeposit and balance 0->1", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
-    await this.phiMap.connect(this.signers.alice).undeposit(this.phiObject.address, 1, this.phiObject.address);
+    await this.phiMap
+      .connect(this.signers.alice)
+      .unDeposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
   });
 }
@@ -40,6 +42,7 @@ export function shouldBehaveBatchDeposit(): void {
     await this.phiMap
       .connect(this.signers.alice)
       .batchDeposit(
+        "test",
         [
           this.freeObject.address,
           this.freeObject.address,
@@ -49,12 +52,18 @@ export function shouldBehaveBatchDeposit(): void {
         ],
         [1, 2, 3, 4, 5],
         [1, 1, 1, 1, 1],
-        this.freeObject.address,
+        [
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+          this.freeObject.address,
+        ],
       );
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
-    const status = await this.phiMap.checkDepositStatus(this.signers.alice.address, this.freeObject.address, 4);
+    const status = await this.phiMap.checkDepositStatus("test", this.freeObject.address, 4);
     expect(status.amount).to.equal(1);
     expect(status.timestamp).to.equal(timestampBefore);
     expect(await this.freeObject.balanceOf(this.signers.alice.address, 4)).to.equal(0);
@@ -71,7 +80,7 @@ export function shouldBehaveOwnerOfPhiland(): void {
 
 export function shouldBehaveWriteObjectToLand(): void {
   it("should write object to land", async function () {
-    await this.phiMap.connect(this.signers.alice).deposit(this.phiObject.address, 1, 1, this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
     await this.phiMap
       .connect(this.signers.alice)
       .writeObjectToLand(
@@ -108,10 +117,16 @@ export function shouldBehaveRemoveObjectFromLand(): void {
 }
 
 export function shouldBehaveBatchWriteObjectToLand(): void {
-  it("should batch write object from land", async function () {
+  it("should batch write object to land", async function () {
     await this.phiMap
       .connect(this.signers.alice)
-      .batchDeposit([this.phiObject.address, this.phiObject.address], [2, 3], [1, 1], this.phiObject.address);
+      .batchDeposit(
+        "test",
+        [this.phiObject.address, this.phiObject.address],
+        [2, 3],
+        [1, 1],
+        [this.phiObject.address, this.phiObject.address],
+      );
     await this.phiMap.connect(this.signers.alice).batchWriteObjectToLand(
       "test",
       [

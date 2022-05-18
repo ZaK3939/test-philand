@@ -7,19 +7,27 @@ import { MultiOwner } from "../utils/MultiOwner.sol";
  * @dev Contracts to manage base Objects.
  */
 abstract contract BaseObject is MultiOwner {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   CONFIG                                   */
+    /* -------------------------------------------------------------------------- */
     string public name;
     string public symbol;
     string public baseMetadataURI;
     uint256 public royalityFee;
     address payable public treasuryAddress;
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   STORAGE                                  */
+    /* -------------------------------------------------------------------------- */
+    /* --------------------------------- OBJECT --------------------------------- */
     struct Size {
         uint8 x;
         uint8 y;
         uint8 z;
     }
-
-    // define object struct
     struct Objects {
         string tokenURI;
         Size size;
@@ -28,17 +36,36 @@ abstract contract BaseObject is MultiOwner {
         uint256 price;
         bool forSale;
     }
-
-    // map token id to Objects
     mapping(uint256 => Objects) public allObjects;
     mapping(uint256 => bool) public created;
+    /* --------------------------------- ****** --------------------------------- */
 
-    event Sale(address from, address to, uint256 value);
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
+    event SetbaseMetadataURI(string baseuri);
+    event SetMaxClaimed(uint256 tokenId, uint256 newMaxClaimed);
+    event SetTokenURI(uint256 tokenId, string _uri);
+    event SetSize(uint256 tokenId, Size _size);
+    event SetCreator(uint256 tokenId, address payable _creator);
+    event ChangeTokenPrice(uint256 tokenId, uint256 _newPrice);
+    event SetRoyalityFee(uint256 _royalityFee);
+    event SetTreasuryAddress(address payable _treasuryAddress);
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
     error InvalidTokenID();
     error ExistentToken();
     error NonExistentToken();
     error NoSetTokenSize();
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   OBJECT                                   */
+    /* -------------------------------------------------------------------------- */
 
     function getBaseMetadataURI() public view returns (string memory) {
         return baseMetadataURI;
@@ -46,6 +73,7 @@ abstract contract BaseObject is MultiOwner {
 
     function setbaseMetadataURI(string memory baseuri) external onlyOwner {
         baseMetadataURI = baseuri;
+        emit SetbaseMetadataURI(baseuri);
     }
 
     /**
@@ -60,6 +88,7 @@ abstract contract BaseObject is MultiOwner {
      */
     function setMaxClaimed(uint256 tokenId, uint256 newMaxClaimed) public virtual onlyOwner {
         allObjects[tokenId].maxClaimed = newMaxClaimed;
+        emit SetMaxClaimed(tokenId, newMaxClaimed);
     }
 
     function getTokenURI(uint256 tokenId) public view returns (string memory) {
@@ -68,6 +97,7 @@ abstract contract BaseObject is MultiOwner {
 
     function setTokenURI(uint256 tokenId, string memory _uri) public virtual onlyOwner {
         allObjects[tokenId].tokenURI = _uri;
+        emit SetTokenURI(tokenId, _uri);
     }
 
     function getSize(uint256 tokenId) public view returns (Size memory) {
@@ -75,8 +105,9 @@ abstract contract BaseObject is MultiOwner {
         return allObjects[tokenId].size;
     }
 
-    function setSize(uint256 tokenId, Size calldata _size) public virtual onlyOwner {
+    function setSize(uint256 tokenId, Size memory _size) public virtual onlyOwner {
         allObjects[tokenId].size = _size;
+        emit SetSize(tokenId, _size);
     }
 
     function getCreator(uint256 tokenId) public view returns (address payable) {
@@ -85,20 +116,26 @@ abstract contract BaseObject is MultiOwner {
 
     function setCreator(uint256 tokenId, address payable _creator) public virtual onlyOwner {
         allObjects[tokenId].creator = _creator;
+        emit SetCreator(tokenId, _creator);
+    }
+
+    function getTokenPrice(uint256 tokenId) public view returns (uint256) {
+        return allObjects[tokenId].price;
     }
 
     function changeTokenPrice(uint256 tokenId, uint256 _newPrice) public onlyOwner {
-        // require caller of the function is not an empty address
-        require(msg.sender != address(0));
         // update token's price with new price
         allObjects[tokenId].price = _newPrice;
+        emit ChangeTokenPrice(tokenId, _newPrice);
     }
 
     function setRoyalityFee(uint256 _royalityFee) public onlyOwner {
         royalityFee = _royalityFee;
+        emit SetRoyalityFee(_royalityFee);
     }
 
     function setTreasuryAddress(address payable _treasuryAddress) public onlyOwner {
         treasuryAddress = _treasuryAddress;
+        emit SetTreasuryAddress(_treasuryAddress);
     }
 }

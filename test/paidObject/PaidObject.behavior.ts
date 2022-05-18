@@ -41,18 +41,18 @@ export function shouldBehaveCreateObject(): void {
     await this.paidObject
       .connect(this.signers.admin)
       .createObject(
-        0,
+        2,
         "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
         { x: 1, y: 2, z: 3 },
         this.signers.bob.address,
         200,
         10,
       );
-    expect(await this.paidObject.connect(this.signers.alice).getMaxClaimed(0)).to.equal(200);
-    expect(await this.paidObject.connect(this.signers.alice).uri(0)).to.equal(
+    expect(await this.paidObject.connect(this.signers.alice).getMaxClaimed(2)).to.equal(200);
+    expect(await this.paidObject.connect(this.signers.alice).uri(2)).to.equal(
       "https://www.arweave.net/FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
     );
-    const size = await this.paidObject.connect(this.signers.admin).getSize(0);
+    const size = await this.paidObject.connect(this.signers.admin).getSize(2);
     expect(size.x).to.equal(1);
     expect(size.y).to.equal(2);
     expect(size.z).to.equal(3);

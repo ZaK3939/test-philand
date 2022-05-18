@@ -7,6 +7,11 @@ import { BaseObject } from "../utils/BaseObject.sol";
 
 // PaidObjects smart contract inherits ERC1155 interface
 contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     // initialize contract while deployment with contract's collection name and token
     constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
         name = "PaidObjects";
@@ -16,14 +21,32 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         royalityFee = _royalityFee;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  TOKEN URI                                 */
+    /* -------------------------------------------------------------------------- */
     function uri(uint256 tokenId) public view override returns (string memory) {
+        if (!created[tokenId]) revert InvalidTokenID();
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                OBJECT METHOD                               */
+    /* -------------------------------------------------------------------------- */
+    /* Utility Functions */
+    function isValid(uint256 tokenId) internal view {
+        // Validate that the token is within range when querying
+        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (!created[tokenId]) revert InvalidTokenID();
     }
 
     function initObject(
         uint256 tokenId,
         string memory _uri,
-        BaseObject.Size calldata _size,
+        Size memory _size,
         address payable _creator,
         uint256 _maxClaimed,
         uint256 _price
@@ -40,7 +63,7 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
     function createObject(
         uint256 tokenId,
         string memory _uri,
-        BaseObject.Size calldata _size,
+        Size memory _size,
         address payable _creator,
         uint256 _maxClaimed,
         uint256 _price
@@ -57,18 +80,16 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         created[tokenId] = true;
     }
 
-    /* Utility Functions */
-    function isValid(uint256 tokenId) internal view {
-        // Validate that the token is within range when querying
-        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
-        if (!created[tokenId]) revert InvalidTokenID();
-    }
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                SHOP METHOD                                 */
+    /* -------------------------------------------------------------------------- */
     // by a token by passing in the token's id
     function buyObject(uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-        // check if the token id of the token being bought exists or not
+        // check if the token id of the token exists
         isValid(tokenId);
         // price sent in to buy should be equal to or more than the token's price
         require(msg.value >= allObjects[tokenId].price);

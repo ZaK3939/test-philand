@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.8;
 
-// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
 import { MultiOwner } from "../utils/MultiOwner.sol";
@@ -10,6 +9,11 @@ import "../utils/Strings.sol";
 import "hardhat/console.sol";
 
 contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     constructor(address payable _treasuryAddress) ERC1155("") {
         name = "Onchain PhiObjects";
         symbol = "OPS";
@@ -17,9 +21,26 @@ contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
         treasuryAddress = _treasuryAddress;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  TOKEN URI                                 */
+    /* -------------------------------------------------------------------------- */
     function uri(uint256 tokenId) public view override returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
+        if (!created[tokenId]) revert InvalidTokenID();
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                OBJECT METHOD                               */
+    /* -------------------------------------------------------------------------- */
+    /* Utility Functions */
+    function isValid(uint256 tokenId) internal view {
+        // Validate that the token is within range when querying
+        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (!created[tokenId]) revert InvalidTokenID();
     }
 
     function initObject(
@@ -41,7 +62,7 @@ contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
     function createObject(
         uint256 tokenId,
         string memory _uri,
-        Size calldata _size,
+        Size memory _size,
         address payable _creator,
         uint256 _maxClaimed
     ) external onlyOwner {
@@ -57,30 +78,20 @@ contract PhiObject is ERC1155Supply, MultiOwner, BaseObject {
         created[tokenId] = true;
     }
 
-    /* Utility Functions */
-    function isValid(uint256 tokenId) internal view {
-        // Validate that the token is within range when querying
-        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
-        if (!created[tokenId]) revert InvalidTokenID();
-    }
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                QUEST METHOD                                */
+    /* -------------------------------------------------------------------------- */
     // by a token by passing in the token's id
     function getPhiObject(address to, uint256 tokenId) public payable onlyOwner {
         // check if the function caller is not an zero account address
         require(to != address(0));
-        // check if the token id of the token being bought exists or not
+        // token should be for sale
+        require(allObjects[tokenId].forSale);
+        // check if the token id of the token exists
         isValid(tokenId);
         // mint the token
         super._mint(to, tokenId, 1, "0x00");
-    }
-
-    function mintBatchObject(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) external onlyOwner {
-        // todo for loop check token supply
-        super._mintBatch(to, ids, amounts, data);
     }
 }

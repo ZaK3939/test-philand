@@ -14,7 +14,7 @@ export function shouldBehaveClaimObject(): void {
     const fakeCoupon = getCoupon(this.signers.alice.address);
     await this.phiClaim
       .connect(this.signers.alice)
-      .claimObject(1, "lootbalance", fakeCoupon[this.signers.alice.address]["coupon"]);
+      .claimPhiObject(1, "lootbalance", fakeCoupon[this.signers.alice.address]["coupon"]);
     expect(await this.phiObject.connect(this.signers.admin).balanceOf(this.signers.alice.address, 1)).to.equal(1);
   });
 }

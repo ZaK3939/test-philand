@@ -7,6 +7,11 @@ import { BaseObject } from "../utils/BaseObject.sol";
 
 // FreeObjects smart contract inherits ERC1155 interface
 contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     // initialize contract while deployment with contract's collection name and token
     constructor(address payable _treasuryAddress) ERC1155("") {
         name = "FreeObjects";
@@ -15,9 +20,26 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
         treasuryAddress = _treasuryAddress;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  TOKEN URI                                 */
+    /* -------------------------------------------------------------------------- */
     function uri(uint256 tokenId) public view override returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
+        if (!created[tokenId]) revert InvalidTokenID();
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                OBJECT METHOD                               */
+    /* -------------------------------------------------------------------------- */
+    /* Utility Functions */
+    function isValid(uint256 tokenId) internal view {
+        // Validate that the token is within range when querying
+        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (!created[tokenId]) revert InvalidTokenID();
     }
 
     function initObject(
@@ -53,16 +75,28 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
         created[tokenId] = true;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                SHOP METHOD                                 */
+    /* -------------------------------------------------------------------------- */
     // by a token by passing in the token's id
     function getFreeObject(uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-
-        if (!created[tokenId]) revert InvalidTokenID();
+        // token should be for sale
+        require(allObjects[tokenId].forSale);
+        // check if the token id of the token exists
+        isValid(tokenId);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  ERC1155                                   */
+    /* -------------------------------------------------------------------------- */
     function mintBatchObject(
         address to,
         uint256[] memory ids,

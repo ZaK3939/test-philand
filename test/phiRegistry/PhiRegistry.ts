@@ -61,18 +61,20 @@ describe("Unit tests PhiRegistry", function () {
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
     this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
+    const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
+    this.phiRegistry = <PhiRegistry>(
+      await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
+        this.ensRegistry.address,
+        this.phiMap.address,
+      ])
+    );
+    await this.phiMap.connect(this.signers.admin).setOwner(this.phiRegistry.address);
   });
 
   describe("PhiRegistry", function () {
-    beforeEach(async function () {
-      const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
-      this.phiRegistry = <PhiRegistry>(
-        await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
-          this.ensRegistry.address,
-          this.phiMap.address,
-        ])
-      );
-    });
+    // beforeEach(async function () {
+
+    // });
     shouldBehaveCreatePhiland();
   });
 });
