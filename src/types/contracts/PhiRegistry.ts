@@ -32,11 +32,10 @@ export interface PhiRegistryInterface extends utils.Interface {
     "changePhilandOwner(string)": FunctionFragment;
     "claimed()": FunctionFragment;
     "createPhiland(string)": FunctionFragment;
-    "label()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "ownerLists(string)": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
-    "setEnsBaseNode(bytes32)": FunctionFragment;
+    "setBaseNode(bytes32)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
   };
 
@@ -45,11 +44,10 @@ export interface PhiRegistryInterface extends utils.Interface {
       | "changePhilandOwner"
       | "claimed"
       | "createPhiland"
-      | "label"
       | "owner"
       | "ownerLists"
       | "removeOwner"
-      | "setEnsBaseNode"
+      | "setBaseNode"
       | "setOwner"
   ): FunctionFragment;
 
@@ -62,12 +60,11 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "createPhiland",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "label", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
   encodeFunctionData(functionFragment: "ownerLists", values: [string]): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setEnsBaseNode",
+    functionFragment: "setBaseNode",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
@@ -81,7 +78,6 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "createPhiland",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "label", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
   decodeFunctionResult(
@@ -89,7 +85,7 @@ export interface PhiRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setEnsBaseNode",
+    functionFragment: "setBaseNode",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
@@ -100,7 +96,7 @@ export interface PhiRegistryInterface extends utils.Interface {
     "LogCreatePhiland(address,string)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
-    "SetENS(bytes32)": EventFragment;
+    "SetBaseNode(bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
@@ -108,7 +104,7 @@ export interface PhiRegistryInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "LogCreatePhiland"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetENS"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetBaseNode"): EventFragment;
 }
 
 export interface HelloEventObject {}
@@ -164,12 +160,12 @@ export type OwnershipRemovedEvent = TypedEvent<
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
-export interface SetENSEventObject {
+export interface SetBaseNodeEventObject {
   basenode: string;
 }
-export type SetENSEvent = TypedEvent<[string], SetENSEventObject>;
+export type SetBaseNodeEvent = TypedEvent<[string], SetBaseNodeEventObject>;
 
-export type SetENSEventFilter = TypedEventFilter<SetENSEvent>;
+export type SetBaseNodeEventFilter = TypedEventFilter<SetBaseNodeEvent>;
 
 export interface PhiRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -210,8 +206,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    label(overrides?: CallOverrides): Promise<[string]>;
-
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -224,7 +218,7 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setEnsBaseNode(
+    setBaseNode(
       _basenode: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -247,8 +241,6 @@ export interface PhiRegistry extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  label(overrides?: CallOverrides): Promise<string>;
-
   owner(
     targetAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -261,7 +253,7 @@ export interface PhiRegistry extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setEnsBaseNode(
+  setBaseNode(
     _basenode: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -278,18 +270,13 @@ export interface PhiRegistry extends BaseContract {
 
     createPhiland(name: string, overrides?: CallOverrides): Promise<void>;
 
-    label(overrides?: CallOverrides): Promise<string>;
-
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
 
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
-    setEnsBaseNode(
-      _basenode: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setBaseNode(_basenode: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
   };
@@ -334,8 +321,8 @@ export interface PhiRegistry extends BaseContract {
       target?: string | null
     ): OwnershipRemovedEventFilter;
 
-    "SetENS(bytes32)"(basenode?: null): SetENSEventFilter;
-    SetENS(basenode?: null): SetENSEventFilter;
+    "SetBaseNode(bytes32)"(basenode?: null): SetBaseNodeEventFilter;
+    SetBaseNode(basenode?: null): SetBaseNodeEventFilter;
   };
 
   estimateGas: {
@@ -351,8 +338,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    label(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -365,7 +350,7 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setEnsBaseNode(
+    setBaseNode(
       _basenode: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -389,8 +374,6 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    label(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -406,7 +389,7 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setEnsBaseNode(
+    setBaseNode(
       _basenode: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

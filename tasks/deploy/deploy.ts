@@ -79,7 +79,7 @@ export async function deployPhiPolygon(): Promise<void> {
   console.log(`Deploying from:`);
   console.log(`\tl1: ${(await l1Signer.getAddress()).toString()}`);
 
-  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, [l1Signer.address, 1]);
+  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, [l1Signer.address]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);

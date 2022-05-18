@@ -37,6 +37,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "PaymentBalanceZero",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -99,6 +104,32 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PaymentReceivedOwner",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "PaymentWithdrawnOwner",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "tokenId",
         type: "uint256",
       },
@@ -142,6 +173,19 @@ const _abi = [
       },
     ],
     name: "SetRoyalityFee",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_secondaryRoyalty",
+        type: "uint256",
+      },
+    ],
+    name: "SetSecondaryRoyalityFee",
     type: "event",
   },
   {
@@ -494,6 +538,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "paymentBalanceOwner",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -509,6 +566,48 @@ const _abi = [
   {
     inputs: [],
     name: "royalityFee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "salePrice",
+        type: "uint256",
+      },
+    ],
+    name: "royaltyInfo",
+    outputs: [
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "royaltyAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "secondaryRoyalty",
     outputs: [
       {
         internalType: "uint256",
@@ -577,6 +676,19 @@ const _abi = [
       },
     ],
     name: "setRoyalityFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_secondaryRoyalty",
+        type: "uint256",
+      },
+    ],
+    name: "setSecondaryRoyalityFee",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -661,6 +773,25 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "symbol",
     outputs: [
@@ -685,6 +816,23 @@ const _abi = [
     ],
     stateMutability: "view",
     type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "withdrawTo",
+        type: "address",
+      },
+    ],
+    name: "withdrawOwnerBalance",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
   },
 ];
 

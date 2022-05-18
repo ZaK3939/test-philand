@@ -33,7 +33,7 @@ contract PhiClaim is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
-    event SetAdminSigner(address indexed verifierAdderss);
+    event SetAdminSigner(address indexed verifierAddress);
     event SetCoupon(string condition, uint256 tokenid);
     event LogClaimObject(address indexed sender, uint256 tokenid);
     /* --------------------------------- ****** --------------------------------- */
@@ -103,11 +103,11 @@ contract PhiClaim is MultiOwner {
     /*                                   OBJECT                                   */
     /* -------------------------------------------------------------------------- */
     /*
-     * @title claimObject
-     * @notice Send object create Message from L1 to Starknet
+     * @title claimPhiObject
+     * @notice Send create Message to PhiObject
      * @param tokenId : object nft token_id
      * @param condition : object related name. ex.uniswap,loot,ethbalance,...
-     * @param coupon : get offchain api
+     * @param coupon : coupon api response
      * @dev check that the coupon sent was signed by the admin signer
      */
     function claimPhiObject(

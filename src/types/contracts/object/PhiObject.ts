@@ -23,7 +23,6 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -64,15 +63,19 @@ export interface PhiObjectInterface extends utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
+    "paymentBalanceOwner()": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "royalityFee()": FunctionFragment;
+    "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
+    "secondaryRoyalty()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyalityFee(uint256)": FunctionFragment;
+    "setSecondaryRoyalityFee(uint256)": FunctionFragment;
     "setSize(uint256,(uint8,uint8,uint8))": FunctionFragment;
     "setTokenURI(uint256,string)": FunctionFragment;
     "setTreasuryAddress(address)": FunctionFragment;
@@ -82,6 +85,7 @@ export interface PhiObjectInterface extends utils.Interface {
     "totalSupply(uint256)": FunctionFragment;
     "treasuryAddress()": FunctionFragment;
     "uri(uint256)": FunctionFragment;
+    "withdrawOwnerBalance(address)": FunctionFragment;
   };
 
   getFunction(
@@ -105,15 +109,19 @@ export interface PhiObjectInterface extends utils.Interface {
       | "isApprovedForAll"
       | "name"
       | "owner"
+      | "paymentBalanceOwner"
       | "removeOwner"
       | "royalityFee"
+      | "royaltyInfo"
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
+      | "secondaryRoyalty"
       | "setApprovalForAll"
       | "setCreator"
       | "setMaxClaimed"
       | "setOwner"
       | "setRoyalityFee"
+      | "setSecondaryRoyalityFee"
       | "setSize"
       | "setTokenURI"
       | "setTreasuryAddress"
@@ -123,6 +131,7 @@ export interface PhiObjectInterface extends utils.Interface {
       | "totalSupply"
       | "treasuryAddress"
       | "uri"
+      | "withdrawOwnerBalance"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -195,10 +204,18 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "paymentBalanceOwner",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "royalityFee",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "royaltyInfo",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
@@ -207,6 +224,10 @@ export interface PhiObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "secondaryRoyalty",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
@@ -223,6 +244,10 @@ export interface PhiObjectInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setRoyalityFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSecondaryRoyalityFee",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -255,6 +280,10 @@ export interface PhiObjectInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawOwnerBalance",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "allObjects", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -306,6 +335,10 @@ export interface PhiObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "paymentBalanceOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeOwner",
     data: BytesLike
   ): Result;
@@ -314,11 +347,19 @@ export interface PhiObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "royaltyInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "safeBatchTransferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "secondaryRoyalty",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -333,6 +374,10 @@ export interface PhiObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRoyalityFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSecondaryRoyalityFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setSize", data: BytesLike): Result;
@@ -362,15 +407,22 @@ export interface PhiObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawOwnerBalance",
+    data: BytesLike
+  ): Result;
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "ChangeTokenPrice(uint256,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
+    "PaymentReceivedOwner(uint256)": EventFragment;
+    "PaymentWithdrawnOwner(uint256)": EventFragment;
     "SetCreator(uint256,address)": EventFragment;
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
+    "SetSecondaryRoyalityFee(uint256)": EventFragment;
     "SetSize(uint256,tuple)": EventFragment;
     "SetTokenURI(uint256,string)": EventFragment;
     "SetTreasuryAddress(address)": EventFragment;
@@ -384,9 +436,12 @@ export interface PhiObjectInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ChangeTokenPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetSize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTokenURI"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTreasuryAddress"): EventFragment;
@@ -444,6 +499,28 @@ export type OwnershipRemovedEvent = TypedEvent<
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
+export interface PaymentReceivedOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentReceivedOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentReceivedOwnerEventObject
+>;
+
+export type PaymentReceivedOwnerEventFilter =
+  TypedEventFilter<PaymentReceivedOwnerEvent>;
+
+export interface PaymentWithdrawnOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentWithdrawnOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentWithdrawnOwnerEventObject
+>;
+
+export type PaymentWithdrawnOwnerEventFilter =
+  TypedEventFilter<PaymentWithdrawnOwnerEvent>;
+
 export interface SetCreatorEventObject {
   tokenId: BigNumber;
   _creator: string;
@@ -475,6 +552,17 @@ export type SetRoyalityFeeEvent = TypedEvent<
 >;
 
 export type SetRoyalityFeeEventFilter = TypedEventFilter<SetRoyalityFeeEvent>;
+
+export interface SetSecondaryRoyalityFeeEventObject {
+  _secondaryRoyalty: BigNumber;
+}
+export type SetSecondaryRoyalityFeeEvent = TypedEvent<
+  [BigNumber],
+  SetSecondaryRoyalityFeeEventObject
+>;
+
+export type SetSecondaryRoyalityFeeEventFilter =
+  TypedEventFilter<SetSecondaryRoyalityFeeEvent>;
 
 export interface SetSizeEventObject {
   tokenId: BigNumber;
@@ -652,7 +740,7 @@ export interface PhiObject extends BaseContract {
     getPhiObject(
       to: string,
       tokenId: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getSize(
@@ -692,12 +780,22 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     royalityFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     safeBatchTransferFrom(
       from: string,
@@ -716,6 +814,8 @@ export interface PhiObject extends BaseContract {
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setApprovalForAll(
       operator: string,
@@ -742,6 +842,11 @@ export interface PhiObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -782,6 +887,11 @@ export interface PhiObject extends BaseContract {
     treasuryAddress(overrides?: CallOverrides): Promise<[string]>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   allObjects(
@@ -850,7 +960,7 @@ export interface PhiObject extends BaseContract {
   getPhiObject(
     to: string,
     tokenId: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getSize(
@@ -890,12 +1000,22 @@ export interface PhiObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
   removeOwner(
     oldOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  royaltyInfo(
+    arg0: BigNumberish,
+    salePrice: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+  >;
 
   safeBatchTransferFrom(
     from: string,
@@ -914,6 +1034,8 @@ export interface PhiObject extends BaseContract {
     data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
   setApprovalForAll(
     operator: string,
@@ -940,6 +1062,11 @@ export interface PhiObject extends BaseContract {
 
   setRoyalityFee(
     _royalityFee: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setSecondaryRoyalityFee(
+    _secondaryRoyalty: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -977,6 +1104,11 @@ export interface PhiObject extends BaseContract {
   treasuryAddress(overrides?: CallOverrides): Promise<string>;
 
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  withdrawOwnerBalance(
+    withdrawTo: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     allObjects(
@@ -1085,9 +1217,19 @@ export interface PhiObject extends BaseContract {
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     safeBatchTransferFrom(
       from: string,
@@ -1106,6 +1248,8 @@ export interface PhiObject extends BaseContract {
       data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
     setApprovalForAll(
       operator: string,
@@ -1129,6 +1273,11 @@ export interface PhiObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1169,6 +1318,11 @@ export interface PhiObject extends BaseContract {
     treasuryAddress(overrides?: CallOverrides): Promise<string>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -1210,6 +1364,16 @@ export interface PhiObject extends BaseContract {
       target?: string | null
     ): OwnershipRemovedEventFilter;
 
+    "PaymentReceivedOwner(uint256)"(
+      amount?: null
+    ): PaymentReceivedOwnerEventFilter;
+    PaymentReceivedOwner(amount?: null): PaymentReceivedOwnerEventFilter;
+
+    "PaymentWithdrawnOwner(uint256)"(
+      amount?: null
+    ): PaymentWithdrawnOwnerEventFilter;
+    PaymentWithdrawnOwner(amount?: null): PaymentWithdrawnOwnerEventFilter;
+
     "SetCreator(uint256,address)"(
       tokenId?: null,
       _creator?: null
@@ -1227,6 +1391,13 @@ export interface PhiObject extends BaseContract {
 
     "SetRoyalityFee(uint256)"(_royalityFee?: null): SetRoyalityFeeEventFilter;
     SetRoyalityFee(_royalityFee?: null): SetRoyalityFeeEventFilter;
+
+    "SetSecondaryRoyalityFee(uint256)"(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
+    SetSecondaryRoyalityFee(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
 
     "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
     SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
@@ -1336,7 +1507,7 @@ export interface PhiObject extends BaseContract {
     getPhiObject(
       to: string,
       tokenId: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getSize(
@@ -1376,12 +1547,20 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     safeBatchTransferFrom(
       from: string,
@@ -1400,6 +1579,8 @@ export interface PhiObject extends BaseContract {
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
     setApprovalForAll(
       operator: string,
@@ -1426,6 +1607,11 @@ export interface PhiObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1466,6 +1652,11 @@ export interface PhiObject extends BaseContract {
     treasuryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1530,7 +1721,7 @@ export interface PhiObject extends BaseContract {
     getPhiObject(
       to: string,
       tokenId: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getSize(
@@ -1570,12 +1761,22 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    paymentBalanceOwner(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     royalityFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     safeBatchTransferFrom(
       from: string,
@@ -1594,6 +1795,8 @@ export interface PhiObject extends BaseContract {
       data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
       operator: string,
@@ -1620,6 +1823,11 @@ export interface PhiObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1662,6 +1870,11 @@ export interface PhiObject extends BaseContract {
     uri(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }
