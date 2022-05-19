@@ -15,7 +15,7 @@ export function shouldBehaveClaimStarterObject(): void {
 export function shouldBehaveDeposit(): void {
   it("should deposit and balance 1->0", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
-    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1);
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
@@ -29,9 +29,7 @@ export function shouldBehaveDeposit(): void {
 export function shouldBehaveUnDeposit(): void {
   it("should undeposit and balance 0->1", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
-    await this.phiMap
-      .connect(this.signers.alice)
-      .unDeposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).unDeposit("test", this.phiObject.address, 1, 1);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
   });
 }
@@ -52,13 +50,6 @@ export function shouldBehaveBatchDeposit(): void {
         ],
         [1, 2, 3, 4, 5],
         [1, 1, 1, 1, 1],
-        [
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-        ],
       );
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
@@ -80,14 +71,10 @@ export function shouldBehaveOwnerOfPhiland(): void {
 
 export function shouldBehaveWriteObjectToLand(): void {
   it("should write object to land", async function () {
-    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1, this.phiObject.address);
+    await this.phiMap.connect(this.signers.alice).deposit("test", this.phiObject.address, 1, 1);
     await this.phiMap
       .connect(this.signers.alice)
-      .writeObjectToLand(
-        "test",
-        { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 },
-        this.phiObject.address,
-      );
+      .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 });
   });
 }
 
@@ -120,22 +107,12 @@ export function shouldBehaveBatchWriteObjectToLand(): void {
   it("should batch write object to land", async function () {
     await this.phiMap
       .connect(this.signers.alice)
-      .batchDeposit(
-        "test",
-        [this.phiObject.address, this.phiObject.address],
-        [2, 3],
-        [1, 1],
-        [this.phiObject.address, this.phiObject.address],
-      );
-    await this.phiMap.connect(this.signers.alice).batchWriteObjectToLand(
-      "test",
-      [
-        { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 },
-        { contractAddress: this.phiObject.address, tokenId: 2, xStart: 2, yStart: 2 },
-        { contractAddress: this.phiObject.address, tokenId: 3, xStart: 4, yStart: 3 },
-      ],
-      [this.phiObject.address, this.phiObject.address, this.phiObject.address],
-    );
+      .batchDeposit("test", [this.phiObject.address, this.phiObject.address], [2, 3], [1, 1]);
+    await this.phiMap.connect(this.signers.alice).batchWriteObjectToLand("test", [
+      { contractAddress: this.phiObject.address, tokenId: 1, xStart: 1, yStart: 1 },
+      { contractAddress: this.phiObject.address, tokenId: 2, xStart: 2, yStart: 2 },
+      { contractAddress: this.phiObject.address, tokenId: 3, xStart: 4, yStart: 3 },
+    ]);
     const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
   });
 }

@@ -245,18 +245,18 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @notice Return philand object
      * @param name : Ens name
      * @param objectData : Object (address contractAddress,uint256 tokenId, uint256 xStart, uint256 yStart)
-     * @param _object : Object contract interface
      * @dev NFT must be deposited in the contract before writing.
      */
-    function writeObjectToLand(
-        string memory name,
-        Object memory objectData,
-        IObject _object
-    ) public onlyIfNotPhilandOwner(name) onlyIfNotDepositObject(name, objectData) {
+    function writeObjectToLand(string memory name, Object memory objectData)
+        public
+        onlyIfNotPhilandOwner(name)
+        onlyIfNotDepositObject(name, objectData)
+    {
         // Check the number of deposit NFTs to write object
         checkDepositAvailable(name, objectData);
         depositInfo[name][objectData.contractAddress][objectData.tokenId].used++;
 
+        IObject _object = IObject(objectData.contractAddress);
         // Object contract requires getSize functions for x,y,z
         IObject.Size memory size = _object.getSize(objectData.tokenId);
         ObjectInfo memory writeObjectInfo = ObjectInfo(
@@ -283,16 +283,11 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @notice batch write function
      * @param name : Ens name
      * @param objectData[] : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
-     * @param _object[] : Array of Object contract interface
      * @dev NFT must be deposited in the contract before writing. Object contract requires getSize functions for x,y,z
      */
-    function batchWriteObjectToLand(
-        string memory name,
-        Object[] memory objectData,
-        IObject[] memory _object
-    ) public {
+    function batchWriteObjectToLand(string memory name, Object[] memory objectData) public {
         for (uint256 i = 0; i < objectData.length; i++) {
-            writeObjectToLand(name, objectData[i], _object[i]);
+            writeObjectToLand(name, objectData[i]);
         }
     }
 
@@ -341,17 +336,15 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param name : Ens name
      * @param remove_index_array : Array of Object index
      * @param objectData[] : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
-     * @param _object[] : Array of Object contract interface
      * @dev This function cannot set links at the same time.
      */
     function batchRemoveAndWrite(
         string memory name,
         uint256[] memory remove_index_array,
-        Object[] memory objectData,
-        IObject[] memory _object
+        Object[] memory objectData
     ) external {
         batchRemoveObjectFromLand(name, remove_index_array);
-        batchWriteObjectToLand(name, objectData, _object);
+        batchWriteObjectToLand(name, objectData);
     }
 
     /* ----------------------------------- INTERNAL ------------------------------ */
@@ -495,19 +488,19 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param _contractAddress : deposit contract address
      * @param _tokenId : deposit token id
      * @param _amount : deposit amount
-     * @param _object : object interface
      * @dev Need approve. With deposit, ENS transfer allows user to transfer philand with token.
      */
     function deposit(
         string memory name,
         address _contractAddress,
         uint256 _tokenId,
-        uint256 _amount,
-        IObject _object
+        uint256 _amount
     ) public onlyIfNotPhilandOwner(name) {
         uint256 currentDepositAmount = depositInfo[name][_contractAddress][_tokenId].amount;
         uint256 updateDepositAmount = currentDepositAmount + _amount;
         uint256 currentDepositUsed = depositInfo[name][_contractAddress][_tokenId].used;
+
+        IObject _object = IObject(_contractAddress);
         uint256 userBalance = _object.balanceOf(msg.sender, _tokenId);
         if (userBalance < updateDepositAmount) {
             revert NotBalanceEnough({
@@ -552,17 +545,15 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param _contractAddresses : array of deposit contract addresses
      * @param _tokenIds :  array of deposit token ids
      * @param _amounts :  array of deposit amounts
-     * @param _objects :  array ofobject interface
      */
     function batchDeposit(
         string memory name,
         address[] memory _contractAddresses,
         uint256[] memory _tokenIds,
-        uint256[] memory _amounts,
-        IObject[] memory _objects
+        uint256[] memory _amounts
     ) public onlyIfNotPhilandOwner(name) {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            deposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i], _objects[i]);
+            deposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i]);
         }
     }
 
@@ -574,21 +565,20 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param _contractAddress : deposit contract address
      * @param _tokenId : deposit token id
      * @param _amount : deposit amount
-     * @param _object : object interface
      * @dev Return ERROR when attempting to undeposit over unused
      */
     function unDeposit(
         string memory name,
         address _contractAddress,
         uint256 _tokenId,
-        uint256 _amount,
-        IObject _object
+        uint256 _amount
     ) public onlyIfNotPhilandOwner(name) {
         uint256 used = depositInfo[name][_contractAddress][_tokenId].used;
         uint256 mapUnusedAmount = depositInfo[name][_contractAddress][_tokenId].amount - used;
         if (_amount > mapUnusedAmount) {
             revert UnDepositError(_amount, mapUnusedAmount);
         }
+        IObject _object = IObject(_contractAddress);
         _object.safeTransferFrom(address(this), msg.sender, _tokenId, _amount, "0x00");
         depositTime[name][_contractAddress][_tokenId] += (block.timestamp -
             depositInfo[name][_contractAddress][_tokenId].timestamp);
@@ -606,17 +596,15 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param _contractAddresses : array of deposit contract addresses
      * @param _tokenIds :  array of deposit token ids
      * @param _amounts :  array of deposit amounts
-     * @param _objects :  array ofobject interface
      */
     function batchUnDeposit(
         string memory name,
         address[] memory _contractAddresses,
         uint256[] memory _tokenIds,
-        uint256[] memory _amounts,
-        IObject[] memory _object
+        uint256[] memory _amounts
     ) public onlyIfNotPhilandOwner(name) {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unDeposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i], _object[i]);
+            unDeposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i]);
         }
     }
 
