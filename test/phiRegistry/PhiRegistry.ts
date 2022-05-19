@@ -10,7 +10,15 @@ import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
 import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
-import { shouldBehaveCreatePhiland } from "./PhiRegistry.behavior";
+import {
+  CantBehaveCreatePhiland,
+  CantBehaveDoubleCreatePhiland,
+  CantBehaveSetEnsBaseNode,
+  CantChangePhilandOwner,
+  shouldBehaveChangePhilandOwner,
+  shouldBehaveCreatePhiland,
+  shouldBehaveSetEnsBaseNode,
+} from "./PhiRegistry.behavior";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const namehash = require("@ensdomains/eth-ens-namehash");
@@ -76,5 +84,11 @@ describe("Unit tests PhiRegistry", function () {
 
     // });
     shouldBehaveCreatePhiland();
+    shouldBehaveSetEnsBaseNode();
+    CantBehaveCreatePhiland();
+    CantBehaveDoubleCreatePhiland();
+    CantBehaveSetEnsBaseNode();
+    CantChangePhilandOwner();
+    shouldBehaveChangePhilandOwner();
   });
 });

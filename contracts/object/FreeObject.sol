@@ -2,11 +2,10 @@
 pragma solidity >=0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import { MultiOwner } from "../utils/MultiOwner.sol";
 import { BaseObject } from "../utils/BaseObject.sol";
 
 // FreeObjects smart contract inherits ERC1155 interface
-contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
+contract FreeObject is ERC1155Supply, BaseObject {
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -18,6 +17,7 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
         symbol = "FOS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
+        secondaryRoyalty = 100;
     }
 
     /* --------------------------------- ****** --------------------------------- */
@@ -42,30 +42,44 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
         if (!created[tokenId]) revert InvalidTokenID();
     }
 
+    /*
+     * @title initObject
+     * @notice init object for already created token
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @dev check that token is already created and init object settings
+     */
     function initObject(
         uint256 tokenId,
         string memory _uri,
         Size calldata _size,
         address payable _creator
     ) external onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        setMaxClaimed(tokenId, 99999999);
+        if (!created[tokenId]) revert InvalidTokenID();
+        setMaxClaimed(tokenId, 9999999999);
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
         changeTokenPrice(tokenId, 0);
-        created[tokenId] = true;
     }
 
-    // mint a Object
+    /*
+     * @title createObject
+     * @notice create object for first time
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @dev check that token is not created and set object settings
+     */
     function createObject(
         uint256 tokenId,
         string memory _uri,
         Size calldata _size,
         address payable _creator
     ) external onlyOwner {
-        // check if thic fucntion caller is not an zero address account
-        require(msg.sender != address(0));
         if (exists(tokenId)) revert ExistentToken();
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
@@ -80,14 +94,21 @@ contract FreeObject is ERC1155Supply, MultiOwner, BaseObject {
     /* -------------------------------------------------------------------------- */
     /*                                SHOP METHOD                                 */
     /* -------------------------------------------------------------------------- */
-    // by a token by passing in the token's id
-    function getFreeObject(uint256 tokenId) public payable {
+    /*
+     * @title  getFreeObject
+     * @notice mint Object to token buyer
+     * @param tokenId : object nft token_id
+     * @dev pay royality to phi wallet and creator
+     */
+    function getFreeObject(uint256 tokenId) public {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
         // token should be for sale
         require(allObjects[tokenId].forSale);
         // check if the token id of the token exists
         isValid(tokenId);
+        // check token's MaxClaimed
+        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
     }

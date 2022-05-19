@@ -151,7 +151,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "verifierAdderss",
+        name: "verifierAddress",
         type: "address",
       },
     ],

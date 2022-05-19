@@ -164,7 +164,7 @@ export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
 export interface SetAdminSignerEventObject {
-  verifierAdderss: string;
+  verifierAddress: string;
 }
 export type SetAdminSignerEvent = TypedEvent<
   [string],
@@ -366,9 +366,9 @@ export interface PhiClaim extends BaseContract {
     ): OwnershipRemovedEventFilter;
 
     "SetAdminSigner(address)"(
-      verifierAdderss?: string | null
+      verifierAddress?: string | null
     ): SetAdminSignerEventFilter;
-    SetAdminSigner(verifierAdderss?: string | null): SetAdminSignerEventFilter;
+    SetAdminSigner(verifierAddress?: string | null): SetAdminSignerEventFilter;
 
     "SetCoupon(string,uint256)"(
       condition?: null,

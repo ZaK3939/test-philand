@@ -25,7 +25,6 @@ contract PhiRegistry is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                                   STORAGE                                  */
     /* -------------------------------------------------------------------------- */
-    bytes32 public label;
     mapping(string => address) public ownerLists;
     /* --------------------------------- ****** --------------------------------- */
 
@@ -33,7 +32,7 @@ contract PhiRegistry is MultiOwner {
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
     event Hello();
-    event SetENS(bytes32 basenode);
+    event SetBaseNode(bytes32 basenode);
     event LogCreatePhiland(address indexed sender, string name);
     event LogChangePhilandOwner(address indexed sender, string name);
     /* --------------------------------- ****** --------------------------------- */
@@ -50,7 +49,7 @@ contract PhiRegistry is MultiOwner {
     /*                                  MODIFIERS                                 */
     /* -------------------------------------------------------------------------- */
     modifier onlyIfNotENSOwner(string memory name) {
-        label = createENSLable(name);
+        bytes32 label = createENSLable(name);
         if (msg.sender != _ens.owner(label)) {
             revert InvalidENS({ sender: msg.sender, name: name, label: label, owner: _ens.owner(label) });
         }
@@ -72,14 +71,15 @@ contract PhiRegistry is MultiOwner {
     /**
       Set ENS baseNode default is .eth
     */
-    function setEnsBaseNode(bytes32 _basenode) external onlyOwner {
+    function setBaseNode(bytes32 _basenode) external onlyOwner {
         baseNode = _basenode;
-        emit SetENS(_basenode);
+        emit SetBaseNode(_basenode);
     }
 
     /* ------------------------------- ENS HELPER ------------------------------- */
     /// @dev For ENS subDomain
-    function createENSLable(string memory name) private returns (bytes32) {
+    function createENSLable(string memory name) private view returns (bytes32) {
+        bytes32 label;
         strings.slice memory slicee = strings.toSlice(name);
         strings.slice memory delim = strings.toSlice(".");
         string[] memory parts = new string[](strings.count(slicee, delim) + 1);
@@ -109,7 +109,7 @@ contract PhiRegistry is MultiOwner {
     /* ------------------------------ Map Contract -------------------------- -- */
     /*
      * @title createPhiland
-     * @notice Send philand create Message from L1 to Starknet
+     * @notice Send philand create Message
      * @param name : ENS name
      * @dev include check ENS
      */
@@ -132,7 +132,7 @@ contract PhiRegistry is MultiOwner {
      * @dev include check ENS
      */
     function changePhilandOwner(string memory name) external onlyIfNotENSOwner(name) {
-        if (ownerLists[name] != address(0)) {
+        if (ownerLists[name] == address(0)) {
             revert NotReadyPhiland({ sender: msg.sender, owner: ownerLists[name], name: name });
         }
         ownerLists[name] = msg.sender;

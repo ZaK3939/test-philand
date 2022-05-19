@@ -5,7 +5,10 @@ import type { Artifact } from "hardhat/types";
 import { PaidObject } from "../../src/types/contracts/object/PaidObject";
 import { Signers } from "../types";
 import {
+  CantBuyObjectWithNotEnoughETH,
+  shouldBehaveBuyObject,
   shouldBehaveCreateObject,
+  shouldBehaveInitObject,
   shouldBehaveSetMaxClaimed,
   shouldBehaveSetSize,
   shouldBehaveSetTokenURI,
@@ -25,7 +28,7 @@ describe("Unit tests PaidObject", function () {
 
     const paidObjectArtifact: Artifact = await artifacts.readArtifact("PaidObject");
     this.paidObject = <PaidObject>(
-      await waffle.deployContract(this.signers.admin, paidObjectArtifact, [this.signers.treasury.address, 1])
+      await waffle.deployContract(this.signers.admin, paidObjectArtifact, [this.signers.treasury.address])
     );
     await this.paidObject
       .connect(this.signers.admin)
@@ -48,5 +51,8 @@ describe("Unit tests PaidObject", function () {
     shouldBehaveSetTokenURI();
     shouldBehaveSetSize();
     shouldBehaveCreateObject();
+    shouldBehaveInitObject();
+    shouldBehaveBuyObject();
+    CantBuyObjectWithNotEnoughETH();
   });
 });

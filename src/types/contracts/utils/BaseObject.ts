@@ -56,18 +56,24 @@ export interface BaseObjectInterface extends utils.Interface {
     "getTokenURI(uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
+    "paymentBalanceOwner()": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
     "royalityFee()": FunctionFragment;
+    "royaltyInfo(uint256,uint256)": FunctionFragment;
+    "secondaryRoyalty()": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyalityFee(uint256)": FunctionFragment;
+    "setSecondaryRoyalityFee(uint256)": FunctionFragment;
     "setSize(uint256,(uint8,uint8,uint8))": FunctionFragment;
     "setTokenURI(uint256,string)": FunctionFragment;
     "setTreasuryAddress(address)": FunctionFragment;
     "setbaseMetadataURI(string)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "treasuryAddress()": FunctionFragment;
+    "withdrawOwnerBalance(address)": FunctionFragment;
   };
 
   getFunction(
@@ -84,18 +90,24 @@ export interface BaseObjectInterface extends utils.Interface {
       | "getTokenURI"
       | "name"
       | "owner"
+      | "paymentBalanceOwner"
       | "removeOwner"
       | "royalityFee"
+      | "royaltyInfo"
+      | "secondaryRoyalty"
       | "setCreator"
       | "setMaxClaimed"
       | "setOwner"
       | "setRoyalityFee"
+      | "setSecondaryRoyalityFee"
       | "setSize"
       | "setTokenURI"
       | "setTreasuryAddress"
       | "setbaseMetadataURI"
+      | "supportsInterface"
       | "symbol"
       | "treasuryAddress"
+      | "withdrawOwnerBalance"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -140,9 +152,21 @@ export interface BaseObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "paymentBalanceOwner",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "royalityFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "royaltyInfo",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "secondaryRoyalty",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -156,6 +180,10 @@ export interface BaseObjectInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setRoyalityFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSecondaryRoyalityFee",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -174,10 +202,18 @@ export interface BaseObjectInterface extends utils.Interface {
     functionFragment: "setbaseMetadataURI",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "treasuryAddress",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawOwnerBalance",
+    values: [string]
   ): string;
 
   decodeFunctionResult(functionFragment: "allObjects", data: BytesLike): Result;
@@ -211,11 +247,23 @@ export interface BaseObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "paymentBalanceOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "royalityFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "royaltyInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "secondaryRoyalty",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
@@ -226,6 +274,10 @@ export interface BaseObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRoyalityFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSecondaryRoyalityFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setSize", data: BytesLike): Result;
@@ -241,9 +293,17 @@ export interface BaseObjectInterface extends utils.Interface {
     functionFragment: "setbaseMetadataURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "treasuryAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawOwnerBalance",
     data: BytesLike
   ): Result;
 
@@ -251,9 +311,12 @@ export interface BaseObjectInterface extends utils.Interface {
     "ChangeTokenPrice(uint256,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
+    "PaymentReceivedOwner(uint256)": EventFragment;
+    "PaymentWithdrawnOwner(uint256)": EventFragment;
     "SetCreator(uint256,address)": EventFragment;
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
+    "SetSecondaryRoyalityFee(uint256)": EventFragment;
     "SetSize(uint256,tuple)": EventFragment;
     "SetTokenURI(uint256,string)": EventFragment;
     "SetTreasuryAddress(address)": EventFragment;
@@ -263,9 +326,12 @@ export interface BaseObjectInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ChangeTokenPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetSize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTokenURI"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTreasuryAddress"): EventFragment;
@@ -308,6 +374,28 @@ export type OwnershipRemovedEvent = TypedEvent<
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
 
+export interface PaymentReceivedOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentReceivedOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentReceivedOwnerEventObject
+>;
+
+export type PaymentReceivedOwnerEventFilter =
+  TypedEventFilter<PaymentReceivedOwnerEvent>;
+
+export interface PaymentWithdrawnOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentWithdrawnOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentWithdrawnOwnerEventObject
+>;
+
+export type PaymentWithdrawnOwnerEventFilter =
+  TypedEventFilter<PaymentWithdrawnOwnerEvent>;
+
 export interface SetCreatorEventObject {
   tokenId: BigNumber;
   _creator: string;
@@ -339,6 +427,17 @@ export type SetRoyalityFeeEvent = TypedEvent<
 >;
 
 export type SetRoyalityFeeEventFilter = TypedEventFilter<SetRoyalityFeeEvent>;
+
+export interface SetSecondaryRoyalityFeeEventObject {
+  _secondaryRoyalty: BigNumber;
+}
+export type SetSecondaryRoyalityFeeEvent = TypedEvent<
+  [BigNumber],
+  SetSecondaryRoyalityFeeEventObject
+>;
+
+export type SetSecondaryRoyalityFeeEventFilter =
+  TypedEventFilter<SetSecondaryRoyalityFeeEvent>;
 
 export interface SetSizeEventObject {
   tokenId: BigNumber;
@@ -476,12 +575,24 @@ export interface BaseObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     royalityFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setCreator(
       tokenId: BigNumberish,
@@ -491,7 +602,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -502,6 +613,11 @@ export interface BaseObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -523,13 +639,23 @@ export interface BaseObject extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     treasuryAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   allObjects(
@@ -594,12 +720,24 @@ export interface BaseObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
   removeOwner(
     oldOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  royaltyInfo(
+    arg0: BigNumberish,
+    salePrice: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+  >;
+
+  secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
   setCreator(
     tokenId: BigNumberish,
@@ -609,7 +747,7 @@ export interface BaseObject extends BaseContract {
 
   setMaxClaimed(
     tokenId: BigNumberish,
-    newMaxClaimed: BigNumberish,
+    _newMaxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -620,6 +758,11 @@ export interface BaseObject extends BaseContract {
 
   setRoyalityFee(
     _royalityFee: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setSecondaryRoyalityFee(
+    _secondaryRoyalty: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -641,13 +784,23 @@ export interface BaseObject extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setbaseMetadataURI(
-    baseuri: string,
+    _baseMetadataURI: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  supportsInterface(
+    interfaceId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
   treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
+  withdrawOwnerBalance(
+    withdrawTo: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     allObjects(
@@ -712,9 +865,21 @@ export interface BaseObject extends BaseContract {
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
     setCreator(
       tokenId: BigNumberish,
@@ -724,7 +889,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -732,6 +897,11 @@ export interface BaseObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -753,13 +923,23 @@ export interface BaseObject extends BaseContract {
     ): Promise<void>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
     treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -790,6 +970,16 @@ export interface BaseObject extends BaseContract {
       target?: string | null
     ): OwnershipRemovedEventFilter;
 
+    "PaymentReceivedOwner(uint256)"(
+      amount?: null
+    ): PaymentReceivedOwnerEventFilter;
+    PaymentReceivedOwner(amount?: null): PaymentReceivedOwnerEventFilter;
+
+    "PaymentWithdrawnOwner(uint256)"(
+      amount?: null
+    ): PaymentWithdrawnOwnerEventFilter;
+    PaymentWithdrawnOwner(amount?: null): PaymentWithdrawnOwnerEventFilter;
+
     "SetCreator(uint256,address)"(
       tokenId?: null,
       _creator?: null
@@ -807,6 +997,13 @@ export interface BaseObject extends BaseContract {
 
     "SetRoyalityFee(uint256)"(_royalityFee?: null): SetRoyalityFeeEventFilter;
     SetRoyalityFee(_royalityFee?: null): SetRoyalityFeeEventFilter;
+
+    "SetSecondaryRoyalityFee(uint256)"(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
+    SetSecondaryRoyalityFee(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
 
     "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
     SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
@@ -876,12 +1073,22 @@ export interface BaseObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
 
     setCreator(
       tokenId: BigNumberish,
@@ -891,7 +1098,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -902,6 +1109,11 @@ export interface BaseObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -923,13 +1135,23 @@ export interface BaseObject extends BaseContract {
     ): Promise<BigNumber>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     treasuryAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -987,12 +1209,24 @@ export interface BaseObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    paymentBalanceOwner(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     royalityFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    secondaryRoyalty(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setCreator(
       tokenId: BigNumberish,
@@ -1002,7 +1236,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1013,6 +1247,11 @@ export interface BaseObject extends BaseContract {
 
     setRoyalityFee(
       _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1034,12 +1273,22 @@ export interface BaseObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     treasuryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

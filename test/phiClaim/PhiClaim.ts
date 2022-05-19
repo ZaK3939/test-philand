@@ -3,10 +3,16 @@ import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { PhiClaim } from "../../src/types/contracts/PhiClaim";
-import { SoulObject } from "../../src/types/contracts/object/";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
-import { shouldBehaveClaimObject, shouldBehaveSetCouponType } from "./PhiClaim.behavior";
+import {
+  CantClaimObjectWithdiffCondition,
+  CantClaimObjectWithdiffTokenId,
+  CantClaimObjectWithdiffUser,
+  CantSetCouponType,
+  shouldBehaveClaimObject,
+  shouldBehaveSetCouponType,
+} from "./PhiClaim.behavior";
 
 describe("Unit tests PhiClaim", function () {
   before(async function () {
@@ -48,5 +54,9 @@ describe("Unit tests PhiClaim", function () {
     });
     shouldBehaveSetCouponType();
     shouldBehaveClaimObject();
+    CantSetCouponType();
+    CantClaimObjectWithdiffUser();
+    CantClaimObjectWithdiffTokenId();
+    CantClaimObjectWithdiffCondition();
   });
 });

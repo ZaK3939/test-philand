@@ -2,26 +2,57 @@
 pragma solidity >=0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import { MultiOwner } from "../utils/MultiOwner.sol";
 import { BaseObject } from "../utils/BaseObject.sol";
 
 // PaidObjects smart contract inherits ERC1155 interface
-contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
+contract PaidObject is ERC1155Supply, BaseObject {
     /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   CONFIG                                   */
+    /* -------------------------------------------------------------------------- */
+
+    /* --------------------------------- ****** --------------------------------- */
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
+    event InitObject(
+        uint256 tokenId,
+        string _uri,
+        Size _size,
+        address payable _creator,
+        uint256 _maxClaimed,
+        uint256 _price
+    );
+    event CreateObject(
+        uint256 tokenId,
+        string _uri,
+        Size _size,
+        address payable _creator,
+        uint256 _maxClaimed,
+        uint256 _price
+    );
+    event LogbuyObject(address indexed sender, uint256 tokenId, uint256 value);
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+
+    /* --------------------------------- ****** --------------------------------- */
     /* -------------------------------------------------------------------------- */
     /*                               INITIALIZATION                               */
     /* -------------------------------------------------------------------------- */
     // initialize contract while deployment with contract's collection name and token
-    constructor(address payable _treasuryAddress, uint256 _royalityFee) ERC1155("") {
+    constructor(address payable _treasuryAddress) ERC1155("") {
         name = "PaidObjects";
         symbol = "POS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
-        royalityFee = _royalityFee;
+        royalityFee = 3000;
+        secondaryRoyalty = 100;
     }
-
-    /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
     /*                                  TOKEN URI                                 */
@@ -43,6 +74,17 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         if (!created[tokenId]) revert InvalidTokenID();
     }
 
+    /*
+     * @title initObject
+     * @notice init object for already created token
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @param _maxClaimed : Maximum number
+     * @param _price : object price
+     * @dev check that token is already created and init object settings
+     */
     function initObject(
         uint256 tokenId,
         string memory _uri,
@@ -51,15 +93,26 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         uint256 _maxClaimed,
         uint256 _price
     ) external onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
+        if (!created[tokenId]) revert InvalidTokenID();
         setMaxClaimed(tokenId, _maxClaimed);
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
         changeTokenPrice(tokenId, _price);
+        emit InitObject(tokenId, _uri, _size, _creator, _maxClaimed, _price);
     }
 
-    // mint
+    /*
+     * @title createObject
+     * @notice create object for first time
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @param _maxClaimed : Maximum number
+     * @param _price : object price
+     * @dev check that token is not created and set object settings
+     */
     function createObject(
         uint256 tokenId,
         string memory _uri,
@@ -68,16 +121,15 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         uint256 _maxClaimed,
         uint256 _price
     ) external onlyOwner {
-        // check if thic fucntion caller is not an zero address account
-        require(msg.sender != address(0));
         if (exists(tokenId)) revert ExistentToken();
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
         setMaxClaimed(tokenId, _maxClaimed);
         changeTokenPrice(tokenId, _price);
-        allObjects[tokenId].forSale = false;
+        allObjects[tokenId].forSale = true;
         created[tokenId] = true;
+        emit CreateObject(tokenId, _uri, _size, _creator, _maxClaimed, _price);
     }
 
     /* --------------------------------- ****** --------------------------------- */
@@ -85,7 +137,12 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
     /* -------------------------------------------------------------------------- */
     /*                                SHOP METHOD                                 */
     /* -------------------------------------------------------------------------- */
-    // by a token by passing in the token's id
+    /*
+     * @title buyObject
+     * @notice mint Object to token buyer
+     * @param tokenId : object nft token_id
+     * @dev pay royality to phi wallet and creator
+     */
     function buyObject(uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
@@ -99,7 +156,7 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
 
         // Pay royality to artist, and remaining to deployer of contract
-        uint256 royality = (msg.value * royalityFee) / 100;
+        uint256 royality = (msg.value * royalityFee) / 10000;
         (bool success1, ) = payable(allObjects[tokenId].creator).call{ value: royality }("");
         require(success1);
 
@@ -107,5 +164,7 @@ contract PaidObject is ERC1155Supply, MultiOwner, BaseObject {
         require(success2);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x");
+        emit LogbuyObject(msg.sender, tokenId, msg.value);
     }
+    /* --------------------------------- ****** --------------------------------- */
 }
