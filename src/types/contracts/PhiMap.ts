@@ -98,17 +98,17 @@ export declare namespace PhiMap {
 
 export interface PhiMapInterface extends utils.Interface {
   functions: {
-    "batchDeposit(string,address[],uint256[],uint256[],address[])": FunctionFragment;
-    "batchRemoveAndWrite(string,uint256[],(address,uint256,uint256,uint256)[],address[])": FunctionFragment;
+    "batchDeposit(string,address[],uint256[],uint256[])": FunctionFragment;
+    "batchRemoveAndWrite(string,uint256[],(address,uint256,uint256,uint256)[])": FunctionFragment;
     "batchRemoveObjectFromLand(string,uint256[])": FunctionFragment;
-    "batchUnDeposit(string,address[],uint256[],uint256[],address[])": FunctionFragment;
-    "batchWriteObjectToLand(string,(address,uint256,uint256,uint256)[],address[])": FunctionFragment;
+    "batchUnDeposit(string,address[],uint256[],uint256[])": FunctionFragment;
+    "batchWriteObjectToLand(string,(address,uint256,uint256,uint256)[])": FunctionFragment;
     "changePhilandOwner(string,address)": FunctionFragment;
     "checkAllDepositStatus(string)": FunctionFragment;
     "checkDepositStatus(string,address,uint256)": FunctionFragment;
     "claimStarterObject(string)": FunctionFragment;
     "create(string,address)": FunctionFragment;
-    "deposit(string,address,uint256,uint256,address)": FunctionFragment;
+    "deposit(string,address,uint256,uint256)": FunctionFragment;
     "depositInfo(string,address,uint256)": FunctionFragment;
     "depositTime(string,address,uint256)": FunctionFragment;
     "freeObject()": FunctionFragment;
@@ -126,7 +126,7 @@ export interface PhiMapInterface extends utils.Interface {
     "removeOwner(address)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "unDeposit(string,address,uint256,uint256,address)": FunctionFragment;
+    "unDeposit(string,address,uint256,uint256)": FunctionFragment;
     "userObject(string,uint256)": FunctionFragment;
     "userObjectDeposit(string,uint256)": FunctionFragment;
     "userObjectLink(string,uint256,uint256)": FunctionFragment;
@@ -134,7 +134,7 @@ export interface PhiMapInterface extends utils.Interface {
     "viewObjectLink(string,uint256)": FunctionFragment;
     "viewPhiland(string)": FunctionFragment;
     "writeLinkToObject(string,uint256,string,string)": FunctionFragment;
-    "writeObjectToLand(string,(address,uint256,uint256,uint256),address)": FunctionFragment;
+    "writeObjectToLand(string,(address,uint256,uint256,uint256))": FunctionFragment;
   };
 
   getFunction(
@@ -180,11 +180,11 @@ export interface PhiMapInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "batchDeposit",
-    values: [string, string[], BigNumberish[], BigNumberish[], string[]]
+    values: [string, string[], BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "batchRemoveAndWrite",
-    values: [string, BigNumberish[], PhiMap.ObjectStruct[], string[]]
+    values: [string, BigNumberish[], PhiMap.ObjectStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "batchRemoveObjectFromLand",
@@ -192,11 +192,11 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "batchUnDeposit",
-    values: [string, string[], BigNumberish[], BigNumberish[], string[]]
+    values: [string, string[], BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "batchWriteObjectToLand",
-    values: [string, PhiMap.ObjectStruct[], string[]]
+    values: [string, PhiMap.ObjectStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "changePhilandOwner",
@@ -220,7 +220,7 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
-    values: [string, string, BigNumberish, BigNumberish, string]
+    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "depositInfo",
@@ -280,7 +280,7 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "unDeposit",
-    values: [string, string, BigNumberish, BigNumberish, string]
+    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "userObject",
@@ -306,7 +306,7 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "writeObjectToLand",
-    values: [string, PhiMap.ObjectStruct, string]
+    values: [string, PhiMap.ObjectStruct]
   ): string;
 
   decodeFunctionResult(
@@ -618,7 +618,6 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -626,7 +625,6 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -641,14 +639,12 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     batchWriteObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -686,7 +682,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -788,7 +783,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -849,7 +843,6 @@ export interface PhiMap extends BaseContract {
     writeObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -859,7 +852,6 @@ export interface PhiMap extends BaseContract {
     _contractAddresses: string[],
     _tokenIds: BigNumberish[],
     _amounts: BigNumberish[],
-    _objects: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -867,7 +859,6 @@ export interface PhiMap extends BaseContract {
     name: string,
     remove_index_array: BigNumberish[],
     objectData: PhiMap.ObjectStruct[],
-    _object: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -882,14 +873,12 @@ export interface PhiMap extends BaseContract {
     _contractAddresses: string[],
     _tokenIds: BigNumberish[],
     _amounts: BigNumberish[],
-    _object: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   batchWriteObjectToLand(
     name: string,
     objectData: PhiMap.ObjectStruct[],
-    _object: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -927,7 +916,6 @@ export interface PhiMap extends BaseContract {
     _contractAddress: string,
     _tokenId: BigNumberish,
     _amount: BigNumberish,
-    _object: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1029,7 +1017,6 @@ export interface PhiMap extends BaseContract {
     _contractAddress: string,
     _tokenId: BigNumberish,
     _amount: BigNumberish,
-    _object: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1090,7 +1077,6 @@ export interface PhiMap extends BaseContract {
   writeObjectToLand(
     name: string,
     objectData: PhiMap.ObjectStruct,
-    _object: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1100,7 +1086,6 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _objects: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1108,7 +1093,6 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1123,14 +1107,12 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     batchWriteObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1165,7 +1147,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1258,7 +1239,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1319,7 +1299,6 @@ export interface PhiMap extends BaseContract {
     writeObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct,
-      _object: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1437,7 +1416,6 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1445,7 +1423,6 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1460,14 +1437,12 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     batchWriteObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1505,7 +1480,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1592,7 +1566,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1636,7 +1609,6 @@ export interface PhiMap extends BaseContract {
     writeObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -1647,7 +1619,6 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1655,7 +1626,6 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1670,14 +1640,12 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     batchWriteObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct[],
-      _object: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1715,7 +1683,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1808,7 +1775,6 @@ export interface PhiMap extends BaseContract {
       _contractAddress: string,
       _tokenId: BigNumberish,
       _amount: BigNumberish,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1858,7 +1824,6 @@ export interface PhiMap extends BaseContract {
     writeObjectToLand(
       name: string,
       objectData: PhiMap.ObjectStruct,
-      _object: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
