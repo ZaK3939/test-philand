@@ -113,6 +113,9 @@ export interface PhiMapInterface extends utils.Interface {
     "depositTime(string,address,uint256)": FunctionFragment;
     "freeObject()": FunctionFragment;
     "mapSettings()": FunctionFragment;
+    "numberOfLand()": FunctionFragment;
+    "numberOfLink()": FunctionFragment;
+    "numberOfObject()": FunctionFragment;
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "owner(address)": FunctionFragment;
@@ -151,6 +154,9 @@ export interface PhiMapInterface extends utils.Interface {
       | "depositTime"
       | "freeObject"
       | "mapSettings"
+      | "numberOfLand"
+      | "numberOfLink"
+      | "numberOfObject"
       | "onERC1155BatchReceived"
       | "onERC1155Received"
       | "owner"
@@ -230,6 +236,18 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mapSettings",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numberOfLand",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numberOfLink",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numberOfObject",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -343,6 +361,18 @@ export interface PhiMapInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "numberOfLand",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "numberOfLink",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "numberOfObject",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "onERC1155BatchReceived",
     data: BytesLike
   ): Result;
@@ -403,7 +433,7 @@ export interface PhiMapInterface extends utils.Interface {
 
   events: {
     "ChangePhilandOwner(string,address)": EventFragment;
-    "CreatedMap(string,address)": EventFragment;
+    "CreatedMap(string,address,uint256)": EventFragment;
     "DepositSuccess(address,string,address,uint256,uint256)": EventFragment;
     "Hello()": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
@@ -443,9 +473,10 @@ export type ChangePhilandOwnerEventFilter =
 export interface CreatedMapEventObject {
   name: string;
   sender: string;
+  numberOfLand: BigNumber;
 }
 export type CreatedMapEvent = TypedEvent<
-  [string, string],
+  [string, string, BigNumber],
   CreatedMapEventObject
 >;
 
@@ -587,7 +618,7 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
+      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -692,6 +723,12 @@ export interface PhiMap extends BaseContract {
       }
     >;
 
+    numberOfLand(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    numberOfLink(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    numberOfObject(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     onERC1155BatchReceived(
       operator: string,
       from: string,
@@ -727,7 +764,7 @@ export interface PhiMap extends BaseContract {
 
     removeObjectFromLand(
       name: string,
-      i: BigNumberish,
+      index: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -822,7 +859,7 @@ export interface PhiMap extends BaseContract {
     _contractAddresses: string[],
     _tokenIds: BigNumberish[],
     _amounts: BigNumberish[],
-    _object: string[],
+    _objects: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -927,6 +964,12 @@ export interface PhiMap extends BaseContract {
     }
   >;
 
+  numberOfLand(overrides?: CallOverrides): Promise<BigNumber>;
+
+  numberOfLink(overrides?: CallOverrides): Promise<BigNumber>;
+
+  numberOfObject(overrides?: CallOverrides): Promise<BigNumber>;
+
   onERC1155BatchReceived(
     operator: string,
     from: string,
@@ -962,7 +1005,7 @@ export interface PhiMap extends BaseContract {
 
   removeObjectFromLand(
     name: string,
-    i: BigNumberish,
+    index: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1057,7 +1100,7 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
+      _objects: string[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1159,6 +1202,12 @@ export interface PhiMap extends BaseContract {
       }
     >;
 
+    numberOfLand(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfLink(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfObject(overrides?: CallOverrides): Promise<BigNumber>;
+
     onERC1155BatchReceived(
       operator: string,
       from: string,
@@ -1191,7 +1240,7 @@ export interface PhiMap extends BaseContract {
 
     removeObjectFromLand(
       name: string,
-      i: BigNumberish,
+      index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1277,19 +1326,24 @@ export interface PhiMap extends BaseContract {
 
   filters: {
     "ChangePhilandOwner(string,address)"(
-      name?: null,
+      name?: string | null,
       sender?: string | null
     ): ChangePhilandOwnerEventFilter;
     ChangePhilandOwner(
-      name?: null,
+      name?: string | null,
       sender?: string | null
     ): ChangePhilandOwnerEventFilter;
 
-    "CreatedMap(string,address)"(
-      name?: null,
-      sender?: string | null
+    "CreatedMap(string,address,uint256)"(
+      name?: string | null,
+      sender?: string | null,
+      numberOfLand?: null
     ): CreatedMapEventFilter;
-    CreatedMap(name?: null, sender?: string | null): CreatedMapEventFilter;
+    CreatedMap(
+      name?: string | null,
+      sender?: string | null,
+      numberOfLand?: null
+    ): CreatedMapEventFilter;
 
     "DepositSuccess(address,string,address,uint256,uint256)"(
       sender?: string | null,
@@ -1328,16 +1382,16 @@ export interface PhiMap extends BaseContract {
     ): OwnershipRemovedEventFilter;
 
     "RemoveLink(string,uint256)"(
-      name?: null,
+      name?: string | null,
       index?: null
     ): RemoveLinkEventFilter;
-    RemoveLink(name?: null, index?: null): RemoveLinkEventFilter;
+    RemoveLink(name?: string | null, index?: null): RemoveLinkEventFilter;
 
     "RemoveObject(string,uint256)"(
-      name?: null,
+      name?: string | null,
       index?: null
     ): RemoveObjectEventFilter;
-    RemoveObject(name?: null, index?: null): RemoveObjectEventFilter;
+    RemoveObject(name?: string | null, index?: null): RemoveObjectEventFilter;
 
     "UnDepositSuccess(address,string,address,uint256,uint256)"(
       sender?: string | null,
@@ -1355,23 +1409,26 @@ export interface PhiMap extends BaseContract {
     ): UnDepositSuccessEventFilter;
 
     "WriteLink(string,uint256,string,string)"(
-      name?: null,
+      name?: string | null,
       index?: null,
       title?: null,
       url?: null
     ): WriteLinkEventFilter;
     WriteLink(
-      name?: null,
+      name?: string | null,
       index?: null,
       title?: null,
       url?: null
     ): WriteLinkEventFilter;
 
     "WriteObject(string,tuple)"(
-      name?: null,
+      name?: string | null,
       writeObjectInfo?: null
     ): WriteObjectEventFilter;
-    WriteObject(name?: null, writeObjectInfo?: null): WriteObjectEventFilter;
+    WriteObject(
+      name?: string | null,
+      writeObjectInfo?: null
+    ): WriteObjectEventFilter;
   };
 
   estimateGas: {
@@ -1380,7 +1437,7 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
+      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1470,6 +1527,12 @@ export interface PhiMap extends BaseContract {
 
     mapSettings(overrides?: CallOverrides): Promise<BigNumber>;
 
+    numberOfLand(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfLink(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfObject(overrides?: CallOverrides): Promise<BigNumber>;
+
     onERC1155BatchReceived(
       operator: string,
       from: string,
@@ -1505,7 +1568,7 @@ export interface PhiMap extends BaseContract {
 
     removeObjectFromLand(
       name: string,
-      i: BigNumberish,
+      index: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1584,7 +1647,7 @@ export interface PhiMap extends BaseContract {
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
       _amounts: BigNumberish[],
-      _object: string[],
+      _objects: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1674,6 +1737,12 @@ export interface PhiMap extends BaseContract {
 
     mapSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    numberOfLand(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    numberOfLink(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    numberOfObject(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     onERC1155BatchReceived(
       operator: string,
       from: string,
@@ -1715,7 +1784,7 @@ export interface PhiMap extends BaseContract {
 
     removeObjectFromLand(
       name: string,
-      i: BigNumberish,
+      index: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

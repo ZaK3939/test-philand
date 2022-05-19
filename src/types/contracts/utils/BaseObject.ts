@@ -602,7 +602,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -639,7 +639,7 @@ export interface BaseObject extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -747,7 +747,7 @@ export interface BaseObject extends BaseContract {
 
   setMaxClaimed(
     tokenId: BigNumberish,
-    newMaxClaimed: BigNumberish,
+    _newMaxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -784,7 +784,7 @@ export interface BaseObject extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setbaseMetadataURI(
-    baseuri: string,
+    _baseMetadataURI: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -889,7 +889,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -923,7 +923,7 @@ export interface BaseObject extends BaseContract {
     ): Promise<void>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1098,7 +1098,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1135,7 +1135,7 @@ export interface BaseObject extends BaseContract {
     ): Promise<BigNumber>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1236,7 +1236,7 @@ export interface BaseObject extends BaseContract {
 
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1273,7 +1273,7 @@ export interface BaseObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

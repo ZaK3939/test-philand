@@ -1067,7 +1067,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "newMaxClaimed",
+        name: "_newMaxClaimed",
         type: "uint256",
       },
     ],
@@ -1185,7 +1185,7 @@ const _abi = [
     inputs: [
       {
         internalType: "string",
-        name: "baseuri",
+        name: "_baseMetadataURI",
         type: "string",
       },
     ],
