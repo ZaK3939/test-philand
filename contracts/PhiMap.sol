@@ -52,6 +52,13 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         address contractAddress;
         uint256 tokenId;
     }
+    struct DepositAllInfo {
+        address contractAddress;
+        uint256 tokenId;
+        uint256 amount;
+        uint256 used;
+        uint256 timestamp;
+    }
     /* --------------------------------- LINK ----------------------------------- */
     struct ObjectLinkInfo {
         string title;
@@ -112,7 +119,7 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
     /* ---------------------------------- Map ----------------------------------- */
     error NotReadyPhiland(address sender, address owner);
     error NotPhilandOwner(address sender, address owner);
-    error NotDepositEnough(string name, Object objectData, uint256 used, uint256 amount);
+    error NotDepositEnough(string name, address contractAddress, uint256 tokenId, uint256 used, uint256 amount);
     error OutofMapRange(uint256 a, string error_boader);
     error ObjectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
     /* --------------------------------- OBJECT --------------------------------- */
@@ -239,6 +246,14 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return userObject[name];
     }
 
+    /*
+     * @title viewNumberOfPhiland
+     * @notice Return number of philand
+     */
+    function viewNumberOfPhiland() external view returns (uint256) {
+        return numberOfLand;
+    }
+
     /* ----------------------------------- WRITE -------------------------------- */
     /*
      * @title writeObjectToLand
@@ -253,7 +268,7 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         onlyIfNotDepositObject(name, objectData)
     {
         // Check the number of deposit NFTs to write object
-        checkDepositAvailable(name, objectData);
+        checkDepositAvailable(name, objectData.contractAddress, objectData.tokenId);
         depositInfo[name][objectData.contractAddress][objectData.tokenId].used++;
 
         IObject _object = IObject(objectData.contractAddress);
@@ -304,6 +319,10 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         onlyIfNotPhilandCreated(name)
         onlyIfNotPhilandOwner(name)
     {
+        ObjectInfo memory depositItem = userObject[name][index];
+        depositInfo[name][depositItem.contractAddress][depositItem.tokenId].used =
+            depositInfo[name][depositItem.contractAddress][depositItem.tokenId].used -
+            1;
         delete userObject[name][index];
         emit RemoveObject(name, index);
         unchecked {
@@ -345,6 +364,28 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
     ) external {
         batchRemoveObjectFromLand(name, remove_index_array);
         batchWriteObjectToLand(name, objectData);
+    }
+
+    /* -------------------------------- INITIALIZATION -------------------------- */
+    /*
+     * @title initialization
+     * @notice Function for clear users map objects and links
+     * @param name : Ens name
+     * @dev [Carefully] This function init objects and links
+     */
+    function initialization(string memory name) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
+        for (uint256 i = 0; i < userObject[name].length; i++) {
+            if (userObject[name][i].contractAddress != address(0)) {
+                removeObjectFromLand(name, i);
+            }
+        }
+        uint256 userObjectLength = userObject[name].length;
+        for (uint256 i = 0; i < userObjectLength; i++) {
+            userObject[name].pop();
+            if (userObjectLink[name][i].length != 0) {
+                userObjectLink[name][i].pop();
+            }
+        }
     }
 
     /* ----------------------------------- INTERNAL ------------------------------ */
@@ -430,19 +471,22 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @title checkDepositAvailable
      * @notice Functions for collision detection
      * @param name : Ens name
-     * @param objectData : Object (address contractAddress,uint256 tokenId, uint256 xStart, uint256 yStart)
+     * @param contractAddress : contractAddress
+     * @paramtokenId : tokenId
      * @dev Check the number of deposit NFTs to write object
      */
-    function checkDepositAvailable(string memory name, Object memory objectData) private view {
-        if (
-            depositInfo[name][objectData.contractAddress][objectData.tokenId].used + 1 <
-            depositInfo[name][objectData.contractAddress][objectData.tokenId].amount
-        ) {
+    function checkDepositAvailable(
+        string memory name,
+        address contractAddress,
+        uint256 tokenId
+    ) private view {
+        if (depositInfo[name][contractAddress][tokenId].used + 1 > depositInfo[name][contractAddress][tokenId].amount) {
             revert NotDepositEnough(
                 name,
-                objectData,
-                depositInfo[name][objectData.contractAddress][objectData.tokenId].used,
-                depositInfo[name][objectData.contractAddress][objectData.tokenId].amount
+                contractAddress,
+                tokenId,
+                depositInfo[name][contractAddress][tokenId].used,
+                depositInfo[name][contractAddress][tokenId].amount
             );
         }
         return;
@@ -470,11 +514,18 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @param name : Ens name
      * @dev Check users' all deposit information
      */
-    function checkAllDepositStatus(string memory name) public view returns (Deposit[] memory) {
-        Deposit[] memory deposits = new Deposit[](userObjectDeposit[name].length);
+    function checkAllDepositStatus(string memory name) public view returns (DepositAllInfo[] memory) {
+        DepositAllInfo[] memory deposits = new DepositAllInfo[](userObjectDeposit[name].length);
         for (uint256 i = 0; i < userObjectDeposit[name].length; i++) {
             DepositInfo memory depositObjectInfo = userObjectDeposit[name][i];
-            Deposit memory item = depositInfo[name][depositObjectInfo.contractAddress][depositObjectInfo.tokenId];
+            Deposit memory tempItem = depositInfo[name][depositObjectInfo.contractAddress][depositObjectInfo.tokenId];
+            DepositAllInfo memory item = DepositAllInfo(
+                depositObjectInfo.contractAddress,
+                depositObjectInfo.tokenId,
+                tempItem.amount,
+                tempItem.used,
+                tempItem.timestamp
+            );
             deposits[i] = item;
         }
         return deposits;
@@ -502,7 +553,7 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
 
         IObject _object = IObject(_contractAddress);
         uint256 userBalance = _object.balanceOf(msg.sender, _tokenId);
-        if (userBalance < updateDepositAmount) {
+        if (userBalance < updateDepositAmount - currentDepositAmount) {
             revert NotBalanceEnough({
                 name: name,
                 sender: msg.sender,
@@ -678,9 +729,14 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         string memory url
     ) public onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) onlyIfNotReadyObject(name, object_index) {
         ObjectLinkInfo memory objectLinkInfo = ObjectLinkInfo(title, url);
-        userObjectLink[name][object_index].push(objectLinkInfo);
+
+        if (userObjectLink[name][object_index].length != 0) {
+            userObjectLink[name][object_index][0] = objectLinkInfo;
+        } else {
+            userObjectLink[name][object_index].push(objectLinkInfo);
+        }
         unchecked {
-            numberOfLink--;
+            numberOfLink++;
         }
         emit WriteLink(name, object_index, title, url);
     }

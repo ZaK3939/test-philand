@@ -68,6 +68,28 @@ export declare namespace PhiMap {
     yStart: BigNumber;
   };
 
+  export type DepositAllInfoStruct = {
+    contractAddress: string;
+    tokenId: BigNumberish;
+    amount: BigNumberish;
+    used: BigNumberish;
+    timestamp: BigNumberish;
+  };
+
+  export type DepositAllInfoStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    contractAddress: string;
+    tokenId: BigNumber;
+    amount: BigNumber;
+    used: BigNumber;
+    timestamp: BigNumber;
+  };
+
   export type DepositStruct = {
     amount: BigNumberish;
     used: BigNumberish;
@@ -112,6 +134,7 @@ export interface PhiMapInterface extends utils.Interface {
     "depositInfo(string,address,uint256)": FunctionFragment;
     "depositTime(string,address,uint256)": FunctionFragment;
     "freeObject()": FunctionFragment;
+    "initialization(string)": FunctionFragment;
     "mapSettings()": FunctionFragment;
     "numberOfLand()": FunctionFragment;
     "numberOfLink()": FunctionFragment;
@@ -131,6 +154,7 @@ export interface PhiMapInterface extends utils.Interface {
     "userObjectDeposit(string,uint256)": FunctionFragment;
     "userObjectLink(string,uint256,uint256)": FunctionFragment;
     "viewLinks(string)": FunctionFragment;
+    "viewNumberOfPhiland()": FunctionFragment;
     "viewObjectLink(string,uint256)": FunctionFragment;
     "viewPhiland(string)": FunctionFragment;
     "writeLinkToObject(string,uint256,string,string)": FunctionFragment;
@@ -153,6 +177,7 @@ export interface PhiMapInterface extends utils.Interface {
       | "depositInfo"
       | "depositTime"
       | "freeObject"
+      | "initialization"
       | "mapSettings"
       | "numberOfLand"
       | "numberOfLink"
@@ -172,6 +197,7 @@ export interface PhiMapInterface extends utils.Interface {
       | "userObjectDeposit"
       | "userObjectLink"
       | "viewLinks"
+      | "viewNumberOfPhiland"
       | "viewObjectLink"
       | "viewPhiland"
       | "writeLinkToObject"
@@ -235,6 +261,10 @@ export interface PhiMapInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "initialization",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "mapSettings",
     values?: undefined
   ): string;
@@ -295,6 +325,10 @@ export interface PhiMapInterface extends utils.Interface {
     values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "viewLinks", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "viewNumberOfPhiland",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "viewObjectLink",
     values: [string, BigNumberish]
@@ -357,6 +391,10 @@ export interface PhiMapInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "freeObject", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "initialization",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "mapSettings",
     data: BytesLike
   ): Result;
@@ -414,6 +452,10 @@ export interface PhiMapInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "viewLinks", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "viewNumberOfPhiland",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "viewObjectLink",
     data: BytesLike
@@ -657,7 +699,7 @@ export interface PhiMap extends BaseContract {
     checkAllDepositStatus(
       name: string,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.DepositStructOutput[]]>;
+    ): Promise<[PhiMap.DepositAllInfoStructOutput[]]>;
 
     checkDepositStatus(
       name: string,
@@ -706,6 +748,11 @@ export interface PhiMap extends BaseContract {
     ): Promise<[BigNumber]>;
 
     freeObject(overrides?: CallOverrides): Promise<[string]>;
+
+    initialization(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     mapSettings(
       overrides?: CallOverrides
@@ -821,6 +868,8 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[PhiMap.LinksStructOutput[]]>;
 
+    viewNumberOfPhiland(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     viewObjectLink(
       name: string,
       object_index: BigNumberish,
@@ -891,7 +940,7 @@ export interface PhiMap extends BaseContract {
   checkAllDepositStatus(
     name: string,
     overrides?: CallOverrides
-  ): Promise<PhiMap.DepositStructOutput[]>;
+  ): Promise<PhiMap.DepositAllInfoStructOutput[]>;
 
   checkDepositStatus(
     name: string,
@@ -940,6 +989,11 @@ export interface PhiMap extends BaseContract {
   ): Promise<BigNumber>;
 
   freeObject(overrides?: CallOverrides): Promise<string>;
+
+  initialization(
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   mapSettings(
     overrides?: CallOverrides
@@ -1055,6 +1109,8 @@ export interface PhiMap extends BaseContract {
     overrides?: CallOverrides
   ): Promise<PhiMap.LinksStructOutput[]>;
 
+  viewNumberOfPhiland(overrides?: CallOverrides): Promise<BigNumber>;
+
   viewObjectLink(
     name: string,
     object_index: BigNumberish,
@@ -1125,7 +1181,7 @@ export interface PhiMap extends BaseContract {
     checkAllDepositStatus(
       name: string,
       overrides?: CallOverrides
-    ): Promise<PhiMap.DepositStructOutput[]>;
+    ): Promise<PhiMap.DepositAllInfoStructOutput[]>;
 
     checkDepositStatus(
       name: string,
@@ -1171,6 +1227,8 @@ export interface PhiMap extends BaseContract {
     ): Promise<BigNumber>;
 
     freeObject(overrides?: CallOverrides): Promise<string>;
+
+    initialization(name: string, overrides?: CallOverrides): Promise<void>;
 
     mapSettings(
       overrides?: CallOverrides
@@ -1276,6 +1334,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       overrides?: CallOverrides
     ): Promise<PhiMap.LinksStructOutput[]>;
+
+    viewNumberOfPhiland(overrides?: CallOverrides): Promise<BigNumber>;
 
     viewObjectLink(
       name: string,
@@ -1499,6 +1559,11 @@ export interface PhiMap extends BaseContract {
 
     freeObject(overrides?: CallOverrides): Promise<BigNumber>;
 
+    initialization(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     mapSettings(overrides?: CallOverrides): Promise<BigNumber>;
 
     numberOfLand(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1589,6 +1654,8 @@ export interface PhiMap extends BaseContract {
     ): Promise<BigNumber>;
 
     viewLinks(name: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    viewNumberOfPhiland(overrides?: CallOverrides): Promise<BigNumber>;
 
     viewObjectLink(
       name: string,
@@ -1702,6 +1769,11 @@ export interface PhiMap extends BaseContract {
 
     freeObject(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    initialization(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     mapSettings(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numberOfLand(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1799,6 +1871,10 @@ export interface PhiMap extends BaseContract {
 
     viewLinks(
       name: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    viewNumberOfPhiland(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
