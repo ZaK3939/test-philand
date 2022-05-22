@@ -14,6 +14,7 @@ import {
   CantBatchUnDeposit,
   CantWriteLinkToAnotherUserObject,
   CantWriteLinkToObject,
+  CantWriteObjectToLand,
   shouldBehaveAddDeposit,
   shouldBehaveBatchDeposit,
   shouldBehaveBatchRemoveAndWrite,
@@ -168,5 +169,6 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveBatchRemoveObjectFromLand();
     shouldBehaveInitialization();
     shouldBehaveCheckAllDepositStatusAfterInit();
+    CantWriteObjectToLand();
   });
 });

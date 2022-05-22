@@ -4,8 +4,8 @@ pragma solidity >=0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import { BaseObject } from "../utils/BaseObject.sol";
 
-// PaidObjects smart contract inherits ERC1155 interface
-contract PaidObject is ERC1155Supply, BaseObject {
+// PremiumObjects smart contract inherits ERC1155 interface
+contract PremiumObject is ERC1155Supply, BaseObject {
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */

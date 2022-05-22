@@ -213,14 +213,11 @@ export function shouldBehaveBatchWriteObjectToLand(): void {
 
 export function shouldBehaveBatchRemoveAndWrite(): void {
   it("should batchRemoveAndWrite", async function () {
-    const deposits = await this.phiMap.connect(this.signers.alice).checkAllDepositStatus("test");
     await this.phiMap
       .connect(this.signers.alice)
-      .batchRemoveAndWrite(
-        "test",
-        [2],
-        [{ contractAddress: this.phiObject.address, tokenId: 2, xStart: 7, yStart: 7 }],
-      );
+      .batchRemoveAndWrite("test", [2], true, [
+        { contractAddress: this.phiObject.address, tokenId: 2, xStart: 7, yStart: 7 },
+      ]);
     const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
     expect(land[2].contractAddress).to.equal("0x0000000000000000000000000000000000000000");
     expect(land[2].tokenId).to.equal(0);
@@ -307,10 +304,35 @@ export function shouldBehaveInitialization(): void {
 }
 
 export function shouldBehaveCheckAllDepositStatusAfterInit(): void {
-  it("should check All Deposit Status After init", async function () {
+  it("should check All Deposit used = 0 After init", async function () {
     const deposits = await this.phiMap.connect(this.signers.alice).checkAllDepositStatus("test");
     for (const i in deposits) {
       expect(deposits[i].used).to.equal(0);
     }
+  });
+}
+
+export function CantWriteObjectToLand(): void {
+  it("cant write object to land : out of map range", async function () {
+    await expect(
+      this.phiMap
+        .connect(this.signers.alice)
+        .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 2, xStart: 15, yStart: 1 }),
+    ).to.be.reverted;
+    await expect(
+      this.phiMap
+        .connect(this.signers.alice)
+        .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 3, xStart: 1, yStart: 15 }),
+    ).to.be.reverted;
+    await expect(
+      this.phiMap
+        .connect(this.signers.alice)
+        .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 2, xStart: -1, yStart: 1 }),
+    ).to.be.reverted;
+    await expect(
+      this.phiMap
+        .connect(this.signers.alice)
+        .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 3, xStart: 1, yStart: -1 }),
+    ).to.be.reverted;
   });
 }

@@ -99,6 +99,16 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
     /* --------------------------------- OBJECT --------------------------------- */
     event WriteObject(string indexed name, ObjectInfo writeObjectInfo);
     event RemoveObject(string indexed name, uint256 index);
+    event Initialized(string name, address indexed sender);
+    event Save(
+        string name,
+        address indexed sender,
+        uint256[] remove_index_array,
+        Object[] objectData,
+        uint256[] object_indexes,
+        string[] titles,
+        string[] urls
+    );
     /* --------------------------------- DEPOSIT -------------------------------- */
     event DepositSuccess(address indexed sender, string name, address contractAddress, uint256 tokenId, uint256 amount);
     event UnDepositSuccess(
@@ -354,16 +364,19 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
      * @notice Function for save to be executed after editing
      * @param name : Ens name
      * @param remove_index_array : Array of Object index
-     * @param objectData[] : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
+     * @param objectDatas : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
      * @dev This function cannot set links at the same time.
      */
     function batchRemoveAndWrite(
         string memory name,
         uint256[] memory remove_index_array,
-        Object[] memory objectData
-    ) external {
-        batchRemoveObjectFromLand(name, remove_index_array);
-        batchWriteObjectToLand(name, objectData);
+        bool remove_check,
+        Object[] memory objectDatas
+    ) public {
+        if (remove_check == true) {
+            batchRemoveObjectFromLand(name, remove_index_array);
+        }
+        batchWriteObjectToLand(name, objectDatas);
     }
 
     /* -------------------------------- INITIALIZATION -------------------------- */
@@ -385,7 +398,32 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
             if (userObjectLink[name][i].length != 0) {
                 userObjectLink[name][i].pop();
             }
+            emit Initialized(name, msg.sender);
         }
+    }
+
+    /* ------------------------------------ SAVE -------------------------------- */
+    /*
+     * @title initialization
+     * @notice Function for clear users map objects and links
+     * @param name : Ens name
+     * @param remove_check : if remove_check == 1 then remove is skipped
+     * @param remove_index_array : Array of Object index
+     * @param objectData[] : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
+     * @dev  Write Link method can also usefull for remove link
+     */
+    function save(
+        string memory name,
+        uint256[] memory remove_index_array,
+        bool remove_check,
+        Object[] memory objectData,
+        uint256[] memory object_indexes,
+        string[] memory titles,
+        string[] memory urls
+    ) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
+        batchRemoveAndWrite(name, remove_index_array, remove_check, objectData);
+        batchWriteLinkToObject(name, object_indexes, titles, urls);
+        emit Save(name, msg.sender, remove_index_array, objectData, object_indexes, titles, urls);
     }
 
     /* ----------------------------------- INTERNAL ------------------------------ */
@@ -531,7 +569,7 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
         return deposits;
     }
 
-    /* --------------------------------- deposit -------------------------------- */
+    /* --------------------------------- DEPOSIT -------------------------------- */
     /*
      * @title deposit
      * @notice Functions for deposit token to this(map) contract
@@ -739,6 +777,26 @@ contract PhiMap is MultiOwner, ERC1155Receiver {
             numberOfLink++;
         }
         emit WriteLink(name, object_index, title, url);
+    }
+
+    /*
+     * @title batchWriteLinkToObject
+     * @notice Functions for write link
+     * @param name : Ens name
+     * @param object_indexes : array of object index
+     * @param titles : array of Link title
+     * @param urls : https://
+     * @dev Check all link information
+     */
+    function batchWriteLinkToObject(
+        string memory name,
+        uint256[] memory object_indexes,
+        string[] memory titles,
+        string[] memory urls
+    ) public onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
+        for (uint256 i = 0; i < object_indexes.length; i++) {
+            writeLinkToObject(name, object_indexes[i], titles[i], urls[i]);
+        }
     }
 
     /* ---------------------------------- REMOVE --------------------------------- */
