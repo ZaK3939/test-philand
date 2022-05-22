@@ -23,7 +23,7 @@ export async function deployPhi(): Promise<void> {
   console.log(`Deploying from:`);
   console.log(`\tl1: ${(await l1Signer.getAddress()).toString()}`);
 
-  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, [l1Signer.address, 1]);
+  const premiumObject = await deployL1(NETWORK, "PremiumObject", BLOCK_NUMBER, [l1Signer.address, 1]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
@@ -35,7 +35,7 @@ export async function deployPhi(): Promise<void> {
 export function printAddresses() {
   const NETWORK = hre.network.name;
 
-  const contracts = ["PaidObject", "FreeObject", "PhiObject", "PhiMap", "PhiRegistry", "PhiClaim"];
+  const contracts = ["PremiumObject", "FreeObject", "PhiObject", "PhiMap", "PhiRegistry", "PhiClaim"];
 
   const addresses = contracts.reduce((a, c) => Object.assign(a, { [c]: getAddress(c, NETWORK) }), {});
 
@@ -79,7 +79,7 @@ export async function deployPhiPolygon(): Promise<void> {
   console.log(`Deploying from:`);
   console.log(`\tl1: ${(await l1Signer.getAddress()).toString()}`);
 
-  const paidObject = await deployL1(NETWORK, "PaidObject", BLOCK_NUMBER, [l1Signer.address]);
+  const premiumObject = await deployL1(NETWORK, "PremiumObject", BLOCK_NUMBER, [l1Signer.address]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);

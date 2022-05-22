@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import { PaidObject } from "../../src/types/contracts/object/PaidObject";
+import { PremiumObject } from "../../src/types/contracts/object/PremiumObject";
 import { Signers } from "../types";
 import {
   CantBuyObjectWithNotEnoughETH,
@@ -13,9 +13,9 @@ import {
   shouldBehaveSetSize,
   shouldBehaveSetTokenURI,
   shouldBehaveSetbaseMetadataURI,
-} from "./PaidObject.behavior";
+} from "./PremiumObject.behavior";
 
-describe("Unit tests PaidObject", function () {
+describe("Unit tests PremiumObject", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -26,11 +26,11 @@ describe("Unit tests PaidObject", function () {
     this.signers.carol = signers[3];
     this.signers.treasury = signers[4];
 
-    const paidObjectArtifact: Artifact = await artifacts.readArtifact("PaidObject");
-    this.paidObject = <PaidObject>(
-      await waffle.deployContract(this.signers.admin, paidObjectArtifact, [this.signers.treasury.address])
+    const premiumObjectArtifact: Artifact = await artifacts.readArtifact("PremiumObject");
+    this.premiumObject = <PremiumObject>(
+      await waffle.deployContract(this.signers.admin, premiumObjectArtifact, [this.signers.treasury.address])
     );
-    await this.paidObject
+    await this.premiumObject
       .connect(this.signers.admin)
       .createObject(
         1,
@@ -42,7 +42,7 @@ describe("Unit tests PaidObject", function () {
       );
   });
 
-  describe("PaidObject", function () {
+  describe("premiumObject", function () {
     // beforeEach(async function () {
 
     // });

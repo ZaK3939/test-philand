@@ -101,17 +101,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FreeObject__factory>;
     getContractFactory(
-      name: "PaidObject",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.PaidObject__factory>;
-    getContractFactory(
       name: "PhiObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiObject__factory>;
     getContractFactory(
-      name: "SoulObject",
+      name: "PremiumObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SoulObject__factory>;
+    ): Promise<Contracts.PremiumObject__factory>;
     getContractFactory(
       name: "PhiClaim",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -244,20 +240,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FreeObject>;
     getContractAt(
-      name: "PaidObject",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.PaidObject>;
-    getContractAt(
       name: "PhiObject",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiObject>;
     getContractAt(
-      name: "SoulObject",
+      name: "PremiumObject",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.SoulObject>;
+    ): Promise<Contracts.PremiumObject>;
     getContractAt(
       name: "PhiClaim",
       address: string,

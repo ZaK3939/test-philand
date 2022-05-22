@@ -11,19 +11,32 @@ import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import {
+  CantBatchUnDeposit,
+  CantWriteLinkToAnotherUserObject,
+  CantWriteLinkToObject,
+  CantWriteObjectToLand,
+  shouldBehaveAddDeposit,
   shouldBehaveBatchDeposit,
+  shouldBehaveBatchRemoveAndWrite,
   shouldBehaveBatchRemoveObjectFromLand,
+  shouldBehaveBatchUnDeposit,
   shouldBehaveBatchWriteObjectToLand,
+  shouldBehaveCheckAllDepositStatus,
+  shouldBehaveCheckAllDepositStatusAfterInit,
+  shouldBehaveCheckDepositStatus,
   shouldBehaveClaimStarterObject,
   shouldBehaveDeposit,
+  shouldBehaveInitialization,
   shouldBehaveOwnerOfPhiland,
   shouldBehaveRemoveLinkfromObject,
   shouldBehaveRemoveObjectFromLand,
   shouldBehaveUnDeposit,
   shouldBehaveViewLinks,
+  shouldBehaveViewNumberOfPhiland,
   shouldBehaveViewPhiland,
   shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
+  shouldBehaveviewPhiland,
 } from "./PhiMap.behavior";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -131,19 +144,31 @@ describe("Unit tests PhiMap", function () {
     // beforeEach(async function () {
 
     // });
-
-    shouldBehaveClaimStarterObject();
-    shouldBehaveDeposit();
-    shouldBehaveUnDeposit();
-    shouldBehaveBatchDeposit();
     shouldBehaveOwnerOfPhiland();
+    shouldBehaveviewPhiland();
+    shouldBehaveViewNumberOfPhiland();
+    shouldBehaveClaimStarterObject();
+    shouldBehaveBatchDeposit();
+    shouldBehaveCheckDepositStatus();
+    shouldBehaveCheckAllDepositStatus();
+    shouldBehaveDeposit();
+    shouldBehaveAddDeposit();
+    shouldBehaveUnDeposit();
     shouldBehaveWriteObjectToLand();
+    shouldBehaveBatchUnDeposit();
+    CantBatchUnDeposit();
     shouldBehaveViewPhiland();
     shouldBehaveRemoveObjectFromLand();
     shouldBehaveBatchWriteObjectToLand();
+    shouldBehaveBatchRemoveAndWrite();
     shouldBehaveWriteLinkToObject();
+    CantWriteLinkToAnotherUserObject();
+    CantWriteLinkToObject();
     shouldBehaveViewLinks();
     shouldBehaveRemoveLinkfromObject();
     shouldBehaveBatchRemoveObjectFromLand();
+    shouldBehaveInitialization();
+    shouldBehaveCheckAllDepositStatusAfterInit();
+    CantWriteObjectToLand();
   });
 });
