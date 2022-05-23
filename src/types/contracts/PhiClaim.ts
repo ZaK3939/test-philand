@@ -40,42 +40,84 @@ export declare namespace PhiClaim {
 
 export interface PhiClaimInterface extends utils.Interface {
   functions: {
-    "claimPhiObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "claimPhiObject(address,uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
+    "getAdminSigner()": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
-    "owner(address)": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
     "phiClaimedLists(address,uint256)": FunctionFragment;
-    "removeOwner(address)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "setAdminSigner(address)": FunctionFragment;
     "setCouponType(string,uint256)": FunctionFragment;
-    "setOwner(address)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "DEFAULT_ADMIN_ROLE"
       | "claimPhiObject"
+      | "getAdminSigner"
       | "getCouponType"
-      | "owner"
+      | "getRoleAdmin"
+      | "grantRole"
+      | "hasRole"
+      | "initialize"
       | "phiClaimedLists"
-      | "removeOwner"
+      | "renounceRole"
+      | "revokeRole"
       | "setAdminSigner"
       | "setCouponType"
-      | "setOwner"
+      | "supportsInterface"
   ): FunctionFragment;
 
   encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "claimPhiObject",
-    values: [BigNumberish, string, PhiClaim.CouponStruct]
+    values: [string, BigNumberish, string, PhiClaim.CouponStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAdminSigner",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getCouponType",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "phiClaimedLists",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "setAdminSigner",
     values: [string]
@@ -84,25 +126,43 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "setCouponType",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
+  ): string;
 
   decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "claimPhiObject",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAdminSigner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getCouponType",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getRoleAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "phiClaimedLists",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "removeOwner",
+    functionFragment: "renounceRole",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setAdminSigner",
     data: BytesLike
@@ -111,22 +171,36 @@ export interface PhiClaimInterface extends utils.Interface {
     functionFragment: "setCouponType",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "LogClaimObject(address,uint256)": EventFragment;
-    "OwnershipGranted(address,address)": EventFragment;
-    "OwnershipRemoved(address,address)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
     "SetAdminSigner(address)": EventFragment;
     "SetCoupon(string,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogClaimObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetAdminSigner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCoupon"): EventFragment;
 }
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface LogClaimObjectEventObject {
   sender: string;
@@ -139,29 +213,42 @@ export type LogClaimObjectEvent = TypedEvent<
 
 export type LogClaimObjectEventFilter = TypedEventFilter<LogClaimObjectEvent>;
 
-export interface OwnershipGrantedEventObject {
-  operator: string;
-  target: string;
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
 }
-export type OwnershipGrantedEvent = TypedEvent<
-  [string, string],
-  OwnershipGrantedEventObject
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
 >;
 
-export type OwnershipGrantedEventFilter =
-  TypedEventFilter<OwnershipGrantedEvent>;
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
 
-export interface OwnershipRemovedEventObject {
-  operator: string;
-  target: string;
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
 }
-export type OwnershipRemovedEvent = TypedEvent<
-  [string, string],
-  OwnershipRemovedEventObject
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
 >;
 
-export type OwnershipRemovedEventFilter =
-  TypedEventFilter<OwnershipRemovedEvent>;
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export interface SetAdminSignerEventObject {
   verifierAddress: string;
@@ -211,20 +298,40 @@ export interface PhiClaim extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
     claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getAdminSigner(overrides?: CallOverrides): Promise<[string]>;
+
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -234,8 +341,15 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -250,26 +364,46 @@ export interface PhiClaim extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
   };
 
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
   claimPhiObject(
+    contractAddress: string,
     tokenId: BigNumberish,
     condition: string,
     coupon: PhiClaim.CouponStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getAdminSigner(overrides?: CallOverrides): Promise<string>;
+
   getCouponType(
     condition: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  owner(
-    targetAddress: string,
+  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+  grantRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  initialize(
+    _admin: string,
+    adminSigner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -279,8 +413,15 @@ export interface PhiClaim extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  removeOwner(
-    oldOwner: string,
+  renounceRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: BytesLike,
+    account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -295,25 +436,48 @@ export interface PhiClaim extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  supportsInterface(
+    interfaceId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   callStatic: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
     claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getAdminSigner(overrides?: CallOverrides): Promise<string>;
+
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     phiClaimedLists(
       arg0: string,
@@ -321,7 +485,17 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setAdminSigner(
       verifierAdderss: string,
@@ -334,10 +508,16 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
   };
 
   filters: {
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "LogClaimObject(address,uint256)"(
       sender?: string | null,
       tokenid?: null
@@ -347,23 +527,38 @@ export interface PhiClaim extends BaseContract {
       tokenid?: null
     ): LogClaimObjectEventFilter;
 
-    "OwnershipGranted(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
-    OwnershipGranted(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
 
-    "OwnershipRemoved(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
-    OwnershipRemoved(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
+    "RoleGranted(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
 
     "SetAdminSigner(address)"(
       verifierAddress?: string | null
@@ -378,20 +573,43 @@ export interface PhiClaim extends BaseContract {
   };
 
   estimateGas: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
     claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getAdminSigner(overrides?: CallOverrides): Promise<BigNumber>;
+
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -401,8 +619,15 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -417,27 +642,52 @@ export interface PhiClaim extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    getAdminSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -447,8 +697,15 @@ export interface PhiClaim extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -463,9 +720,9 @@ export interface PhiClaim extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

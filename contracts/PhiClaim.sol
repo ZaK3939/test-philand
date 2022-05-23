@@ -3,19 +3,19 @@ pragma solidity >=0.8.9;
 
 import { IENS } from "./interfaces/IENS.sol";
 import { IPhiObject } from "./interfaces/IPhiObject.sol";
-import { ISoulObject } from "./interfaces/ISoulObject.sol";
-import { MultiOwner } from "./utils/MultiOwner.sol";
+// import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiClaim is MultiOwner {
+contract PhiClaim is AccessControlUpgradeable {
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
     /*                                   CONFIG                                   */
     /* -------------------------------------------------------------------------- */
-    IPhiObject private _phiObject;
     address private _adminSigner;
+    bool private initialized;
     /* --------------------------------- ****** --------------------------------- */
     /* -------------------------------------------------------------------------- */
     /*                                   STORAGE                                  */
@@ -42,6 +42,7 @@ contract PhiClaim is MultiOwner {
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
     error AllreadyClaimedObject(address sender, uint256 tokenId);
+    error NotAdminCall(address sender);
     error ECDSAInvalidSignature(address sender, address signer, bytes32 digest, Coupon coupon);
 
     /* --------------------------------- ****** --------------------------------- */
@@ -49,9 +50,13 @@ contract PhiClaim is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                               INITIALIZATION                               */
     /* -------------------------------------------------------------------------- */
-    constructor(address adminSigner, IPhiObject phiObject) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
+
+    function initialize(address _admin, address adminSigner) public initializer {
         _adminSigner = adminSigner;
-        _phiObject = phiObject;
+        __AccessControl_init();
+        _setupRole(DEFAULT_ADMIN_ROLE, _admin);
     }
 
     /* --------------------------------- ****** --------------------------------- */
@@ -66,13 +71,25 @@ contract PhiClaim is MultiOwner {
         _;
     }
 
+    modifier onlyIfNotOnwer(address sender) {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, sender)) {
+            revert NotAdminCall({ sender: msg.sender });
+        }
+        _;
+    }
+
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
     /*                                   Coupon                                   */
     /* -------------------------------------------------------------------------- */
+    /// @dev get adminsigner
+    function getAdminSigner() public view returns (address) {
+        return _adminSigner;
+    }
+
     /// @dev set adminsigner
-    function setAdminSigner(address verifierAdderss) public onlyOwner {
+    function setAdminSigner(address verifierAdderss) public onlyIfNotOnwer(msg.sender) {
         _adminSigner = verifierAdderss;
         emit SetAdminSigner(verifierAdderss);
     }
@@ -83,7 +100,7 @@ contract PhiClaim is MultiOwner {
     }
 
     /// @dev set object conditon and number (related with offcahin validation)
-    function setCouponType(string memory condition, uint256 tokenId) public onlyOwner {
+    function setCouponType(string memory condition, uint256 tokenId) public onlyIfNotOnwer(msg.sender) {
         couponType[condition] = tokenId;
         emit SetCoupon(condition, tokenId);
     }
@@ -111,12 +128,14 @@ contract PhiClaim is MultiOwner {
      * @dev check that the coupon sent was signed by the admin signer
      */
     function claimPhiObject(
+        address contractAddress,
         uint256 tokenId,
         string calldata condition,
         Coupon memory coupon
     ) external onlyIfAllreadyClaimedObject(tokenId) {
+        IPhiObject _phiObject = IPhiObject(contractAddress);
         // Check that the coupon sent was signed by the admin signer
-        bytes32 digest = keccak256(abi.encode(couponType[condition], msg.sender));
+        bytes32 digest = keccak256(abi.encode(contractAddress, couponType[condition], msg.sender));
         require(isVerifiedCoupon(digest, coupon), "Invalid coupon");
         phiClaimedLists[msg.sender][tokenId] = true;
         _phiObject.getPhiObject(msg.sender, tokenId);
