@@ -1,5 +1,5 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, ethers, upgrades, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { PhiClaim } from "../../src/types/contracts/PhiClaim";
@@ -10,7 +10,10 @@ import {
   CantClaimObjectWithdiffTokenId,
   CantClaimObjectWithdiffUser,
   CantSetCouponType,
+  shouldAdminItself,
   shouldBehaveClaimObject,
+  shouldBehaveGetAdminSigner,
+  shouldBehaveGetOwner,
   shouldBehaveSetCouponType,
 } from "./PhiClaim.behavior";
 
@@ -41,17 +44,18 @@ describe("Unit tests PhiClaim", function () {
   });
 
   describe("PhiClaim", function () {
-    beforeEach(async function () {
-      const phiClaimArtifact: Artifact = await artifacts.readArtifact("PhiClaim");
-      this.phiClaim = <PhiClaim>(
-        await waffle.deployContract(this.signers.admin, phiClaimArtifact, [
-          this.signers.admin.address,
-          this.phiObject.address,
-        ])
-      );
+    before(async function () {
+      const PhiClaim = await ethers.getContractFactory("PhiClaim");
+      const phiclaim = await upgrades.deployProxy(PhiClaim, [this.signers.admin.address, this.signers.admin.address]);
+      this.phiClaim = <PhiClaim>await phiclaim.connect(this.signers.admin).deployed();
+
+      // const BoxV2 = await ethers.getContractFactory("BoxV2");
+      // const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);
       await this.phiObject.connect(this.signers.admin).setOwner(this.phiClaim.address);
-      await this.phiClaim.connect(this.signers.admin).setCouponType("lootbalance", 1);
     });
+    shouldBehaveGetOwner();
+    shouldAdminItself();
+    shouldBehaveGetAdminSigner();
     shouldBehaveSetCouponType();
     shouldBehaveClaimObject();
     CantSetCouponType();

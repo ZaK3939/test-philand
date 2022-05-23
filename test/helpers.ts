@@ -8,7 +8,7 @@ const {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require("ethereumjs-utils");
 
-export function getCoupon(addr: string) {
+export function getCoupon(addr: string, contractAddress: string) {
   const CouponTypeEnum = {
     lootbalance: 1,
     uniswap1: 2,
@@ -24,7 +24,10 @@ export function getCoupon(addr: string) {
 
   for (let i = 0; i < presaleAddresses.length; i++) {
     const userAddress = ethers.utils.getAddress(presaleAddresses[i]);
-    const hashBuffer = generateHashBuffer(["uint256", "address"], [CouponTypeEnum["lootbalance"], userAddress]);
+    const hashBuffer = generateHashBuffer(
+      ["address", "uint256", "address"],
+      [contractAddress, CouponTypeEnum["lootbalance"], userAddress],
+    );
     const coupon = createCoupon(hashBuffer, signerPvtKey);
 
     coupons[userAddress] = {
