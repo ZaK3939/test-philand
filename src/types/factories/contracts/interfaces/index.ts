@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as iensSol from "./IENS.sol";
+export { IObject__factory } from "./IObject__factory";
 export { IPhiMap__factory } from "./IPhiMap__factory";
 export { IPhiObject__factory } from "./IPhiObject__factory";
 export { IPhiRegistry__factory } from "./IPhiRegistry__factory";

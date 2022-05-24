@@ -2,105 +2,129 @@
 pragma solidity >=0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import { MultiOwner } from "../utils/MultiOwner.sol";
+import { BaseObject } from "../utils/BaseObject.sol";
 
 // FreeObjects smart contract inherits ERC1155 interface
-contract FreeObject is ERC1155Supply, MultiOwner {
-    string public baseMetadataURI;
-    address payable private treasuryAddress;
+contract FreeObject is ERC1155Supply, BaseObject {
+    /* --------------------------------- ****** --------------------------------- */
 
-    struct Size {
-        uint8 x;
-        uint8 y;
-        uint8 z;
-    }
-
-    // define crypto boy struct
-    struct FreeObjects {
-        string tokenURI;
-        Size size;
-        address payable creator;
-        bool forSale;
-    }
-
-    // map cryptoboy's token id to Objects
-    mapping(uint256 => FreeObjects) public allObjects;
-
-    error ExistentToken();
-    error NonExistentToken();
-    error NoSetTokenSize();
-
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     // initialize contract while deployment with contract's collection name and token
-    constructor() ERC1155("") {
+    constructor(address payable _treasuryAddress) ERC1155("") {
+        name = "FreeObjects";
+        symbol = "FOS";
         baseMetadataURI = "https://www.arweave.net/";
+        treasuryAddress = _treasuryAddress;
+        secondaryRoyalty = 100;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  TOKEN URI                                 */
+    /* -------------------------------------------------------------------------- */
     function uri(uint256 tokenId) public view override returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
+        if (!created[tokenId]) revert InvalidTokenID();
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
     }
 
-    function getBaseMetadataURI() public view returns (string memory) {
-        return baseMetadataURI;
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                OBJECT METHOD                               */
+    /* -------------------------------------------------------------------------- */
+    /* Utility Functions */
+    function isValid(uint256 tokenId) internal view {
+        // Validate that the token is within range when querying
+        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (!created[tokenId]) revert InvalidTokenID();
     }
 
-    function setbaseMetadataURI(string memory baseuri) external onlyOwner {
-        baseMetadataURI = baseuri;
+    /*
+     * @title initObject
+     * @notice init object for already created token
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @dev check that token is already created and init object settings
+     */
+    function initObject(
+        uint256 tokenId,
+        string memory _uri,
+        Size calldata _size,
+        address payable _creator
+    ) external onlyOwner {
+        if (!created[tokenId]) revert InvalidTokenID();
+        setMaxClaimed(tokenId, 9999999999);
+        setTokenURI(tokenId, _uri);
+        setSize(tokenId, _size);
+        setCreator(tokenId, _creator);
+        changeTokenPrice(tokenId, 0);
     }
 
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
-        return allObjects[tokenId].tokenURI;
-    }
-
-    function setTokenURI(uint256 tokenId, string memory _uri) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        allObjects[tokenId].tokenURI = _uri;
-    }
-
-    function getSize(uint256 tokenId) public view returns (Size memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
-        if (allObjects[tokenId].size.x == 0) revert NoSetTokenSize();
-        return allObjects[tokenId].size;
-    }
-
-    function setSize(uint256 tokenId, Size calldata _size) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        allObjects[tokenId].size = _size;
-    }
-
-    function getCreator(uint256 tokenId) public view returns (address payable) {
-        if (!exists(tokenId)) revert NonExistentToken();
-        return allObjects[tokenId].creator;
-    }
-
-    function setCreator(uint256 tokenId, address payable _creator) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        allObjects[tokenId].creator = _creator;
-    }
-
-    // mint a new crypto boy
+    /*
+     * @title createObject
+     * @notice create object for first time
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @dev check that token is not created and set object settings
+     */
     function createObject(
         uint256 tokenId,
         string memory _uri,
         Size calldata _size,
         address payable _creator
     ) external onlyOwner {
-        // check if thic fucntion caller is not an zero address account
-        require(msg.sender != address(0));
         if (exists(tokenId)) revert ExistentToken();
         setTokenURI(tokenId, _uri);
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
+        changeTokenPrice(tokenId, 0);
+        allObjects[tokenId].forSale = true;
+        created[tokenId] = true;
     }
 
-    // by a token by passing in the token's id
-    function getFreeObject(uint256 tokenId) public payable {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                SHOP METHOD                                 */
+    /* -------------------------------------------------------------------------- */
+    /*
+     * @title  getFreeObject
+     * @notice mint Object to token buyer
+     * @param tokenId : object nft token_id
+     * @dev pay royality to phi wallet and creator
+     */
+    function getFreeObject(uint256 tokenId) public {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-        // check if the token id of the token being bought exists or not
-        if (!exists(tokenId)) revert NonExistentToken();
+        // token should be for sale
+        require(allObjects[tokenId].forSale);
+        // check if the token id of the token exists
+        isValid(tokenId);
+        // check token's MaxClaimed
+        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  ERC1155                                   */
+    /* -------------------------------------------------------------------------- */
+    function mintBatchObject(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) external onlyOwner {
+        // todo for loop check token supply
+        super._mintBatch(to, ids, amounts, data);
     }
 }

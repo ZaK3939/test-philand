@@ -7,16 +7,25 @@ import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
-import { shouldBehaveCreatePhiland } from "./PhiRegistry.behavior";
+import {
+  CantBehaveCreatePhiland,
+  CantBehaveDoubleCreatePhiland,
+  CantBehaveSetEnsBaseNode,
+  CantChangePhilandOwner,
+  shouldBehaveChangePhilandOwner,
+  shouldBehaveCreatePhiland,
+  shouldBehaveSetEnsBaseNode,
+} from "./PhiRegistry.behavior";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const namehash = require("@ensdomains/eth-ens-namehash");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sha3 = require("web3-utils").sha3;
 
-describe("Unit tests", function () {
+describe("Unit tests PhiRegistry", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -24,6 +33,8 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.carol = signers[3];
+    this.signers.treasury = signers[4];
 
     const ENSRegistryArtifact: Artifact = await artifacts.readArtifact("ENSRegistry");
     this.ensRegistry = <ENSRegistry>await waffle.deployContract(this.signers.admin, ENSRegistryArtifact, []);
@@ -48,22 +59,36 @@ describe("Unit tests", function () {
     await this.testResolver.setAddr(namehash.hash("zak3939.eth"), this.signers.alice.address);
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-    this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
+    this.phiObject = <PhiObject>(
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
+    );
+    const freeObjectArtifact: Artifact = await artifacts.readArtifact("FreeObject");
+    this.freeObject = <FreeObject>(
+      await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
+    );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
-    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);
+    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
+    const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
+    this.phiRegistry = <PhiRegistry>(
+      await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
+        this.ensRegistry.address,
+        this.phiMap.address,
+      ])
+    );
+    await this.phiMap.connect(this.signers.admin).setOwner(this.phiRegistry.address);
   });
 
   describe("PhiRegistry", function () {
-    beforeEach(async function () {
-      const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
-      this.phiRegistry = <PhiRegistry>(
-        await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
-          this.ensRegistry.address,
-          this.phiMap.address,
-        ])
-      );
-    });
+    // beforeEach(async function () {
+
+    // });
     shouldBehaveCreatePhiland();
+    shouldBehaveSetEnsBaseNode();
+    CantBehaveCreatePhiland();
+    CantBehaveDoubleCreatePhiland();
+    CantBehaveSetEnsBaseNode();
+    CantChangePhilandOwner();
+    shouldBehaveChangePhilandOwner();
   });
 });

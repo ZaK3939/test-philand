@@ -40,135 +40,167 @@ export declare namespace PhiClaim {
 
 export interface PhiClaimInterface extends utils.Interface {
   functions: {
-    "claimObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
-    "claimSoulObject(uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
-    "claimedLists(address,uint256)": FunctionFragment;
-    "claimedSoulLists(address,uint256)": FunctionFragment;
-    "couponType(string)": FunctionFragment;
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "claimPhiObject(address,uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
+    "getAdminSigner()": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
-    "getSoulCouponType(string)": FunctionFragment;
-    "owner(address)": FunctionFragment;
-    "removeOwner(address)": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
+    "phiClaimedLists(address,uint256)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
+    "setAdminSigner(address)": FunctionFragment;
     "setCouponType(string,uint256)": FunctionFragment;
-    "setOwner(address)": FunctionFragment;
-    "setSoulCouponType(string,uint256)": FunctionFragment;
-    "soulCouponType(string)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "claimObject"
-      | "claimSoulObject"
-      | "claimedLists"
-      | "claimedSoulLists"
-      | "couponType"
+      | "DEFAULT_ADMIN_ROLE"
+      | "claimPhiObject"
+      | "getAdminSigner"
       | "getCouponType"
-      | "getSoulCouponType"
-      | "owner"
-      | "removeOwner"
+      | "getRoleAdmin"
+      | "grantRole"
+      | "hasRole"
+      | "initialize"
+      | "phiClaimedLists"
+      | "renounceRole"
+      | "revokeRole"
+      | "setAdminSigner"
       | "setCouponType"
-      | "setOwner"
-      | "setSoulCouponType"
-      | "soulCouponType"
+      | "supportsInterface"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "claimObject",
-    values: [BigNumberish, string, PhiClaim.CouponStruct]
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "claimSoulObject",
-    values: [BigNumberish, string, PhiClaim.CouponStruct]
+    functionFragment: "claimPhiObject",
+    values: [string, BigNumberish, string, PhiClaim.CouponStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: "claimedLists",
-    values: [string, BigNumberish]
+    functionFragment: "getAdminSigner",
+    values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "claimedSoulLists",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "couponType", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getCouponType",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getSoulCouponType",
+    functionFragment: "getRoleAdmin",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "phiClaimedLists",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAdminSigner",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values: [string]): string;
-  encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setCouponType",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setSoulCouponType",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "soulCouponType",
-    values: [string]
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "claimObject",
+    functionFragment: "DEFAULT_ADMIN_ROLE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimSoulObject",
+    functionFragment: "claimPhiObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "claimedLists",
+    functionFragment: "getAdminSigner",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "claimedSoulLists",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "couponType", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getCouponType",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getSoulCouponType",
+    functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "removeOwner",
+    functionFragment: "phiClaimedLists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setAdminSigner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setCouponType",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setSoulCouponType",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "soulCouponType",
+    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "LogClaimObject(address,uint256)": EventFragment;
-    "LogClaimSoulObject(address,uint256)": EventFragment;
-    "OwnershipGranted(address,address)": EventFragment;
-    "OwnershipRemoved(address,address)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "SetAdminSigner(address)": EventFragment;
+    "SetCoupon(string,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogClaimObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LogClaimSoulObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetAdminSigner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetCoupon"): EventFragment;
 }
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface LogClaimObjectEventObject {
   sender: string;
@@ -181,41 +213,63 @@ export type LogClaimObjectEvent = TypedEvent<
 
 export type LogClaimObjectEventFilter = TypedEventFilter<LogClaimObjectEvent>;
 
-export interface LogClaimSoulObjectEventObject {
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+}
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
+>;
+
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
+
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
   sender: string;
+}
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
+>;
+
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
+
+export interface SetAdminSignerEventObject {
+  verifierAddress: string;
+}
+export type SetAdminSignerEvent = TypedEvent<
+  [string],
+  SetAdminSignerEventObject
+>;
+
+export type SetAdminSignerEventFilter = TypedEventFilter<SetAdminSignerEvent>;
+
+export interface SetCouponEventObject {
+  condition: string;
   tokenid: BigNumber;
 }
-export type LogClaimSoulObjectEvent = TypedEvent<
+export type SetCouponEvent = TypedEvent<
   [string, BigNumber],
-  LogClaimSoulObjectEventObject
+  SetCouponEventObject
 >;
 
-export type LogClaimSoulObjectEventFilter =
-  TypedEventFilter<LogClaimSoulObjectEvent>;
-
-export interface OwnershipGrantedEventObject {
-  operator: string;
-  target: string;
-}
-export type OwnershipGrantedEvent = TypedEvent<
-  [string, string],
-  OwnershipGrantedEventObject
->;
-
-export type OwnershipGrantedEventFilter =
-  TypedEventFilter<OwnershipGrantedEvent>;
-
-export interface OwnershipRemovedEventObject {
-  operator: string;
-  target: string;
-}
-export type OwnershipRemovedEvent = TypedEvent<
-  [string, string],
-  OwnershipRemovedEventObject
->;
-
-export type OwnershipRemovedEventFilter =
-  TypedEventFilter<OwnershipRemovedEvent>;
+export type SetCouponEventFilter = TypedEventFilter<SetCouponEvent>;
 
 export interface PhiClaim extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -244,379 +298,430 @@ export interface PhiClaim extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    claimObject(
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    claimedLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    getAdminSigner(overrides?: CallOverrides): Promise<[string]>;
 
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    getSoulCouponType(
-      condition: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
-    owner(
-      targetAddress: string,
+    grantRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeOwner(
-      oldOwner: string,
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    phiClaimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setAdminSigner(
+      verifierAdderss: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setCouponType(
       condition: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    soulCouponType(
-      arg0: string,
+    supportsInterface(
+      interfaceId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[boolean]>;
   };
 
-  claimObject(
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  claimPhiObject(
+    contractAddress: string,
     tokenId: BigNumberish,
     condition: string,
     coupon: PhiClaim.CouponStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  claimSoulObject(
-    tokenId: BigNumberish,
-    condition: string,
-    coupon: PhiClaim.CouponStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  claimedLists(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  claimedSoulLists(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+  getAdminSigner(overrides?: CallOverrides): Promise<string>;
 
   getCouponType(
     condition: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getSoulCouponType(
-    condition: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
-  owner(
-    targetAddress: string,
+  grantRole(
+    role: BytesLike,
+    account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeOwner(
-    oldOwner: string,
+  hasRole(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  initialize(
+    _admin: string,
+    adminSigner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  phiClaimedLists(
+    arg0: string,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  renounceRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setAdminSigner(
+    verifierAdderss: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setCouponType(
     condition: string,
-    tokenid: BigNumberish,
+    tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setSoulCouponType(
-    condition: string,
-    tokenid: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+  supportsInterface(
+    interfaceId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   callStatic: {
-    claimObject(
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    claimedLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getAdminSigner(overrides?: CallOverrides): Promise<string>;
 
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSoulCouponType(
-      condition: string,
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
-    owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
+    initialize(
+      _admin: string,
+      adminSigner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    phiClaimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setAdminSigner(
+      verifierAdderss: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setCouponType(
       condition: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
+    supportsInterface(
+      interfaceId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    ): Promise<boolean>;
   };
 
   filters: {
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "LogClaimObject(address,uint256)"(
-      sender?: null,
+      sender?: string | null,
       tokenid?: null
     ): LogClaimObjectEventFilter;
-    LogClaimObject(sender?: null, tokenid?: null): LogClaimObjectEventFilter;
-
-    "LogClaimSoulObject(address,uint256)"(
-      sender?: null,
+    LogClaimObject(
+      sender?: string | null,
       tokenid?: null
-    ): LogClaimSoulObjectEventFilter;
-    LogClaimSoulObject(
-      sender?: null,
+    ): LogClaimObjectEventFilter;
+
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+
+    "RoleGranted(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
+
+    "SetAdminSigner(address)"(
+      verifierAddress?: string | null
+    ): SetAdminSignerEventFilter;
+    SetAdminSigner(verifierAddress?: string | null): SetAdminSignerEventFilter;
+
+    "SetCoupon(string,uint256)"(
+      condition?: null,
       tokenid?: null
-    ): LogClaimSoulObjectEventFilter;
-
-    "OwnershipGranted(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
-    OwnershipGranted(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
-
-    "OwnershipRemoved(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
-    OwnershipRemoved(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
+    ): SetCouponEventFilter;
+    SetCoupon(condition?: null, tokenid?: null): SetCouponEventFilter;
   };
 
   estimateGas: {
-    claimObject(
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    claimedLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    couponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getAdminSigner(overrides?: CallOverrides): Promise<BigNumber>;
 
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSoulCouponType(
-      condition: string,
+    getRoleAdmin(
+      role: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(
-      targetAddress: string,
+    grantRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    removeOwner(
-      oldOwner: string,
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    phiClaimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setAdminSigner(
+      verifierAdderss: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setCouponType(
       condition: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    soulCouponType(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    claimObject(
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    claimPhiObject(
+      contractAddress: string,
       tokenId: BigNumberish,
       condition: string,
       coupon: PhiClaim.CouponStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    claimSoulObject(
-      tokenId: BigNumberish,
-      condition: string,
-      coupon: PhiClaim.CouponStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimedLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimedSoulLists(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    couponType(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getAdminSigner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getCouponType(
       condition: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSoulCouponType(
-      condition: string,
+    getRoleAdmin(
+      role: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(
-      targetAddress: string,
+    grantRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeOwner(
-      oldOwner: string,
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _admin: string,
+      adminSigner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    phiClaimedLists(
+      arg0: string,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setAdminSigner(
+      verifierAdderss: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setCouponType(
       condition: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setSoulCouponType(
-      condition: string,
-      tokenid: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    soulCouponType(
-      arg0: string,
+    supportsInterface(
+      interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

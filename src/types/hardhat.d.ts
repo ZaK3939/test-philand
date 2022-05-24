@@ -21,9 +21,45 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ENSRegistry__factory>;
     getContractFactory(
+      name: "AccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessControlUpgradeable__factory>;
+    getContractFactory(
+      name: "IAccessControlUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessControlUpgradeable__factory>;
+    getContractFactory(
+      name: "OwnableUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OwnableUpgradeable__factory>;
+    getContractFactory(
+      name: "Initializable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Initializable__factory>;
+    getContractFactory(
+      name: "ContextUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ContextUpgradeable__factory>;
+    getContractFactory(
+      name: "ERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165Upgradeable__factory>;
+    getContractFactory(
+      name: "IERC165Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165Upgradeable__factory>;
+    getContractFactory(
       name: "Ownable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: "IERC2981",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC2981__factory>;
+    getContractFactory(
+      name: "Initializable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Initializable__factory>;
     getContractFactory(
       name: "ERC1155",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -73,6 +109,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Resolver__factory>;
     getContractFactory(
+      name: "IObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IObject__factory>;
+    getContractFactory(
       name: "IPhiMap",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPhiMap__factory>;
@@ -93,17 +133,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FreeObject__factory>;
     getContractFactory(
-      name: "PaidObject",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.PaidObject__factory>;
-    getContractFactory(
       name: "PhiObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiObject__factory>;
     getContractFactory(
-      name: "SoulObject",
+      name: "PremiumObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SoulObject__factory>;
+    ): Promise<Contracts.PremiumObject__factory>;
     getContractFactory(
       name: "PhiClaim",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -116,6 +152,10 @@ declare module "hardhat/types/runtime" {
       name: "PhiRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiRegistry__factory>;
+    getContractFactory(
+      name: "BaseObject",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BaseObject__factory>;
     getContractFactory(
       name: "MultiOwner",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -132,10 +172,55 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ENSRegistry>;
     getContractAt(
+      name: "AccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlUpgradeable>;
+    getContractAt(
+      name: "IAccessControlUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlUpgradeable>;
+    getContractAt(
+      name: "OwnableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OwnableUpgradeable>;
+    getContractAt(
+      name: "Initializable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Initializable>;
+    getContractAt(
+      name: "ContextUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ContextUpgradeable>;
+    getContractAt(
+      name: "ERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Upgradeable>;
+    getContractAt(
+      name: "IERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
       name: "Ownable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "IERC2981",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC2981>;
+    getContractAt(
+      name: "Initializable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Initializable>;
     getContractAt(
       name: "ERC1155",
       address: string,
@@ -197,6 +282,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Resolver>;
     getContractAt(
+      name: "IObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IObject>;
+    getContractAt(
       name: "IPhiMap",
       address: string,
       signer?: ethers.Signer
@@ -222,20 +312,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FreeObject>;
     getContractAt(
-      name: "PaidObject",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.PaidObject>;
-    getContractAt(
       name: "PhiObject",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiObject>;
     getContractAt(
-      name: "SoulObject",
+      name: "PremiumObject",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.SoulObject>;
+    ): Promise<Contracts.PremiumObject>;
     getContractAt(
       name: "PhiClaim",
       address: string,
@@ -251,6 +336,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiRegistry>;
+    getContractAt(
+      name: "BaseObject",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BaseObject>;
     getContractAt(
       name: "MultiOwner",
       address: string,

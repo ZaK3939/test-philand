@@ -14,12 +14,7 @@ interface IPhiObject {
 
     function setOwner(address newOwner) external;
 
-    function mintObject(
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes calldata data
-    ) external;
+    function getPhiObject(address to, uint256 tokenId) external;
 
     function mintBatchObject(
         address to,

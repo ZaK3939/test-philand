@@ -7,17 +7,36 @@ import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
+import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { Signers } from "../types";
 import {
+  CantBatchUnDeposit,
+  CantWriteLinkToAnotherUserObject,
+  CantWriteLinkToObject,
+  CantWriteObjectToLand,
+  shouldBehaveAddDeposit,
   shouldBehaveBatchDeposit,
+  shouldBehaveBatchRemoveAndWrite,
+  shouldBehaveBatchRemoveObjectFromLand,
+  shouldBehaveBatchUnDeposit,
+  shouldBehaveBatchWriteObjectToLand,
+  shouldBehaveCheckAllDepositStatus,
+  shouldBehaveCheckAllDepositStatusAfterInit,
+  shouldBehaveCheckDepositStatus,
   shouldBehaveClaimStarterObject,
   shouldBehaveDeposit,
+  shouldBehaveInitialization,
   shouldBehaveOwnerOfPhiland,
-  shouldBehaveRemoveObjectToLand,
+  shouldBehaveRemoveLinkfromObject,
+  shouldBehaveRemoveObjectFromLand,
   shouldBehaveUnDeposit,
+  shouldBehaveViewLinks,
+  shouldBehaveViewNumberOfPhiland,
   shouldBehaveViewPhiland,
+  shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
+  shouldBehaveviewPhiland,
 } from "./PhiMap.behavior";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -25,7 +44,7 @@ const namehash = require("@ensdomains/eth-ens-namehash");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sha3 = require("web3-utils").sha3;
 
-describe("Unit tests", function () {
+describe("Unit tests PhiMap", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -33,6 +52,8 @@ describe("Unit tests", function () {
     this.signers.admin = signers[0];
     this.signers.alice = signers[1];
     this.signers.bob = signers[2];
+    this.signers.carol = signers[3];
+    this.signers.treasury = signers[4];
 
     const ENSRegistryArtifact: Artifact = await artifacts.readArtifact("ENSRegistry");
     this.ensRegistry = <ENSRegistry>await waffle.deployContract(this.signers.admin, ENSRegistryArtifact, []);
@@ -60,10 +81,16 @@ describe("Unit tests", function () {
     await this.testResolver.setAddr(namehash.hash("test.eth"), this.signers.alice.address);
 
     const phiObjectArtifact: Artifact = await artifacts.readArtifact("PhiObject");
-    this.phiObject = <PhiObject>await waffle.deployContract(this.signers.admin, phiObjectArtifact, []);
+    this.phiObject = <PhiObject>(
+      await waffle.deployContract(this.signers.admin, phiObjectArtifact, [this.signers.treasury.address])
+    );
+    const freeObjectArtifact: Artifact = await artifacts.readArtifact("FreeObject");
+    this.freeObject = <FreeObject>(
+      await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
+    );
 
     const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
-    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.phiObject.address]);
+    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
 
     const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
     this.phiRegistry = <PhiRegistry>(
@@ -72,14 +99,44 @@ describe("Unit tests", function () {
         this.phiMap.address,
       ])
     );
-
-    await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
+    await this.phiMap.connect(this.signers.admin).setOwner(this.phiRegistry.address);
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
     await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
-    await this.phiObject.connect(this.signers.admin).mintObject(this.signers.alice.address, 0, 1, "0x");
+
+    await this.freeObject.connect(this.signers.admin).setOwner(this.phiMap.address);
+    await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
+
     await this.phiObject
       .connect(this.signers.admin)
-      .initToken(0, 200, "jRkF9OhcOzglECJnKtbS1PsICoBlCH6HDuCW8EVePNk", { x: 1, y: 2, z: 3 });
+      .createObject(
+        1,
+        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
+        { x: 1, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject
+      .connect(this.signers.admin)
+      .createObject(
+        2,
+        "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU",
+        { x: 2, y: 1, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject
+      .connect(this.signers.admin)
+      .createObject(
+        3,
+        "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU",
+        { x: 1, y: 2, z: 2 },
+        this.signers.bob.address,
+        200,
+      );
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 2);
+    await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 3);
+    await this.freeObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
 
@@ -87,14 +144,31 @@ describe("Unit tests", function () {
     // beforeEach(async function () {
 
     // });
-
-    shouldBehaveClaimStarterObject();
-    shouldBehaveDeposit();
-    shouldBehaveUnDeposit();
-    shouldBehaveBatchDeposit();
     shouldBehaveOwnerOfPhiland();
+    shouldBehaveviewPhiland();
+    shouldBehaveViewNumberOfPhiland();
+    shouldBehaveClaimStarterObject();
+    shouldBehaveBatchDeposit();
+    shouldBehaveCheckDepositStatus();
+    shouldBehaveCheckAllDepositStatus();
+    shouldBehaveDeposit();
+    shouldBehaveAddDeposit();
+    shouldBehaveUnDeposit();
     shouldBehaveWriteObjectToLand();
+    shouldBehaveBatchUnDeposit();
+    CantBatchUnDeposit();
     shouldBehaveViewPhiland();
-    shouldBehaveRemoveObjectToLand();
+    shouldBehaveRemoveObjectFromLand();
+    shouldBehaveBatchWriteObjectToLand();
+    shouldBehaveBatchRemoveAndWrite();
+    shouldBehaveWriteLinkToObject();
+    CantWriteLinkToAnotherUserObject();
+    CantWriteLinkToObject();
+    shouldBehaveViewLinks();
+    shouldBehaveRemoveLinkfromObject();
+    shouldBehaveBatchRemoveObjectFromLand();
+    shouldBehaveInitialization();
+    shouldBehaveCheckAllDepositStatusAfterInit();
+    CantWriteObjectToLand();
   });
 });

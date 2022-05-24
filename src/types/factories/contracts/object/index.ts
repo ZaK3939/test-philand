@@ -2,6 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { FreeObject__factory } from "./FreeObject__factory";
-export { PaidObject__factory } from "./PaidObject__factory";
 export { PhiObject__factory } from "./PhiObject__factory";
-export { SoulObject__factory } from "./SoulObject__factory";
+export { PremiumObject__factory } from "./PremiumObject__factory";

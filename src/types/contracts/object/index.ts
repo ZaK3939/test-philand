@@ -2,6 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { FreeObject } from "./FreeObject";
-export type { PaidObject } from "./PaidObject";
 export type { PhiObject } from "./PhiObject";
-export type { SoulObject } from "./SoulObject";
+export type { PremiumObject } from "./PremiumObject";

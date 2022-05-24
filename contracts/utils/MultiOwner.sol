@@ -6,14 +6,31 @@ import "@openzeppelin/contracts/utils/Context.sol";
  * @dev Contracts to manage multiple owners.
  */
 abstract contract MultiOwner is Context {
-    error InvalidOwner();
+    /* --------------------------------- ****** --------------------------------- */
 
-    // address[] private _owners;
+    /* -------------------------------------------------------------------------- */
+    /*                                   STORAGE                                  */
+    /* -------------------------------------------------------------------------- */
     mapping(address => bool) private _owners;
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
     event OwnershipGranted(address indexed operator, address indexed target);
     event OwnershipRemoved(address indexed operator, address indexed target);
+    /* --------------------------------- ****** --------------------------------- */
 
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+    error InvalidOwner();
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
@@ -21,6 +38,24 @@ abstract contract MultiOwner is Context {
         _owners[_msgSender()] = true;
     }
 
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  MODIFIERS                                 */
+    /* -------------------------------------------------------------------------- */
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        if (!_owners[msg.sender]) revert InvalidOwner();
+        _;
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   PUBLIC                                   */
+    /* -------------------------------------------------------------------------- */
     /**
      * @dev Returns the address of the current owner.
      */
@@ -42,13 +77,5 @@ abstract contract MultiOwner is Context {
     function removeOwner(address oldOwner) public virtual onlyOwner {
         _owners[oldOwner] = false;
         emit OwnershipRemoved(msg.sender, oldOwner);
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        if (!_owners[msg.sender]) revert InvalidOwner();
-        _;
     }
 }

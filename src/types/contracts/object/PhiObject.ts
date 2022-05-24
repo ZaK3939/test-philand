@@ -28,7 +28,7 @@ import type {
   utils,
 } from "ethers";
 
-export declare namespace PhiObject {
+export declare namespace BaseObject {
   export type SizeStruct = {
     x: BigNumberish;
     y: BigNumberish;
@@ -44,66 +44,100 @@ export declare namespace PhiObject {
 
 export interface PhiObjectInterface extends utils.Interface {
   functions: {
+    "allObjects(uint256)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
+    "changeTokenPrice(uint256,uint256)": FunctionFragment;
+    "createObject(uint256,string,(uint8,uint8,uint8),address,uint256)": FunctionFragment;
+    "created(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
+    "getCreator(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
+    "getPhiObject(address,uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
+    "getTokenPrice(uint256)": FunctionFragment;
     "getTokenURI(uint256)": FunctionFragment;
-    "initToken(uint256,uint256,string,(uint8,uint8,uint8))": FunctionFragment;
+    "initObject(uint256,string,(uint8,uint8,uint8),address,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
-    "mintObject(address,uint256,uint256,bytes)": FunctionFragment;
-    "objectSize(uint256)": FunctionFragment;
+    "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
+    "paymentBalanceOwner()": FunctionFragment;
     "removeOwner(address)": FunctionFragment;
+    "royalityFee()": FunctionFragment;
+    "royaltyInfo(uint256,uint256)": FunctionFragment;
     "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
+    "secondaryRoyalty()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setCreator(uint256,address)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
+    "setRoyalityFee(uint256)": FunctionFragment;
+    "setSecondaryRoyalityFee(uint256)": FunctionFragment;
     "setSize(uint256,(uint8,uint8,uint8))": FunctionFragment;
     "setTokenURI(uint256,string)": FunctionFragment;
+    "setTreasuryAddress(address)": FunctionFragment;
     "setbaseMetadataURI(string)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "tokenURL(uint256)": FunctionFragment;
+    "symbol()": FunctionFragment;
     "totalSupply(uint256)": FunctionFragment;
+    "treasuryAddress()": FunctionFragment;
     "uri(uint256)": FunctionFragment;
+    "withdrawOwnerBalance(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "allObjects"
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
+      | "changeTokenPrice"
+      | "createObject"
+      | "created"
       | "exists"
       | "getBaseMetadataURI"
+      | "getCreator"
       | "getMaxClaimed"
+      | "getPhiObject"
       | "getSize"
+      | "getTokenPrice"
       | "getTokenURI"
-      | "initToken"
+      | "initObject"
       | "isApprovedForAll"
-      | "mintBatchObject"
-      | "mintObject"
-      | "objectSize"
+      | "name"
       | "owner"
+      | "paymentBalanceOwner"
       | "removeOwner"
+      | "royalityFee"
+      | "royaltyInfo"
       | "safeBatchTransferFrom"
       | "safeTransferFrom"
+      | "secondaryRoyalty"
       | "setApprovalForAll"
+      | "setCreator"
       | "setMaxClaimed"
       | "setOwner"
+      | "setRoyalityFee"
+      | "setSecondaryRoyalityFee"
       | "setSize"
       | "setTokenURI"
+      | "setTreasuryAddress"
       | "setbaseMetadataURI"
       | "supportsInterface"
-      | "tokenURL"
+      | "symbol"
       | "totalSupply"
+      | "treasuryAddress"
       | "uri"
+      | "withdrawOwnerBalance"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "allObjects",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [string, BigNumberish]
@@ -117,6 +151,18 @@ export interface PhiObjectInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "changeTokenPrice",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createObject",
+    values: [BigNumberish, string, BaseObject.SizeStruct, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "created",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "exists",
     values: [BigNumberish]
   ): string;
@@ -125,11 +171,23 @@ export interface PhiObjectInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getCreator",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMaxClaimed",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPhiObject",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getSize",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenPrice",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -137,27 +195,28 @@ export interface PhiObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "initToken",
-    values: [BigNumberish, BigNumberish, string, PhiObject.SizeStruct]
+    functionFragment: "initObject",
+    values: [BigNumberish, string, BaseObject.SizeStruct, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintBatchObject",
-    values: [string, BigNumberish[], BigNumberish[], BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintObject",
-    values: [string, BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "objectSize",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "paymentBalanceOwner",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "royalityFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "royaltyInfo",
+    values: [BigNumberish, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "safeBatchTransferFrom",
     values: [string, string, BigNumberish[], BigNumberish[], BytesLike]
@@ -167,8 +226,16 @@ export interface PhiObjectInterface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "secondaryRoyalty",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setCreator",
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxClaimed",
@@ -176,12 +243,24 @@ export interface PhiObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "setRoyalityFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSecondaryRoyalityFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setSize",
-    values: [BigNumberish, PhiObject.SizeStruct]
+    values: [BigNumberish, BaseObject.SizeStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenURI",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTreasuryAddress",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setbaseMetadataURI",
@@ -191,16 +270,22 @@ export interface PhiObjectInterface extends utils.Interface {
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "tokenURL",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "treasuryAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawOwnerBalance",
+    values: [string]
+  ): string;
 
+  decodeFunctionResult(functionFragment: "allObjects", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceOfBatch",
@@ -210,34 +295,59 @@ export interface PhiObjectInterface extends utils.Interface {
     functionFragment: "baseMetadataURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "changeTokenPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createObject",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "created", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getBaseMetadataURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getMaxClaimed",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPhiObject",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getSize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenPrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getTokenURI",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "initToken", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintBatchObject",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "mintObject", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "objectSize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "paymentBalanceOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "royalityFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "royaltyInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -249,17 +359,34 @@ export interface PhiObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "secondaryRoyalty",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMaxClaimed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setRoyalityFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSecondaryRoyalityFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setSize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTokenURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setTreasuryAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -270,25 +397,55 @@ export interface PhiObjectInterface extends utils.Interface {
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "tokenURL", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "treasuryAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "uri", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawOwnerBalance",
+    data: BytesLike
+  ): Result;
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "ChangeTokenPrice(uint256,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
+    "PaymentReceivedOwner(uint256)": EventFragment;
+    "PaymentWithdrawnOwner(uint256)": EventFragment;
+    "SetCreator(uint256,address)": EventFragment;
+    "SetMaxClaimed(uint256,uint256)": EventFragment;
+    "SetRoyalityFee(uint256)": EventFragment;
+    "SetSecondaryRoyalityFee(uint256)": EventFragment;
+    "SetSize(uint256,tuple)": EventFragment;
+    "SetTokenURI(uint256,string)": EventFragment;
+    "SetTreasuryAddress(address)": EventFragment;
+    "SetbaseMetadataURI(string)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ChangeTokenPrice"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSize"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTokenURI"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTreasuryAddress"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetbaseMetadataURI"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -305,6 +462,18 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export interface ChangeTokenPriceEventObject {
+  tokenId: BigNumber;
+  _newPrice: BigNumber;
+}
+export type ChangeTokenPriceEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  ChangeTokenPriceEventObject
+>;
+
+export type ChangeTokenPriceEventFilter =
+  TypedEventFilter<ChangeTokenPriceEvent>;
 
 export interface OwnershipGrantedEventObject {
   operator: string;
@@ -329,6 +498,115 @@ export type OwnershipRemovedEvent = TypedEvent<
 
 export type OwnershipRemovedEventFilter =
   TypedEventFilter<OwnershipRemovedEvent>;
+
+export interface PaymentReceivedOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentReceivedOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentReceivedOwnerEventObject
+>;
+
+export type PaymentReceivedOwnerEventFilter =
+  TypedEventFilter<PaymentReceivedOwnerEvent>;
+
+export interface PaymentWithdrawnOwnerEventObject {
+  amount: BigNumber;
+}
+export type PaymentWithdrawnOwnerEvent = TypedEvent<
+  [BigNumber],
+  PaymentWithdrawnOwnerEventObject
+>;
+
+export type PaymentWithdrawnOwnerEventFilter =
+  TypedEventFilter<PaymentWithdrawnOwnerEvent>;
+
+export interface SetCreatorEventObject {
+  tokenId: BigNumber;
+  _creator: string;
+}
+export type SetCreatorEvent = TypedEvent<
+  [BigNumber, string],
+  SetCreatorEventObject
+>;
+
+export type SetCreatorEventFilter = TypedEventFilter<SetCreatorEvent>;
+
+export interface SetMaxClaimedEventObject {
+  tokenId: BigNumber;
+  newMaxClaimed: BigNumber;
+}
+export type SetMaxClaimedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  SetMaxClaimedEventObject
+>;
+
+export type SetMaxClaimedEventFilter = TypedEventFilter<SetMaxClaimedEvent>;
+
+export interface SetRoyalityFeeEventObject {
+  _royalityFee: BigNumber;
+}
+export type SetRoyalityFeeEvent = TypedEvent<
+  [BigNumber],
+  SetRoyalityFeeEventObject
+>;
+
+export type SetRoyalityFeeEventFilter = TypedEventFilter<SetRoyalityFeeEvent>;
+
+export interface SetSecondaryRoyalityFeeEventObject {
+  _secondaryRoyalty: BigNumber;
+}
+export type SetSecondaryRoyalityFeeEvent = TypedEvent<
+  [BigNumber],
+  SetSecondaryRoyalityFeeEventObject
+>;
+
+export type SetSecondaryRoyalityFeeEventFilter =
+  TypedEventFilter<SetSecondaryRoyalityFeeEvent>;
+
+export interface SetSizeEventObject {
+  tokenId: BigNumber;
+  _size: BaseObject.SizeStructOutput;
+}
+export type SetSizeEvent = TypedEvent<
+  [BigNumber, BaseObject.SizeStructOutput],
+  SetSizeEventObject
+>;
+
+export type SetSizeEventFilter = TypedEventFilter<SetSizeEvent>;
+
+export interface SetTokenURIEventObject {
+  tokenId: BigNumber;
+  _uri: string;
+}
+export type SetTokenURIEvent = TypedEvent<
+  [BigNumber, string],
+  SetTokenURIEventObject
+>;
+
+export type SetTokenURIEventFilter = TypedEventFilter<SetTokenURIEvent>;
+
+export interface SetTreasuryAddressEventObject {
+  _treasuryAddress: string;
+}
+export type SetTreasuryAddressEvent = TypedEvent<
+  [string],
+  SetTreasuryAddressEventObject
+>;
+
+export type SetTreasuryAddressEventFilter =
+  TypedEventFilter<SetTreasuryAddressEvent>;
+
+export interface SetbaseMetadataURIEventObject {
+  baseuri: string;
+}
+export type SetbaseMetadataURIEvent = TypedEvent<
+  [string],
+  SetbaseMetadataURIEventObject
+>;
+
+export type SetbaseMetadataURIEventFilter =
+  TypedEventFilter<SetbaseMetadataURIEvent>;
 
 export interface TransferBatchEventObject {
   operator: string;
@@ -393,6 +671,27 @@ export interface PhiObject extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    allObjects(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BaseObject.SizeStructOutput,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
+        tokenURI: string;
+        size: BaseObject.SizeStructOutput;
+        creator: string;
+        maxClaimed: BigNumber;
+        price: BigNumber;
+        forSale: boolean;
+      }
+    >;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -407,30 +706,64 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    createObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
+
+    getCreator(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PhiObject.SizeStructOutput]>;
+    ): Promise<[BaseObject.SizeStructOutput]>;
+
+    getTokenPrice(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getTokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    initToken(
+    initObject(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
       _uri: string,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -440,36 +773,29 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    objectSize(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number, number] & { x: number; y: number; z: number }>;
+    name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    royalityFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     safeBatchTransferFrom(
       from: string,
@@ -489,15 +815,23 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    secondaryRoyalty(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setCreator(
+      tokenId: BigNumberish,
+      _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -506,9 +840,19 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setSize(
       tokenId: BigNumberish,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -518,8 +862,13 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -528,15 +877,43 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    tokenURL(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<[string]>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  allObjects(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      BaseObject.SizeStructOutput,
+      string,
+      BigNumber,
+      BigNumber,
+      boolean
+    ] & {
+      tokenURI: string;
+      size: BaseObject.SizeStructOutput;
+      creator: string;
+      maxClaimed: BigNumber;
+      price: BigNumber;
+      forSale: boolean;
+    }
+  >;
 
   balanceOf(
     account: string,
@@ -552,30 +929,61 @@ export interface PhiObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+  changeTokenPrice(
+    tokenId: BigNumberish,
+    _newPrice: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  createObject(
+    tokenId: BigNumberish,
+    _uri: string,
+    _size: BaseObject.SizeStruct,
+    _creator: string,
+    _maxClaimed: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  created(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
   exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
+
+  getCreator(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   getMaxClaimed(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getPhiObject(
+    to: string,
+    tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getSize(
     tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PhiObject.SizeStructOutput>;
+  ): Promise<BaseObject.SizeStructOutput>;
+
+  getTokenPrice(
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getTokenURI(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  initToken(
+  initObject(
     tokenId: BigNumberish,
-    newMaxClaimed: BigNumberish,
     _uri: string,
-    size: PhiObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
+    _creator: string,
+    _maxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -585,36 +993,29 @@ export interface PhiObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mintBatchObject(
-    to: string,
-    ids: BigNumberish[],
-    amounts: BigNumberish[],
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintObject(
-    to: string,
-    id: BigNumberish,
-    amount: BigNumberish,
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  objectSize(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<[number, number, number] & { x: number; y: number; z: number }>;
+  name(overrides?: CallOverrides): Promise<string>;
 
   owner(
     targetAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
   removeOwner(
     oldOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  royaltyInfo(
+    arg0: BigNumberish,
+    salePrice: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+  >;
 
   safeBatchTransferFrom(
     from: string,
@@ -634,15 +1035,23 @@ export interface PhiObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
+
   setApprovalForAll(
     operator: string,
     approved: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setCreator(
+    tokenId: BigNumberish,
+    _creator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setMaxClaimed(
     tokenId: BigNumberish,
-    newMaxClaimed: BigNumberish,
+    _newMaxClaimed: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -651,9 +1060,19 @@ export interface PhiObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setRoyalityFee(
+    _royalityFee: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setSecondaryRoyalityFee(
+    _secondaryRoyalty: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setSize(
     tokenId: BigNumberish,
-    size: PhiObject.SizeStruct,
+    _size: BaseObject.SizeStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -663,8 +1082,13 @@ export interface PhiObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setTreasuryAddress(
+    _treasuryAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setbaseMetadataURI(
-    baseuri: string,
+    _baseMetadataURI: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -673,13 +1097,41 @@ export interface PhiObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  tokenURL(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+  treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
   uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  withdrawOwnerBalance(
+    withdrawTo: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    allObjects(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BaseObject.SizeStructOutput,
+        string,
+        BigNumber,
+        BigNumber,
+        boolean
+      ] & {
+        tokenURI: string;
+        size: BaseObject.SizeStructOutput;
+        creator: string;
+        maxClaimed: BigNumber;
+        price: BigNumber;
+        forSale: boolean;
+      }
+    >;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -694,30 +1146,64 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    createObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
+
+    getCreator(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getSize(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PhiObject.SizeStructOutput>;
+    ): Promise<BaseObject.SizeStructOutput>;
+
+    getTokenPrice(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getTokenURI(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    initToken(
+    initObject(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
       _uri: string,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -727,30 +1213,23 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    objectSize(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number, number, number] & { x: number; y: number; z: number }>;
+    name(overrides?: CallOverrides): Promise<string>;
 
     owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
+
+    royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber] & { receiver: string; royaltyAmount: BigNumber }
+    >;
 
     safeBatchTransferFrom(
       from: string,
@@ -770,23 +1249,41 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setCreator(
+      tokenId: BigNumberish,
+      _creator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setSize(
       tokenId: BigNumberish,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -796,8 +1293,13 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -806,14 +1308,21 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    tokenURL(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<string>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -827,6 +1336,15 @@ export interface PhiObject extends BaseContract {
       operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "ChangeTokenPrice(uint256,uint256)"(
+      tokenId?: null,
+      _newPrice?: null
+    ): ChangeTokenPriceEventFilter;
+    ChangeTokenPrice(
+      tokenId?: null,
+      _newPrice?: null
+    ): ChangeTokenPriceEventFilter;
 
     "OwnershipGranted(address,address)"(
       operator?: string | null,
@@ -845,6 +1363,58 @@ export interface PhiObject extends BaseContract {
       operator?: string | null,
       target?: string | null
     ): OwnershipRemovedEventFilter;
+
+    "PaymentReceivedOwner(uint256)"(
+      amount?: null
+    ): PaymentReceivedOwnerEventFilter;
+    PaymentReceivedOwner(amount?: null): PaymentReceivedOwnerEventFilter;
+
+    "PaymentWithdrawnOwner(uint256)"(
+      amount?: null
+    ): PaymentWithdrawnOwnerEventFilter;
+    PaymentWithdrawnOwner(amount?: null): PaymentWithdrawnOwnerEventFilter;
+
+    "SetCreator(uint256,address)"(
+      tokenId?: null,
+      _creator?: null
+    ): SetCreatorEventFilter;
+    SetCreator(tokenId?: null, _creator?: null): SetCreatorEventFilter;
+
+    "SetMaxClaimed(uint256,uint256)"(
+      tokenId?: null,
+      newMaxClaimed?: null
+    ): SetMaxClaimedEventFilter;
+    SetMaxClaimed(
+      tokenId?: null,
+      newMaxClaimed?: null
+    ): SetMaxClaimedEventFilter;
+
+    "SetRoyalityFee(uint256)"(_royalityFee?: null): SetRoyalityFeeEventFilter;
+    SetRoyalityFee(_royalityFee?: null): SetRoyalityFeeEventFilter;
+
+    "SetSecondaryRoyalityFee(uint256)"(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
+    SetSecondaryRoyalityFee(
+      _secondaryRoyalty?: null
+    ): SetSecondaryRoyalityFeeEventFilter;
+
+    "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
+    SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
+
+    "SetTokenURI(uint256,string)"(
+      tokenId?: null,
+      _uri?: null
+    ): SetTokenURIEventFilter;
+    SetTokenURI(tokenId?: null, _uri?: null): SetTokenURIEventFilter;
+
+    "SetTreasuryAddress(address)"(
+      _treasuryAddress?: null
+    ): SetTreasuryAddressEventFilter;
+    SetTreasuryAddress(_treasuryAddress?: null): SetTreasuryAddressEventFilter;
+
+    "SetbaseMetadataURI(string)"(baseuri?: null): SetbaseMetadataURIEventFilter;
+    SetbaseMetadataURI(baseuri?: null): SetbaseMetadataURIEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -884,6 +1454,11 @@ export interface PhiObject extends BaseContract {
   };
 
   estimateGas: {
+    allObjects(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -898,16 +1473,49 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    createObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    created(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     exists(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getBaseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCreator(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getSize(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTokenPrice(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -917,11 +1525,12 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initToken(
+    initObject(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
       _uri: string,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -931,35 +1540,26 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    objectSize(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    paymentBalanceOwner(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    royalityFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     safeBatchTransferFrom(
@@ -980,15 +1580,23 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    secondaryRoyalty(overrides?: CallOverrides): Promise<BigNumber>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setCreator(
+      tokenId: BigNumberish,
+      _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -997,9 +1605,19 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setSize(
       tokenId: BigNumberish,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1009,8 +1627,13 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1019,17 +1642,29 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    tokenURL(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     uri(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    allObjects(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     balanceOf(
       account: string,
       id: BigNumberish,
@@ -1044,6 +1679,26 @@ export interface PhiObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    changeTokenPrice(
+      tokenId: BigNumberish,
+      _newPrice: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    createObject(
+      tokenId: BigNumberish,
+      _uri: string,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    created(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     exists(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -1053,12 +1708,28 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getCreator(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPhiObject(
+      to: string,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     getSize(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTokenPrice(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1068,11 +1739,12 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initToken(
+    initObject(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
       _uri: string,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
+      _creator: string,
+      _maxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1082,35 +1754,28 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintObject(
-      to: string,
-      id: BigNumberish,
-      amount: BigNumberish,
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    objectSize(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(
       targetAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    paymentBalanceOwner(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     removeOwner(
       oldOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    royalityFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    royaltyInfo(
+      arg0: BigNumberish,
+      salePrice: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     safeBatchTransferFrom(
@@ -1131,15 +1796,23 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    secondaryRoyalty(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setCreator(
+      tokenId: BigNumberish,
+      _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setMaxClaimed(
       tokenId: BigNumberish,
-      newMaxClaimed: BigNumberish,
+      _newMaxClaimed: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1148,9 +1821,19 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setRoyalityFee(
+      _royalityFee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSecondaryRoyalityFee(
+      _secondaryRoyalty: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setSize(
       tokenId: BigNumberish,
-      size: PhiObject.SizeStruct,
+      _size: BaseObject.SizeStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1160,8 +1843,13 @@ export interface PhiObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTreasuryAddress(
+      _treasuryAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setbaseMetadataURI(
-      baseuri: string,
+      _baseMetadataURI: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1170,19 +1858,23 @@ export interface PhiObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    tokenURL(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    treasuryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     uri(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    withdrawOwnerBalance(
+      withdrawTo: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

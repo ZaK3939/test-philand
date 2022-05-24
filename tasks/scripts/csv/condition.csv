@@ -1,0 +1,17 @@
+Condition,Value,TokenId
+ENSOnwer,1,1
+ETHHolding,01,2
+ETHHolding,1,3
+ETHHolding,5,4
+ETHHolding,10,5
+ETHHolding,50,6
+USDCHolding,100,7
+USDCHolding,1000,8
+USDCHolding,10000,9
+SwapOnUniswap,1,10
+SwapOnUniswap,5,11
+SwapOnUniswap,10,12
+SwapOnUniswap,30,13
+DAILiquidityProvidingOnUniswap,100,14,
+DAILiquidityProvidingOnUniswap,1000,15,
+DAILiquidityProvidingOnUniswap,10000,16,

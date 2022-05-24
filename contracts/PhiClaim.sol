@@ -3,120 +3,142 @@ pragma solidity >=0.8.9;
 
 import { IENS } from "./interfaces/IENS.sol";
 import { IPhiObject } from "./interfaces/IPhiObject.sol";
-import { ISoulObject } from "./interfaces/ISoulObject.sol";
-import { MultiOwner } from "./utils/MultiOwner.sol";
+// import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiClaim is MultiOwner {
+contract PhiClaim is AccessControlUpgradeable {
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   CONFIG                                   */
+    /* -------------------------------------------------------------------------- */
     address private _adminSigner;
-    IPhiObject private _object;
-    ISoulObject private _soulObject;
-
-    mapping(address => mapping(uint256 => bool)) public claimedLists;
-    mapping(address => mapping(uint256 => bool)) public claimedSoulLists;
-    mapping(string => uint256) public couponType;
-    mapping(string => uint256) public soulCouponType;
-
-    error AllreadyClaimedObject(address sender, uint256 tokenId);
-    event LogClaimObject(address sender, uint256 tokenid);
-
-    error AllreadyClaimedSoulObject(address sender, uint256 tokenId);
-    event LogClaimSoulObject(address sender, uint256 tokenid);
-
+    bool private initialized;
+    /* --------------------------------- ****** --------------------------------- */
+    /* -------------------------------------------------------------------------- */
+    /*                                   STORAGE                                  */
+    /* -------------------------------------------------------------------------- */
     //@notice the coupon sent was signed by the admin signer
     struct Coupon {
         bytes32 r;
         bytes32 s;
         uint8 v;
     }
+    mapping(address => mapping(uint256 => bool)) public phiClaimedLists;
+    mapping(string => uint256) private couponType;
+    /* --------------------------------- ****** --------------------------------- */
 
-    constructor(
-        address adminSigner,
-        IPhiObject object,
-        ISoulObject soulObject
-    ) {
+    /* -------------------------------------------------------------------------- */
+    /*                                   EVENTS                                   */
+    /* -------------------------------------------------------------------------- */
+    event SetAdminSigner(address indexed verifierAddress);
+    event SetCoupon(string condition, uint256 tokenid);
+    event LogClaimObject(address indexed sender, uint256 tokenid);
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+    error AllreadyClaimedObject(address sender, uint256 tokenId);
+    error NotAdminCall(address sender);
+    error ECDSAInvalidSignature(address sender, address signer, bytes32 digest, Coupon coupon);
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
+
+    function initialize(address _admin, address adminSigner) public initializer {
         _adminSigner = adminSigner;
-        _object = object;
-        _soulObject = soulObject;
+        __AccessControl_init();
+        _setupRole(DEFAULT_ADMIN_ROLE, _admin);
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  MODIFIERS                                 */
+    /* -------------------------------------------------------------------------- */
+    modifier onlyIfAllreadyClaimedObject(uint256 tokenId) {
+        if (phiClaimedLists[msg.sender][tokenId] == true) {
+            revert AllreadyClaimedObject({ sender: msg.sender, tokenId: tokenId });
+        }
+        _;
+    }
+
+    modifier onlyIfNotOnwer(address sender) {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, sender)) {
+            revert NotAdminCall({ sender: msg.sender });
+        }
+        _;
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   Coupon                                   */
+    /* -------------------------------------------------------------------------- */
+    /// @dev get adminsigner
+    function getAdminSigner() public view returns (address) {
+        return _adminSigner;
+    }
+
+    /// @dev set adminsigner
+    function setAdminSigner(address verifierAdderss) public onlyIfNotOnwer(msg.sender) {
+        _adminSigner = verifierAdderss;
+        emit SetAdminSigner(verifierAdderss);
+    }
+
+    /// @dev get object conditon and number (related with offcahin validation)
+    function getCouponType(string memory condition) public view returns (uint256) {
+        return couponType[condition];
+    }
+
+    /// @dev set object conditon and number (related with offcahin validation)
+    function setCouponType(string memory condition, uint256 tokenId) public onlyIfNotOnwer(msg.sender) {
+        couponType[condition] = tokenId;
+        emit SetCoupon(condition, tokenId);
     }
 
     /// @dev check that the coupon sent was signed by the admin signer
     function isVerifiedCoupon(bytes32 digest, Coupon memory coupon) internal view returns (bool) {
         address signer = ecrecover(digest, coupon.v, coupon.r, coupon.s);
-        require(signer != address(0), "ECDSA: invalid signature"); // Added check for zero address
+        if (signer == address(0)) {
+            revert ECDSAInvalidSignature({ sender: msg.sender, signer: signer, digest: digest, coupon: coupon });
+        }
         return signer == _adminSigner;
     }
 
-    /// @dev get object conditon and number (related with offcahin validation)
-    function getCouponType(string calldata condition) public view returns (uint256) {
-        return couponType[condition];
-    }
+    /* --------------------------------- ****** --------------------------------- */
 
-    /// @dev set object conditon and number (related with offcahin validation)
-    function setCouponType(string calldata condition, uint256 tokenid) public onlyOwner {
-        couponType[condition] = tokenid;
-    }
-
-    /// @dev get object conditon and number (related with offcahin validation)
-    function getSoulCouponType(string calldata condition) public view returns (uint256) {
-        return soulCouponType[condition];
-    }
-
-    /// @dev set object conditon and number (related with offcahin validation)
-    function setSoulCouponType(string calldata condition, uint256 tokenid) public onlyOwner {
-        soulCouponType[condition] = tokenid;
-    }
-
+    /* -------------------------------------------------------------------------- */
+    /*                                   OBJECT                                   */
+    /* -------------------------------------------------------------------------- */
     /*
-     * @title claimObject
-     * @notice Send object create Message from L1 to Starknet
+     * @title claimPhiObject
+     * @notice Send create Message to PhiObject
      * @param tokenId : object nft token_id
      * @param condition : object related name. ex.uniswap,loot,ethbalance,...
-     * @param coupon : get offchain api
+     * @param coupon : coupon api response
      * @dev check that the coupon sent was signed by the admin signer
      */
-    function claimObject(
+    function claimPhiObject(
+        address contractAddress,
         uint256 tokenId,
         string calldata condition,
         Coupon memory coupon
-    ) external {
-        bytes32 digest = keccak256(abi.encode(couponType[condition], msg.sender));
-
+    ) external onlyIfAllreadyClaimedObject(tokenId) {
+        IPhiObject _phiObject = IPhiObject(contractAddress);
         // Check that the coupon sent was signed by the admin signer
+        bytes32 digest = keccak256(abi.encode(contractAddress, couponType[condition], msg.sender));
         require(isVerifiedCoupon(digest, coupon), "Invalid coupon");
-
-        if (claimedLists[msg.sender][tokenId] == true) {
-            revert AllreadyClaimedObject({ sender: msg.sender, tokenId: tokenId });
-        }
-        claimedLists[msg.sender][tokenId] = true;
+        phiClaimedLists[msg.sender][tokenId] = true;
+        _phiObject.getPhiObject(msg.sender, tokenId);
         emit LogClaimObject(msg.sender, tokenId);
-        _object.mintObject(msg.sender, tokenId, 1, "");
-    }
-
-    /*
-     * @title claimSoulObject
-     * @notice Send object create Message from L1 to Starknet
-     * @param tokenId : object nft token_id
-     * @param condition : object related name. ex.uniswap,loot,ethbalance,...
-     * @param coupon : get offchain api
-     * @dev check that the coupon sent was signed by the admin signer
-     */
-    function claimSoulObject(
-        uint256 tokenId,
-        string calldata condition,
-        Coupon memory coupon
-    ) external {
-        bytes32 digest = keccak256(abi.encode(soulCouponType[condition], msg.sender));
-
-        // Check that the coupon sent was signed by the admin signer
-        require(isVerifiedCoupon(digest, coupon), "Invalid coupon");
-
-        if (claimedSoulLists[msg.sender][tokenId] == true) {
-            revert AllreadyClaimedSoulObject({ sender: msg.sender, tokenId: tokenId });
-        }
-        claimedLists[msg.sender][tokenId] = true;
-        emit LogClaimSoulObject(msg.sender, tokenId);
-        _soulObject.getSoulObject(msg.sender, tokenId, 1, "");
     }
 }

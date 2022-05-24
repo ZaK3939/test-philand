@@ -1,128 +1,122 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.8;
 
-// import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
-import { MultiOwner } from "../utils/MultiOwner.sol";
+import { BaseObject } from "../utils/BaseObject.sol";
 import "../utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiObject is ERC1155Supply, MultiOwner {
-    string public baseMetadataURI;
+contract PhiObject is ERC1155Supply, BaseObject {
+    /* --------------------------------- ****** --------------------------------- */
 
-    struct Size {
-        uint8 x;
-        uint8 y;
-        uint8 z;
-    }
-
-    mapping(uint256 => Size) public objectSize;
-    mapping(uint256 => string) public tokenURL;
-    mapping(uint256 => uint256) private maxClaimed;
-    // Errors
-    error InvalidTokenID();
-    error NonExistentToken();
-    error NoSetTokenSize();
-
-    constructor() public ERC1155("") {
+    /* -------------------------------------------------------------------------- */
+    /*                               INITIALIZATION                               */
+    /* -------------------------------------------------------------------------- */
+    constructor(address payable _treasuryAddress) ERC1155("") {
+        name = "Onchain PhiObjects";
+        symbol = "OPS";
         baseMetadataURI = "https://www.arweave.net/";
+        treasuryAddress = _treasuryAddress;
+        secondaryRoyalty = 500;
     }
 
-    /**
-     * @dev Returns the maxClaimed
-     */
-    function getMaxClaimed(uint256 tokenId) public view virtual returns (uint256) {
-        return maxClaimed[tokenId];
-    }
+    /* --------------------------------- ****** --------------------------------- */
 
-    /**
-     * @dev Set the new maxClaimed
-     */
-    function setMaxClaimed(uint256 tokenId, uint256 newMaxClaimed) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        maxClaimed[tokenId] = newMaxClaimed;
-    }
-
-    function getSize(uint256 tokenId) public view returns (Size memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
-        Size memory size = objectSize[tokenId];
-        if (size.x == 0) revert NoSetTokenSize();
-        return objectSize[tokenId];
-    }
-
-    function setSize(uint256 tokenId, Size calldata size) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        objectSize[tokenId] = size;
-    }
-
-    function getBaseMetadataURI() public view returns (string memory) {
-        return baseMetadataURI;
-    }
-
-    function setbaseMetadataURI(string memory baseuri) external onlyOwner {
-        baseMetadataURI = baseuri;
-    }
-
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
-        return tokenURL[tokenId];
-    }
-
-    function setTokenURI(uint256 tokenId, string memory _uri) public virtual onlyOwner {
-        if (!exists(tokenId)) revert NonExistentToken();
-        tokenURL[tokenId] = _uri;
-    }
-
-    function initToken(
-        uint256 tokenId,
-        uint256 newMaxClaimed,
-        string memory _uri,
-        Size calldata size
-    ) external onlyOwner {
-        setMaxClaimed(tokenId, newMaxClaimed);
-        setTokenURI(tokenId, _uri);
-        setSize(tokenId, size);
-    }
-
-    /* Utility Functions */
-    function isValid(uint256 tokenId) internal view {
-        // Validate that the token is within range when querying
-        if (tokenId <= 0 || totalSupply(tokenId) >= maxClaimed[tokenId]) revert InvalidTokenID();
-        if (!exists(tokenId)) revert NonExistentToken();
-    }
-
+    /* -------------------------------------------------------------------------- */
+    /*                                  TOKEN URI                                 */
+    /* -------------------------------------------------------------------------- */
     function uri(uint256 tokenId) public view override returns (string memory) {
-        if (!exists(tokenId)) revert NonExistentToken();
+        if (!created[tokenId]) revert InvalidTokenID();
         return string(abi.encodePacked(baseMetadataURI, getTokenURI(tokenId)));
     }
 
-    function mintObject(
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) external onlyOwner {
-        super._mint(to, id, amount, data);
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                OBJECT METHOD                               */
+    /* -------------------------------------------------------------------------- */
+    /* Utility Functions */
+    function isValid(uint256 tokenId) internal view {
+        // Validate that the token is within range when querying
+        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (!created[tokenId]) revert InvalidTokenID();
     }
 
-    function mintBatchObject(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
+    /*
+     * @title initObject
+     * @notice init object for already created token
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @param _maxClaimed : Maximum number
+     * @dev check that token is already created and init object settings
+     */
+    function initObject(
+        uint256 tokenId,
+        string memory _uri,
+        Size calldata _size,
+        address payable _creator,
+        uint256 _maxClaimed
     ) external onlyOwner {
-        // todo for loop check token supply
-        super._mintBatch(to, ids, amounts, data);
+        if (!created[tokenId]) revert InvalidTokenID();
+        setMaxClaimed(tokenId, _maxClaimed);
+        setTokenURI(tokenId, _uri);
+        setSize(tokenId, _size);
+        setCreator(tokenId, _creator);
+        changeTokenPrice(tokenId, 0);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public virtual override {
-        super.safeTransferFrom(from, to, id, amount, data);
+    /*
+     * @title createObject
+     * @notice create object for first time
+     * @param tokenId : object nft tokenId
+     * @param _uri : baseMetadataURI + _url
+     * @param _size : object's size
+     * @param _creator : creator address, 0 also allowed.
+     * @param _maxClaimed : Maximum number
+     * @dev check that token is not created and set object settings
+     */
+    function createObject(
+        uint256 tokenId,
+        string memory _uri,
+        Size memory _size,
+        address payable _creator,
+        uint256 _maxClaimed
+    ) external onlyOwner {
+        if (exists(tokenId)) revert ExistentToken();
+        setTokenURI(tokenId, _uri);
+        setSize(tokenId, _size);
+        setCreator(tokenId, _creator);
+        setMaxClaimed(tokenId, _maxClaimed);
+        changeTokenPrice(tokenId, 0);
+        allObjects[tokenId].forSale = true;
+        created[tokenId] = true;
+    }
+
+    /* --------------------------------- ****** --------------------------------- */
+
+    /* -------------------------------------------------------------------------- */
+    /*                                QUEST METHOD                                */
+    /* -------------------------------------------------------------------------- */
+    /*
+     * @title getPhiObject
+     * @notice mint Object to receiver who passed condition
+     * @param to : receiver address
+     * @param tokenId : object nft token_id
+     * @dev onlyOwnerMethod. generally, this method is invoked by phiClaim contract
+     */
+    function getPhiObject(address to, uint256 tokenId) public onlyOwner {
+        // check if the function caller is not an zero account address
+        require(to != address(0));
+        // token should be for sale
+        require(allObjects[tokenId].forSale);
+        // check if the token id of the token exists
+        isValid(tokenId);
+        // check token's MaxClaimed
+        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
+        // mint the token
+        super._mint(to, tokenId, 1, "0x00");
     }
 }
