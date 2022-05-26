@@ -177,6 +177,7 @@ export interface PhiClaimInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "Hello()": EventFragment;
     "Initialized(uint8)": EventFragment;
     "LogClaimObject(address,uint256)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
@@ -186,6 +187,7 @@ export interface PhiClaimInterface extends utils.Interface {
     "SetCoupon(string,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogClaimObject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
@@ -194,6 +196,11 @@ export interface PhiClaimInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SetAdminSigner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCoupon"): EventFragment;
 }
+
+export interface HelloEventObject {}
+export type HelloEvent = TypedEvent<[], HelloEventObject>;
+
+export type HelloEventFilter = TypedEventFilter<HelloEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -515,6 +522,9 @@ export interface PhiClaim extends BaseContract {
   };
 
   filters: {
+    "Hello()"(): HelloEventFilter;
+    Hello(): HelloEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 

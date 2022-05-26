@@ -119,6 +119,10 @@ export async function settingPhi(): Promise<void> {
   res = await phiObjectContractInstance[funcName](...calldata);
   res = await premiumObjectContractInstance[funcName](...calldata);
   res = await freeObjectContractInstance[funcName](...calldata);
+
+  const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  funcName = "grantRole";
+  calldata = [DEFAULT_ADMIN_ROLE, "0xFe3DdB7883c3f09e1fdc9908B570C6C79fB25f7C"];
   res = await phiMapContractInstance[funcName](...calldata);
   res = await phiClaimContractInstance[funcName](...calldata);
 }

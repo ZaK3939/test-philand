@@ -127,7 +127,7 @@ contract PhiRegistry is MultiOwner {
 
     /*
      * @title changePhilandOwner
-     * @notice Send philand owner change Message from L1 to PhiMap contract
+     * @notice Send philand owner change Message from L1 to Starknet
      * @param name : ENS name
      * @dev include check ENS
      */

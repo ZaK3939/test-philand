@@ -1,5 +1,5 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { artifacts, ethers, waffle } from "hardhat";
+import { artifacts, ethers, upgrades, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { ENSRegistry } from "../../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
@@ -89,8 +89,9 @@ describe("Unit tests PhiMap", function () {
       await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
     );
 
-    const phiMapArtifact: Artifact = await artifacts.readArtifact("PhiMap");
-    this.phiMap = <PhiMap>await waffle.deployContract(this.signers.admin, phiMapArtifact, [this.freeObject.address]);
+    const PhiMap = await ethers.getContractFactory("PhiMap");
+    const phiMap = await upgrades.deployProxy(PhiMap, [this.signers.admin.address]);
+    this.phiMap = <PhiMap>await phiMap.deployed();
 
     const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
     this.phiRegistry = <PhiRegistry>(
@@ -99,7 +100,8 @@ describe("Unit tests PhiMap", function () {
         this.phiMap.address,
       ])
     );
-    await this.phiMap.connect(this.signers.admin).setOwner(this.phiRegistry.address);
+    const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    await this.phiMap.connect(this.signers.admin).grantRole(DEFAULT_ADMIN_ROLE, this.phiRegistry.address);
     await this.phiRegistry.connect(this.signers.admin).createPhiland("zak3939");
     await this.phiRegistry.connect(this.signers.alice).createPhiland("test");
 
