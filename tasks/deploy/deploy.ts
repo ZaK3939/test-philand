@@ -28,7 +28,7 @@ export async function deployPhi(): Promise<void> {
   // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
   const phiClaim = await deployL1Upgrade(NETWORK, "PhiClaim", BLOCK_NUMBER, [l1Signer.address, l1Signer.address]);
-  const phiMap = await deployL1(NETWORK, "PhiMap", BLOCK_NUMBER, [freeObject.address]);
+  const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
   const phiRegistry = await deployL1(NETWORK, "PhiRegistry", BLOCK_NUMBER, [ENS_ADDRESS, phiMap.address]);
 }
 
@@ -63,7 +63,7 @@ export async function deployPhiPolygon(): Promise<void> {
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
-  const phiMap = await deployL1(NETWORK, "PhiMap", BLOCK_NUMBER, [freeObject.address]);
+  const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
   const phiClaim = await deployL1Upgrade(NETWORK, "PhiClaim", BLOCK_NUMBER, [l1Signer.address, l1Signer.address]);
 }
 

@@ -3,7 +3,7 @@ pragma solidity >=0.8.9;
 
 import { IENS } from "./interfaces/IENS.sol";
 import { IPhiObject } from "./interfaces/IPhiObject.sol";
-// import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
@@ -33,6 +33,7 @@ contract PhiClaim is AccessControlUpgradeable {
     /* -------------------------------------------------------------------------- */
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
+    event Hello();
     event SetAdminSigner(address indexed verifierAddress);
     event SetCoupon(string condition, uint256 tokenid);
     event LogClaimObject(address indexed sender, uint256 tokenid);
@@ -57,6 +58,7 @@ contract PhiClaim is AccessControlUpgradeable {
         _adminSigner = adminSigner;
         __AccessControl_init();
         _setupRole(DEFAULT_ADMIN_ROLE, _admin);
+        emit Hello();
     }
 
     /* --------------------------------- ****** --------------------------------- */
@@ -71,8 +73,8 @@ contract PhiClaim is AccessControlUpgradeable {
         _;
     }
 
-    modifier onlyIfNotOnwer(address sender) {
-        if (!hasRole(DEFAULT_ADMIN_ROLE, sender)) {
+    modifier onlyIfNotOnwer() {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender)) {
             revert NotAdminCall({ sender: msg.sender });
         }
         _;
@@ -89,7 +91,7 @@ contract PhiClaim is AccessControlUpgradeable {
     }
 
     /// @dev set adminsigner
-    function setAdminSigner(address verifierAdderss) public onlyIfNotOnwer(msg.sender) {
+    function setAdminSigner(address verifierAdderss) public onlyIfNotOnwer {
         _adminSigner = verifierAdderss;
         emit SetAdminSigner(verifierAdderss);
     }
@@ -100,7 +102,7 @@ contract PhiClaim is AccessControlUpgradeable {
     }
 
     /// @dev set object conditon and number (related with offcahin validation)
-    function setCouponType(string memory condition, uint256 tokenId) public onlyIfNotOnwer(msg.sender) {
+    function setCouponType(string memory condition, uint256 tokenId) public onlyIfNotOnwer {
         couponType[condition] = tokenId;
         emit SetCoupon(condition, tokenId);
     }
