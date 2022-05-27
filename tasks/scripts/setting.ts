@@ -32,12 +32,14 @@ export async function settingPhi(): Promise<void> {
 
   const phiClaimAbiName = "PhiClaim";
   const phiMapAbiName = "PhiMap";
+  const phiRegistryAbiName = "PhiRegistry";
   const premiumObjectAbiName = "PremiumObject";
   const phiObjectAbiName = "PhiObject";
   const freeObjectAbiName = "FreeObject";
 
   const phiClaimAddress = getAddress(phiClaimAbiName, NETWORK);
   const phiMapAddress = getAddress(phiMapAbiName, NETWORK);
+  const phiRegistryAddress = getAddress(phiRegistryAbiName, NETWORK);
   const premiumObjectAddress = getAddress(premiumObjectAbiName, NETWORK);
   const phiObjectAddress = getAddress(phiObjectAbiName, NETWORK);
   const freeObjectAddress = getAddress(freeObjectAbiName, NETWORK);
@@ -54,75 +56,75 @@ export async function settingPhi(): Promise<void> {
   const phiObjectContractInstance = await phiObjectContractFactory.attach(phiObjectAddress);
   const freeObjectContractInstance = await freeObjectContractFactory.attach(freeObjectAddress);
 
-  const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
-    encoding: "utf8",
-  });
-  const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
-  funcName = "setCouponType";
-  for (let i = 0; i < conditionRowList.length; i++) {
-    calldata = [
-      String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
-      String(conditionRowList[i].TokenId),
-    ];
-    console.log(calldata);
-    res = await phiClaimContractInstance[funcName](...calldata);
-    console.log("phiClaim setCouponType Response:", res);
-  }
+  // const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
+  //   encoding: "utf8",
+  // });
+  // const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
+  // funcName = "setCouponType";
+  // for (let i = 0; i < conditionRowList.length; i++) {
+  //   calldata = [
+  //     String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
+  //     String(conditionRowList[i].TokenId),
+  //   ];
+  //   console.log(calldata);
+  //   res = await phiClaimContractInstance[funcName](...calldata);
+  //   console.log("phiClaim setCouponType Response:", res);
+  // }
 
-  const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
-    encoding: "utf8",
-  });
-  const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
-  funcName = "createObject";
-  for (let i = 0; i < objectRowList.length; i++) {
-    const size = String(objectRowList[i].size);
-    const metadataURL = String(objectRowList[i].json_url).split("/");
-    calldata = [
-      String(objectRowList[i].tokenId),
-      metadataURL.slice(-1)[0],
-      { x: size[1], y: size[3], z: "1" },
-      l1Signer.address,
-      String(objectRowList[i].maxClaimed),
-    ];
-    console.log(calldata);
-    res = await phiObjectContractInstance[funcName](...calldata);
-    console.log("create Object Response:", res);
-  }
+  // const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
+  //   encoding: "utf8",
+  // });
+  // const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
+  // funcName = "createObject";
+  // for (let i = 0; i < objectRowList.length; i++) {
+  //   const size = String(objectRowList[i].size);
+  //   const metadataURL = String(objectRowList[i].json_url).split("/");
+  //   calldata = [
+  //     String(objectRowList[i].tokenId),
+  //     metadataURL.slice(-1)[0],
+  //     { x: size[1], y: size[3], z: "1" },
+  //     l1Signer.address,
+  //     String(objectRowList[i].maxClaimed),
+  //   ];
+  //   console.log(calldata);
+  //   res = await phiObjectContractInstance[funcName](...calldata);
+  //   console.log("create Object Response:", res);
+  // }
 
-  funcName = "createObject";
-  calldata = [0, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, l1Signer.address, 200, 1];
-  console.log(calldata);
-  res = await premiumObjectContractInstance[funcName](...calldata);
-  console.log("create Object Response:", res);
+  // funcName = "createObject";
+  // calldata = [0, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, l1Signer.address, 200, 1];
+  // console.log(calldata);
+  // res = await premiumObjectContractInstance[funcName](...calldata);
+  // console.log("create Object Response:", res);
 
   funcName = "setOwner";
   calldata = [phiMapAddress];
   res = await phiObjectContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
-
   calldata = [phiClaimAddress];
   res = await phiObjectContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
 
-  funcName = "setOwner";
-  calldata = [phiMapAddress];
-  res = await freeObjectContractInstance[funcName](...calldata);
-  console.log("setOwner Response:", res);
-
-  calldata = [phiClaimAddress];
-  res = await freeObjectContractInstance[funcName](...calldata);
-  console.log("setOwner Response:", res);
+  const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  funcName = "grantRole";
+  calldata = [DEFAULT_ADMIN_ROLE, phiRegistryAddress];
+  res = await phiMapContractInstance.grantRole(...calldata);
+  console.log("grantRole Response:", res);
 
   // for oji3 test
   funcName = "setOwner";
   calldata = ["0xFe3DdB7883c3f09e1fdc9908B570C6C79fB25f7C"];
   res = await phiObjectContractInstance[funcName](...calldata);
+  console.log("setOwner Response:", res);
   res = await premiumObjectContractInstance[funcName](...calldata);
+  console.log("setOwner Response:", res);
   res = await freeObjectContractInstance[funcName](...calldata);
+  console.log("setOwner Response:", res);
 
-  const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
   funcName = "grantRole";
   calldata = [DEFAULT_ADMIN_ROLE, "0xFe3DdB7883c3f09e1fdc9908B570C6C79fB25f7C"];
-  res = await phiMapContractInstance[funcName](...calldata);
-  res = await phiClaimContractInstance[funcName](...calldata);
+  res = await phiMapContractInstance.grantRole(...calldata);
+  console.log("grantRole Response:", res);
+  res = await phiClaimContractInstance.grantRole(...calldata);
+  console.log("grantRole Response:", res);
 }

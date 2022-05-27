@@ -22,7 +22,6 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         uint256 maxY;
     }
     /* --------------------------------- OBJECT --------------------------------- */
-    IObject public freeObject;
     struct Size {
         uint8 x;
         uint8 y;
@@ -45,15 +44,10 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     }
     /* --------------------------------- DEPOSIT -------------------------------- */
     struct Deposit {
-        uint256 amount;
-        uint256 used;
-        uint256 timestamp;
-    }
-    struct DepositInfo {
         address contractAddress;
         uint256 tokenId;
     }
-    struct DepositAllInfo {
+    struct DepositInfo {
         address contractAddress;
         uint256 tokenId;
         uint256 amount;
@@ -77,8 +71,8 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     uint256 public numberOfObject;
     mapping(string => ObjectInfo[]) public userObject;
     /* --------------------------------- DEPOSIT -------------------------------- */
-    mapping(string => DepositInfo[]) public userObjectDeposit;
-    mapping(string => mapping(address => mapping(uint256 => Deposit))) public depositInfo;
+    mapping(string => Deposit[]) public userObjectDeposit;
+    mapping(string => mapping(address => mapping(uint256 => DepositInfo))) public depositInfo;
     mapping(string => mapping(address => mapping(uint256 => uint256))) public depositTime;
     /* --------------------------------- LINK ----------------------------------- */
 
@@ -89,37 +83,25 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     /* -------------------------------------------------------------------------- */
     event Hello();
     /* ---------------------------------- Map ----------------------------------- */
-    event CreatedMap(string indexed name, address indexed sender, uint256 numberOfLand);
-    event ChangePhilandOwner(string indexed name, address indexed sender);
+    event CreatedMap(string name, address indexed sender, uint256 numberOfLand);
+    event ChangePhilandOwner(string name, address indexed sender);
     /* --------------------------------- OBJECT --------------------------------- */
-    event WriteObject(string indexed name, ObjectInfo writeObjectInfo);
-    event RemoveObject(string indexed name, uint256 index);
-    event Initialization(string indexed name, address indexed sender);
-    event Save(
-        string indexed name,
-        address indexed sender,
-        uint256[] remove_index_array,
-        Object[] objectData,
-        Link[] link
-    );
+    event WriteObject(string name, address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart);
+    event RemoveObject(string name, uint256 index);
+    event MapInitialization(string iname, address indexed sender);
+    event Save(string name, address indexed sender);
     /* --------------------------------- DEPOSIT -------------------------------- */
-    event DepositSuccess(
-        address indexed sender,
-        string indexed name,
-        address contractAddress,
-        uint256 tokenId,
-        uint256 amount
-    );
+    event DepositSuccess(address indexed sender, string name, address contractAddress, uint256 tokenId, uint256 amount);
     event UnDepositSuccess(
         address indexed sender,
-        string indexed name,
+        string name,
         address contractAddress,
         uint256 tokenId,
         uint256 amount
     );
     /* ---------------------------------- LINK ---------------------------------- */
-    event WriteLink(string indexed name, uint256 index, Link link);
-    event RemoveLink(string indexed name, uint256 index);
+    event WriteLink(string name, address contractAddress, uint256 tokenId, string title, string url);
+    event RemoveLink(string name, uint256 index);
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -323,7 +305,8 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         unchecked {
             numberOfObject++;
         }
-        emit WriteObject(name, writeObjectInfo);
+        emit WriteObject(name, objectData.contractAddress, objectData.tokenId, objectData.xStart, objectData.yStart);
+        emit WriteLink(name, objectData.contractAddress, objectData.tokenId, link.title, link.url);
     }
 
     /*
@@ -411,7 +394,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      * @param name : Ens name
      * @dev [Carefully] This function init objects and links
      */
-    function initialization(string memory name) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
+    function mapInitialization(string memory name) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
         uint256 objectLength = userObject[name].length;
         for (uint256 i = 0; i < objectLength; i++) {
             if (userObject[name][i].contractAddress != address(0)) {
@@ -421,7 +404,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         for (uint256 i = 0; i < objectLength; i++) {
             userObject[name].pop();
         }
-        emit Initialization(name, msg.sender);
+        emit MapInitialization(name, msg.sender);
     }
 
     /* ------------------------------------ SAVE -------------------------------- */
@@ -443,7 +426,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         Link[] memory links
     ) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
         batchRemoveAndWrite(name, remove_index_array, remove_check, objectDatas, links);
-        emit Save(name, msg.sender, remove_index_array, objectDatas, links);
+        emit Save(name, msg.sender);
     }
 
     /* ----------------------------------- INTERNAL ------------------------------ */
@@ -538,7 +521,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         string memory name,
         address _contractAddress,
         uint256 _tokenId
-    ) public view returns (Deposit memory) {
+    ) public view returns (DepositInfo memory) {
         return depositInfo[name][_contractAddress][_tokenId];
     }
 
@@ -548,19 +531,14 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      * @param name : Ens name
      * @dev Check users' all deposit information
      */
-    function checkAllDepositStatus(string memory name) public view returns (DepositAllInfo[] memory) {
-        DepositAllInfo[] memory deposits = new DepositAllInfo[](userObjectDeposit[name].length);
+    function checkAllDepositStatus(string memory name) public view returns (DepositInfo[] memory) {
+        DepositInfo[] memory deposits = new DepositInfo[](userObjectDeposit[name].length);
         for (uint256 i = 0; i < userObjectDeposit[name].length; i++) {
-            DepositInfo memory depositObjectInfo = userObjectDeposit[name][i];
-            Deposit memory tempItem = depositInfo[name][depositObjectInfo.contractAddress][depositObjectInfo.tokenId];
-            DepositAllInfo memory item = DepositAllInfo(
-                depositObjectInfo.contractAddress,
-                depositObjectInfo.tokenId,
-                tempItem.amount,
-                tempItem.used,
-                tempItem.timestamp
-            );
-            deposits[i] = item;
+            Deposit memory depositObjectInfo = userObjectDeposit[name][i];
+            DepositInfo memory tempItem = depositInfo[name][depositObjectInfo.contractAddress][
+                depositObjectInfo.tokenId
+            ];
+            deposits[i] = tempItem;
         }
         return deposits;
     }
@@ -599,17 +577,19 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
                 userBalance: userBalance
             });
         }
-        depositInfo[name][_contractAddress][_tokenId] = Deposit(
+        depositInfo[name][_contractAddress][_tokenId] = DepositInfo(
+            _contractAddress,
+            _tokenId,
             updateDepositAmount,
             currentDepositUsed,
             block.timestamp
         );
 
         // Maintain a list of deposited contract addresses and token ids for checkAllDepositStatus.
-        DepositInfo memory depositObjectInfo = DepositInfo(_contractAddress, _tokenId);
+        Deposit memory depositObjectInfo = Deposit(_contractAddress, _tokenId);
         bool check;
         for (uint256 i = 0; i < userObjectDeposit[name].length; i++) {
-            DepositInfo memory depositObjectToken = userObjectDeposit[name][i];
+            Deposit memory depositObjectToken = userObjectDeposit[name][i];
             if (depositObjectToken.contractAddress == _contractAddress && depositObjectToken.tokenId == _tokenId) {
                 check = true;
                 break;
@@ -758,7 +738,13 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         Link memory link
     ) public onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) onlyIfNotReadyObject(name, object_index) {
         userObject[name][object_index].link = link;
-        emit WriteLink(name, object_index, link);
+        emit WriteLink(
+            name,
+            userObject[name][object_index].contractAddress,
+            userObject[name][object_index].tokenId,
+            link.title,
+            link.url
+        );
     }
 
     /*
