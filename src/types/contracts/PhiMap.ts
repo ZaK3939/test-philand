@@ -120,8 +120,8 @@ export interface PhiMapInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialization(string)": FunctionFragment;
     "initialize(address)": FunctionFragment;
+    "mapInitialization(string)": FunctionFragment;
     "mapSettings()": FunctionFragment;
     "numberOfLand()": FunctionFragment;
     "numberOfObject()": FunctionFragment;
@@ -166,8 +166,8 @@ export interface PhiMapInterface extends utils.Interface {
       | "getRoleAdmin"
       | "grantRole"
       | "hasRole"
-      | "initialization"
       | "initialize"
+      | "mapInitialization"
       | "mapSettings"
       | "numberOfLand"
       | "numberOfObject"
@@ -267,11 +267,11 @@ export interface PhiMapInterface extends utils.Interface {
     functionFragment: "hasRole",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(functionFragment: "initialize", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "initialization",
+    functionFragment: "mapInitialization",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "initialize", values: [string]): string;
   encodeFunctionData(
     functionFragment: "mapSettings",
     values?: undefined
@@ -418,11 +418,11 @@ export interface PhiMapInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "initialization",
+    functionFragment: "mapInitialization",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mapSettings",
     data: BytesLike
@@ -503,8 +503,8 @@ export interface PhiMapInterface extends utils.Interface {
     "CreatedMap(string,address,uint256)": EventFragment;
     "DepositSuccess(address,string,address,uint256,uint256)": EventFragment;
     "Hello()": EventFragment;
-    "Initialization(string,address)": EventFragment;
     "Initialized(uint8)": EventFragment;
+    "MapInitialization(string,address)": EventFragment;
     "RemoveLink(string,uint256)": EventFragment;
     "RemoveObject(string,uint256)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
@@ -520,8 +520,8 @@ export interface PhiMapInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "CreatedMap"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DepositSuccess"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Initialization"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MapInitialization"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveLink"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveObject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
@@ -576,23 +576,24 @@ export type HelloEvent = TypedEvent<[], HelloEventObject>;
 
 export type HelloEventFilter = TypedEventFilter<HelloEvent>;
 
-export interface InitializationEventObject {
-  name: string;
-  sender: string;
-}
-export type InitializationEvent = TypedEvent<
-  [string, string],
-  InitializationEventObject
->;
-
-export type InitializationEventFilter = TypedEventFilter<InitializationEvent>;
-
 export interface InitializedEventObject {
   version: number;
 }
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface MapInitializationEventObject {
+  iname: string;
+  sender: string;
+}
+export type MapInitializationEvent = TypedEvent<
+  [string, string],
+  MapInitializationEventObject
+>;
+
+export type MapInitializationEventFilter =
+  TypedEventFilter<MapInitializationEvent>;
 
 export interface RemoveLinkEventObject {
   name: string;
@@ -846,13 +847,13 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    initialization(
-      name: string,
+    initialize(
+      _admin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    initialize(
-      _admin: string,
+    mapInitialization(
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1121,13 +1122,13 @@ export interface PhiMap extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  initialization(
-    name: string,
+  initialize(
+    _admin: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  initialize(
-    _admin: string,
+  mapInitialization(
+    name: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1396,9 +1397,9 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    initialization(name: string, overrides?: CallOverrides): Promise<void>;
-
     initialize(_admin: string, overrides?: CallOverrides): Promise<void>;
+
+    mapInitialization(name: string, overrides?: CallOverrides): Promise<void>;
 
     mapSettings(
       overrides?: CallOverrides
@@ -1552,35 +1553,35 @@ export interface PhiMap extends BaseContract {
 
   filters: {
     "ChangePhilandOwner(string,address)"(
-      name?: string | null,
+      name?: null,
       sender?: string | null
     ): ChangePhilandOwnerEventFilter;
     ChangePhilandOwner(
-      name?: string | null,
+      name?: null,
       sender?: string | null
     ): ChangePhilandOwnerEventFilter;
 
     "CreatedMap(string,address,uint256)"(
-      name?: string | null,
+      name?: null,
       sender?: string | null,
       numberOfLand?: null
     ): CreatedMapEventFilter;
     CreatedMap(
-      name?: string | null,
+      name?: null,
       sender?: string | null,
       numberOfLand?: null
     ): CreatedMapEventFilter;
 
     "DepositSuccess(address,string,address,uint256,uint256)"(
       sender?: string | null,
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       amount?: null
     ): DepositSuccessEventFilter;
     DepositSuccess(
       sender?: string | null,
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       amount?: null
@@ -1589,29 +1590,29 @@ export interface PhiMap extends BaseContract {
     "Hello()"(): HelloEventFilter;
     Hello(): HelloEventFilter;
 
-    "Initialization(string,address)"(
-      name?: string | null,
-      sender?: string | null
-    ): InitializationEventFilter;
-    Initialization(
-      name?: string | null,
-      sender?: string | null
-    ): InitializationEventFilter;
-
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
+    "MapInitialization(string,address)"(
+      iname?: null,
+      sender?: string | null
+    ): MapInitializationEventFilter;
+    MapInitialization(
+      iname?: null,
+      sender?: string | null
+    ): MapInitializationEventFilter;
+
     "RemoveLink(string,uint256)"(
-      name?: string | null,
+      name?: null,
       index?: null
     ): RemoveLinkEventFilter;
-    RemoveLink(name?: string | null, index?: null): RemoveLinkEventFilter;
+    RemoveLink(name?: null, index?: null): RemoveLinkEventFilter;
 
     "RemoveObject(string,uint256)"(
-      name?: string | null,
+      name?: null,
       index?: null
     ): RemoveObjectEventFilter;
-    RemoveObject(name?: string | null, index?: null): RemoveObjectEventFilter;
+    RemoveObject(name?: null, index?: null): RemoveObjectEventFilter;
 
     "RoleAdminChanged(bytes32,bytes32,bytes32)"(
       role?: BytesLike | null,
@@ -1647,35 +1648,35 @@ export interface PhiMap extends BaseContract {
     ): RoleRevokedEventFilter;
 
     "Save(string,address)"(
-      name?: string | null,
+      name?: null,
       sender?: string | null
     ): SaveEventFilter;
-    Save(name?: string | null, sender?: string | null): SaveEventFilter;
+    Save(name?: null, sender?: string | null): SaveEventFilter;
 
     "UnDepositSuccess(address,string,address,uint256,uint256)"(
       sender?: string | null,
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       amount?: null
     ): UnDepositSuccessEventFilter;
     UnDepositSuccess(
       sender?: string | null,
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       amount?: null
     ): UnDepositSuccessEventFilter;
 
     "WriteLink(string,address,uint256,string,string)"(
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       title?: null,
       url?: null
     ): WriteLinkEventFilter;
     WriteLink(
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       title?: null,
@@ -1683,14 +1684,14 @@ export interface PhiMap extends BaseContract {
     ): WriteLinkEventFilter;
 
     "WriteObject(string,address,uint256,uint256,uint256)"(
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       xStart?: null,
       yStart?: null
     ): WriteObjectEventFilter;
     WriteObject(
-      name?: string | null,
+      name?: null,
       contractAddress?: null,
       tokenId?: null,
       xStart?: null,
@@ -1809,13 +1810,13 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initialization(
-      name: string,
+    initialize(
+      _admin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    initialize(
-      _admin: string,
+    mapInitialization(
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2047,13 +2048,13 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initialization(
-      name: string,
+    initialize(
+      _admin: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    initialize(
-      _admin: string,
+    mapInitialization(
+      name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

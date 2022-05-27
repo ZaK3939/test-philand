@@ -83,31 +83,25 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     /* -------------------------------------------------------------------------- */
     event Hello();
     /* ---------------------------------- Map ----------------------------------- */
-    event CreatedMap(string indexed name, address indexed sender, uint256 numberOfLand);
-    event ChangePhilandOwner(string indexed name, address indexed sender);
+    event CreatedMap(string name, address indexed sender, uint256 numberOfLand);
+    event ChangePhilandOwner(string name, address indexed sender);
     /* --------------------------------- OBJECT --------------------------------- */
-    event WriteObject(string indexed name, address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart);
-    event RemoveObject(string indexed name, uint256 index);
-    event Initialization(string indexed name, address indexed sender);
-    event Save(string indexed name, address indexed sender);
+    event WriteObject(string name, address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart);
+    event RemoveObject(string name, uint256 index);
+    event MapInitialization(string iname, address indexed sender);
+    event Save(string name, address indexed sender);
     /* --------------------------------- DEPOSIT -------------------------------- */
-    event DepositSuccess(
-        address indexed sender,
-        string indexed name,
-        address contractAddress,
-        uint256 tokenId,
-        uint256 amount
-    );
+    event DepositSuccess(address indexed sender, string name, address contractAddress, uint256 tokenId, uint256 amount);
     event UnDepositSuccess(
         address indexed sender,
-        string indexed name,
+        string name,
         address contractAddress,
         uint256 tokenId,
         uint256 amount
     );
     /* ---------------------------------- LINK ---------------------------------- */
-    event WriteLink(string indexed name, address contractAddress, uint256 tokenId, string title, string url);
-    event RemoveLink(string indexed name, uint256 index);
+    event WriteLink(string name, address contractAddress, uint256 tokenId, string title, string url);
+    event RemoveLink(string name, uint256 index);
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -400,7 +394,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      * @param name : Ens name
      * @dev [Carefully] This function init objects and links
      */
-    function initialization(string memory name) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
+    function mapInitialization(string memory name) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
         uint256 objectLength = userObject[name].length;
         for (uint256 i = 0; i < objectLength; i++) {
             if (userObject[name][i].contractAddress != address(0)) {
@@ -410,7 +404,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         for (uint256 i = 0; i < objectLength; i++) {
             userObject[name].pop();
         }
-        emit Initialization(name, msg.sender);
+        emit MapInitialization(name, msg.sender);
     }
 
     /* ------------------------------------ SAVE -------------------------------- */

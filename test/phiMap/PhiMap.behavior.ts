@@ -314,7 +314,7 @@ export function shouldBehaveBatchRemoveObjectFromLand(): void {
 
 export function shouldBehaveInitialization(): void {
   it("should Initialization", async function () {
-    await this.phiMap.connect(this.signers.alice).initialization("test");
+    await this.phiMap.connect(this.signers.alice).mapInitialization("test");
     const land = await this.phiMap.connect(this.signers.admin).viewPhiland("test");
     expect(land).to.deep.equal([]);
     const links = await this.phiMap.connect(this.signers.admin).viewLinks("test");
