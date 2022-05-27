@@ -198,27 +198,22 @@ const _abi = [
         type: "uint256",
       },
       {
-        components: [
-          {
-            internalType: "uint8",
-            name: "x",
-            type: "uint8",
-          },
-          {
-            internalType: "uint8",
-            name: "y",
-            type: "uint8",
-          },
-          {
-            internalType: "uint8",
-            name: "z",
-            type: "uint8",
-          },
-        ],
         indexed: false,
-        internalType: "struct BaseObject.Size",
-        name: "_size",
-        type: "tuple",
+        internalType: "uint8",
+        name: "x",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "y",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "z",
+        type: "uint8",
       },
     ],
     name: "SetSize",

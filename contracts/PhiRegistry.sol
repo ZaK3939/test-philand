@@ -3,11 +3,11 @@ pragma solidity >=0.8.9;
 
 import { IENS } from "./interfaces/IENS.sol";
 import { IPhiMap } from "./interfaces/IPhiMap.sol";
-import { MultiOwner } from "./utils/MultiOwner.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "./utils/Strings.sol";
 import "hardhat/console.sol";
 
-contract PhiRegistry is MultiOwner {
+contract PhiRegistry is AccessControlUpgradeable {
     /* --------------------------------- ****** --------------------------------- */
     /* -------------------------------------------------------------------------- */
     /*                                   CONFIG                                   */
@@ -16,10 +16,10 @@ contract PhiRegistry is MultiOwner {
     IENS private _ens;
     IPhiMap private _map;
     /* --------------------------------- COUNTER -------------------------------- */
-    uint256 public claimed = 0;
+    uint256 public claimed;
     /* ----------------------------------- ENS ---------------------------------- */
     //@notice baseNode = eth
-    bytes32 private baseNode = 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
+    bytes32 private baseNode;
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -40,6 +40,7 @@ contract PhiRegistry is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
+    error NotAdminCall(address sender);
     error InvalidENS(address sender, string name, bytes32 label, address owner);
     error AllreadyClaimedPhiland(address sender, address owner, string name);
     error NotReadyPhiland(address sender, address owner, string name);
@@ -48,6 +49,12 @@ contract PhiRegistry is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                                  MODIFIERS                                 */
     /* -------------------------------------------------------------------------- */
+    modifier onlyIfNotOnwer() {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender)) {
+            revert NotAdminCall({ sender: msg.sender });
+        }
+        _;
+    }
     modifier onlyIfNotENSOwner(string memory name) {
         bytes32 label = createENSLable(name);
         if (msg.sender != _ens.owner(label)) {
@@ -61,9 +68,20 @@ contract PhiRegistry is MultiOwner {
     /* -------------------------------------------------------------------------- */
     /*                               INITIALIZATION                               */
     /* -------------------------------------------------------------------------- */
-    constructor(IENS ens, IPhiMap map) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
+
+    function initialize(
+        address _admin,
+        IENS ens,
+        IPhiMap map
+    ) public initializer {
+        __AccessControl_init();
+        _setupRole(DEFAULT_ADMIN_ROLE, _admin);
         _ens = ens;
         _map = map;
+        claimed = 0;
+        baseNode = 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
         emit Hello();
     }
 
@@ -71,7 +89,7 @@ contract PhiRegistry is MultiOwner {
     /**
       Set ENS baseNode default is .eth
     */
-    function setBaseNode(bytes32 _basenode) external onlyOwner {
+    function setBaseNode(bytes32 _basenode) external onlyIfNotOnwer {
         baseNode = _basenode;
         emit SetBaseNode(_basenode);
     }
