@@ -23,13 +23,30 @@ export async function deployPhi(): Promise<void> {
   console.log(`Deploying from:`);
   console.log(`\tl1: ${(await l1Signer.getAddress()).toString()}`);
 
+  const phiClaimAbiName = "PhiClaim";
+  const phiMapAbiName = "PhiMap";
+  const phiRegistryAbiName = "PhiRegistry";
+  const premiumObjectAbiName = "PremiumObject";
+  const phiObjectAbiName = "PhiObject";
+  const freeObjectAbiName = "FreeObject";
+
+  const phiClaimAddress = getAddress(phiClaimAbiName, NETWORK);
+  const phiMapAddress = getAddress(phiMapAbiName, NETWORK);
+  const phiRegistryAddress = getAddress(phiRegistryAbiName, NETWORK);
+  const premiumObjectAddress = getAddress(premiumObjectAbiName, NETWORK);
+  const phiObjectAddress = getAddress(phiObjectAbiName, NETWORK);
+  const freeObjectAddress = getAddress(freeObjectAbiName, NETWORK);
+
   const premiumObject = await deployL1(NETWORK, "PremiumObject", BLOCK_NUMBER, [l1Signer.address]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
   const phiClaim = await deployL1Upgrade(NETWORK, "PhiClaim", BLOCK_NUMBER, [l1Signer.address, l1Signer.address]);
   const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
-  // const phiMapAddress="0x58aB207611D8f3BbeA19fD33c80cefd0893A3e6E"
-  const phiRegistry = await deployL1(NETWORK, "PhiRegistry", BLOCK_NUMBER, [ENS_ADDRESS, phiMap.address]);
+  const phiRegistry = await deployL1Upgrade(NETWORK, "PhiRegistry", BLOCK_NUMBER, [
+    l1Signer.address,
+    ENS_ADDRESS,
+    phiMap.address,
+  ]);
 }
 
 export function printAddresses() {

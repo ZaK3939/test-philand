@@ -69,15 +69,16 @@ describe("Unit tests PhiRegistry", function () {
 
     const PhiMap = await ethers.getContractFactory("PhiMap");
     const phiMap = await upgrades.deployProxy(PhiMap, [this.signers.admin.address]);
-
     this.phiMap = <PhiMap>await phiMap.deployed();
-    const phiRegistryArtifact: Artifact = await artifacts.readArtifact("PhiRegistry");
-    this.phiRegistry = <PhiRegistry>(
-      await waffle.deployContract(this.signers.admin, phiRegistryArtifact, [
-        this.ensRegistry.address,
-        this.phiMap.address,
-      ])
-    );
+
+    const PhiRegistry = await ethers.getContractFactory("PhiRegistry");
+    const phiRegistry = await upgrades.deployProxy(PhiRegistry, [
+      this.signers.admin.address,
+      this.ensRegistry.address,
+      this.phiMap.address,
+    ]);
+    this.phiRegistry = <PhiMap>await phiRegistry.deployed();
+
     const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
     await this.phiMap.connect(this.signers.admin).grantRole(DEFAULT_ADMIN_ROLE, this.phiRegistry.address);
   });

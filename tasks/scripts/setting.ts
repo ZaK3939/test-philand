@@ -56,46 +56,46 @@ export async function settingPhi(): Promise<void> {
   const phiObjectContractInstance = await phiObjectContractFactory.attach(phiObjectAddress);
   const freeObjectContractInstance = await freeObjectContractFactory.attach(freeObjectAddress);
 
-  // const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
-  //   encoding: "utf8",
-  // });
-  // const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
-  // funcName = "setCouponType";
-  // for (let i = 0; i < conditionRowList.length; i++) {
-  //   calldata = [
-  //     String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
-  //     String(conditionRowList[i].TokenId),
-  //   ];
-  //   console.log(calldata);
-  //   res = await phiClaimContractInstance[funcName](...calldata);
-  //   console.log("phiClaim setCouponType Response:", res);
-  // }
+  const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
+    encoding: "utf8",
+  });
+  const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
+  funcName = "setCouponType";
+  for (let i = 0; i < conditionRowList.length; i++) {
+    calldata = [
+      String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
+      String(conditionRowList[i].TokenId),
+    ];
+    console.log(calldata);
+    res = await phiClaimContractInstance[funcName](...calldata);
+    console.log("phiClaim setCouponType Response:", res);
+  }
 
-  // const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
-  //   encoding: "utf8",
-  // });
-  // const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
-  // funcName = "createObject";
-  // for (let i = 0; i < objectRowList.length; i++) {
-  //   const size = String(objectRowList[i].size);
-  //   const metadataURL = String(objectRowList[i].json_url).split("/");
-  //   calldata = [
-  //     String(objectRowList[i].tokenId),
-  //     metadataURL.slice(-1)[0],
-  //     { x: size[1], y: size[3], z: "1" },
-  //     l1Signer.address,
-  //     String(objectRowList[i].maxClaimed),
-  //   ];
-  //   console.log(calldata);
-  //   res = await phiObjectContractInstance[funcName](...calldata);
-  //   console.log("create Object Response:", res);
-  // }
+  const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
+    encoding: "utf8",
+  });
+  const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
+  funcName = "createObject";
+  for (let i = 0; i < objectRowList.length; i++) {
+    const size = String(objectRowList[i].size);
+    const metadataURL = String(objectRowList[i].json_url).split("/");
+    calldata = [
+      String(objectRowList[i].tokenId),
+      metadataURL.slice(-1)[0],
+      { x: size[1], y: size[3], z: "1" },
+      l1Signer.address,
+      String(objectRowList[i].maxClaimed),
+    ];
+    console.log(calldata);
+    res = await phiObjectContractInstance[funcName](...calldata);
+    console.log("create Object Response:", res);
+  }
 
-  // funcName = "createObject";
-  // calldata = [0, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, l1Signer.address, 200, 1];
-  // console.log(calldata);
-  // res = await premiumObjectContractInstance[funcName](...calldata);
-  // console.log("create Object Response:", res);
+  funcName = "createObject";
+  calldata = [0, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, l1Signer.address, 200, 1];
+  console.log(calldata);
+  res = await premiumObjectContractInstance[funcName](...calldata);
+  console.log("create Object Response:", res);
 
   funcName = "setOwner";
   calldata = [phiMapAddress];

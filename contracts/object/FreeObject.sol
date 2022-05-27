@@ -124,7 +124,6 @@ contract FreeObject is ERC1155Supply, BaseObject {
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner {
-        // todo for loop check token supply
         super._mintBatch(to, ids, amounts, data);
     }
 }
