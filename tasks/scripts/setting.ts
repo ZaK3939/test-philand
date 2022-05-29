@@ -71,7 +71,7 @@ export async function settingPhi(): Promise<void> {
     console.log("phiClaim setCouponType Response:", res);
   }
 
-  const objectscsv = readFileSync(`${__dirname}/csv/objects.csv`, {
+  const objectscsv = readFileSync(`${__dirname}/csv/setting_phiObjects.csv`, {
     encoding: "utf8",
   });
   const objectRowList = new CSV(objectscsv, { header: true, cast: false }).parse();
@@ -82,7 +82,7 @@ export async function settingPhi(): Promise<void> {
     calldata = [
       String(objectRowList[i].tokenId),
       metadataURL.slice(-1)[0],
-      { x: size[1], y: size[3], z: "1" },
+      { x: size[1], y: size[3], z: size[5] },
       l1Signer.address,
       String(objectRowList[i].maxClaimed),
     ];

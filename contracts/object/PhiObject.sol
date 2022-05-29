@@ -14,7 +14,7 @@ contract PhiObject is ERC1155Supply, BaseObject {
     /*                               INITIALIZATION                               */
     /* -------------------------------------------------------------------------- */
     constructor(address payable _treasuryAddress) ERC1155("") {
-        name = "Onchain PhiObjects";
+        name = "Standard Object";
         symbol = "OPS";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
