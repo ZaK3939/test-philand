@@ -2,20 +2,19 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
-import { PremiumObject } from "../../src/types/contracts/object/PremiumObject";
+import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { Signers } from "../types";
 import {
-  CantBuyObjectWithNotEnoughETH,
-  shouldBehaveBuyObject,
   shouldBehaveCreateObject,
+  shouldBehaveGetFreeObject,
   shouldBehaveInitObject,
   shouldBehaveSetMaxClaimed,
   shouldBehaveSetSize,
   shouldBehaveSetTokenURI,
   shouldBehaveSetbaseMetadataURI,
-} from "./PremiumObject.behavior";
+} from "./FreeObject.behavior";
 
-describe("Unit tests PremiumObject", function () {
+describe("Unit tests FreeObject", function () {
   before(async function () {
     this.signers = {} as Signers;
 
@@ -26,23 +25,16 @@ describe("Unit tests PremiumObject", function () {
     this.signers.carol = signers[3];
     this.signers.treasury = signers[4];
 
-    const premiumObjectArtifact: Artifact = await artifacts.readArtifact("PremiumObject");
-    this.premiumObject = <PremiumObject>(
-      await waffle.deployContract(this.signers.admin, premiumObjectArtifact, [this.signers.treasury.address])
+    const freeObjectArtifact: Artifact = await artifacts.readArtifact("FreeObject");
+    this.freeObject = <FreeObject>(
+      await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
     );
-    await this.premiumObject
+    await this.freeObject
       .connect(this.signers.admin)
-      .createObject(
-        1,
-        "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw",
-        { x: 1, y: 1, z: 2 },
-        this.signers.bob.address,
-        200,
-        10,
-      );
+      .createObject(1, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, this.signers.bob.address);
   });
 
-  describe("premiumObject", function () {
+  describe("freeObject", function () {
     // beforeEach(async function () {
 
     // });
@@ -52,7 +44,6 @@ describe("Unit tests PremiumObject", function () {
     shouldBehaveSetSize();
     shouldBehaveCreateObject();
     shouldBehaveInitObject();
-    shouldBehaveBuyObject();
-    CantBuyObjectWithNotEnoughETH();
+    shouldBehaveGetFreeObject();
   });
 });
