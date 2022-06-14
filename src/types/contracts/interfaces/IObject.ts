@@ -42,8 +42,10 @@ export interface IObjectInterface extends utils.Interface {
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
+    "isApprovedForAll(address,address)": FunctionFragment;
     "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
+    "setApprovalForAll(address,bool)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
   };
 
@@ -51,8 +53,10 @@ export interface IObjectInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "balanceOf"
       | "getSize"
+      | "isApprovedForAll"
       | "mintBatchObject"
       | "safeTransferFrom"
+      | "setApprovalForAll"
       | "setOwner"
   ): FunctionFragment;
 
@@ -65,6 +69,10 @@ export interface IObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "isApprovedForAll",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "mintBatchObject",
     values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
@@ -72,16 +80,28 @@ export interface IObjectInterface extends utils.Interface {
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish, BigNumberish, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setApprovalForAll",
+    values: [string, boolean]
+  ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
 
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getSize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "mintBatchObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
@@ -127,6 +147,12 @@ export interface IObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[IObject.SizeStructOutput]>;
 
+    isApprovedForAll(
+      account: string,
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     mintBatchObject(
       to: string,
       ids: BigNumberish[],
@@ -141,6 +167,12 @@ export interface IObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setApprovalForAll(
+      operator: string,
+      approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -161,6 +193,12 @@ export interface IObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IObject.SizeStructOutput>;
 
+  isApprovedForAll(
+    account: string,
+    operator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   mintBatchObject(
     to: string,
     ids: BigNumberish[],
@@ -175,6 +213,12 @@ export interface IObject extends BaseContract {
     id: BigNumberish,
     amount: BigNumberish,
     data: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setApprovalForAll(
+    operator: string,
+    approved: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -195,6 +239,12 @@ export interface IObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IObject.SizeStructOutput>;
 
+    isApprovedForAll(
+      account: string,
+      operator: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     mintBatchObject(
       to: string,
       ids: BigNumberish[],
@@ -209,6 +259,12 @@ export interface IObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setApprovalForAll(
+      operator: string,
+      approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -229,6 +285,12 @@ export interface IObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isApprovedForAll(
+      account: string,
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     mintBatchObject(
       to: string,
       ids: BigNumberish[],
@@ -243,6 +305,12 @@ export interface IObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setApprovalForAll(
+      operator: string,
+      approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -264,6 +332,12 @@ export interface IObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isApprovedForAll(
+      account: string,
+      operator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     mintBatchObject(
       to: string,
       ids: BigNumberish[],
@@ -278,6 +352,12 @@ export interface IObject extends BaseContract {
       id: BigNumberish,
       amount: BigNumberish,
       data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setApprovalForAll(
+      operator: string,
+      approved: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -30,6 +30,7 @@ import type {
 export interface PhiRegistryInterface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "changePhilandAddress(address)": FunctionFragment;
     "changePhilandOwner(string)": FunctionFragment;
     "claimed()": FunctionFragment;
     "createPhiland(string)": FunctionFragment;
@@ -47,6 +48,7 @@ export interface PhiRegistryInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "DEFAULT_ADMIN_ROLE"
+      | "changePhilandAddress"
       | "changePhilandOwner"
       | "claimed"
       | "createPhiland"
@@ -64,6 +66,10 @@ export interface PhiRegistryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changePhilandAddress",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "changePhilandOwner",
@@ -113,6 +119,10 @@ export interface PhiRegistryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "changePhilandAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "changePhilandOwner",
     data: BytesLike
   ): Result;
@@ -146,6 +156,7 @@ export interface PhiRegistryInterface extends utils.Interface {
   events: {
     "Hello()": EventFragment;
     "Initialized(uint8)": EventFragment;
+    "LogChangePhilandAddress(address,address)": EventFragment;
     "LogChangePhilandOwner(address,string)": EventFragment;
     "LogCreatePhiland(address,string)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
@@ -156,6 +167,7 @@ export interface PhiRegistryInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogChangePhilandAddress"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogChangePhilandOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogCreatePhiland"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
@@ -175,6 +187,18 @@ export interface InitializedEventObject {
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface LogChangePhilandAddressEventObject {
+  sender: string;
+  _phiMapAddress: string;
+}
+export type LogChangePhilandAddressEvent = TypedEvent<
+  [string, string],
+  LogChangePhilandAddressEventObject
+>;
+
+export type LogChangePhilandAddressEventFilter =
+  TypedEventFilter<LogChangePhilandAddressEvent>;
 
 export interface LogChangePhilandOwnerEventObject {
   sender: string;
@@ -273,6 +297,11 @@ export interface PhiRegistry extends BaseContract {
   functions: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     changePhilandOwner(
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -332,6 +361,11 @@ export interface PhiRegistry extends BaseContract {
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  changePhilandAddress(
+    _phiMapAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   changePhilandOwner(
     name: string,
@@ -393,6 +427,11 @@ export interface PhiRegistry extends BaseContract {
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     changePhilandOwner(name: string, overrides?: CallOverrides): Promise<void>;
 
     claimed(overrides?: CallOverrides): Promise<BigNumber>;
@@ -448,6 +487,15 @@ export interface PhiRegistry extends BaseContract {
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
+
+    "LogChangePhilandAddress(address,address)"(
+      sender?: string | null,
+      _phiMapAddress?: null
+    ): LogChangePhilandAddressEventFilter;
+    LogChangePhilandAddress(
+      sender?: string | null,
+      _phiMapAddress?: null
+    ): LogChangePhilandAddressEventFilter;
 
     "LogChangePhilandOwner(address,string)"(
       sender?: string | null,
@@ -506,6 +554,11 @@ export interface PhiRegistry extends BaseContract {
 
   estimateGas: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     changePhilandOwner(
       name: string,
@@ -571,6 +624,11 @@ export interface PhiRegistry extends BaseContract {
   populateTransaction: {
     DEFAULT_ADMIN_ROLE(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     changePhilandOwner(

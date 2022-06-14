@@ -28,7 +28,7 @@ import type {
   utils,
 } from "ethers";
 
-export declare namespace PhiMap {
+export declare namespace PhiMapV2 {
   export type ObjectStruct = {
     contractAddress: string;
     tokenId: BigNumberish;
@@ -91,7 +91,7 @@ export declare namespace PhiMap {
     yStart: BigNumberish;
     xEnd: BigNumberish;
     yEnd: BigNumberish;
-    link: PhiMap.LinkStruct;
+    link: PhiMapV2.LinkStruct;
   };
 
   export type ObjectInfoStructOutput = [
@@ -101,7 +101,7 @@ export declare namespace PhiMap {
     BigNumber,
     BigNumber,
     BigNumber,
-    PhiMap.LinkStructOutput
+    PhiMapV2.LinkStructOutput
   ] & {
     contractAddress: string;
     tokenId: BigNumber;
@@ -109,11 +109,11 @@ export declare namespace PhiMap {
     yStart: BigNumber;
     xEnd: BigNumber;
     yEnd: BigNumber;
-    link: PhiMap.LinkStructOutput;
+    link: PhiMapV2.LinkStructOutput;
   };
 }
 
-export interface PhiMapInterface extends utils.Interface {
+export interface PhiMapV2Interface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "batchDeposit(string,address[],uint256[],uint256[])": FunctionFragment;
@@ -227,8 +227,8 @@ export interface PhiMapInterface extends utils.Interface {
       string,
       BigNumberish[],
       boolean,
-      PhiMap.ObjectStruct[],
-      PhiMap.LinkStruct[]
+      PhiMapV2.ObjectStruct[],
+      PhiMapV2.LinkStruct[]
     ]
   ): string;
   encodeFunctionData(
@@ -241,11 +241,11 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "batchWriteLinkToObject",
-    values: [string, BigNumberish[], PhiMap.LinkStruct[]]
+    values: [string, BigNumberish[], PhiMapV2.LinkStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "batchWriteObjectToLand",
-    values: [string, PhiMap.ObjectStruct[], PhiMap.LinkStruct[]]
+    values: [string, PhiMapV2.ObjectStruct[], PhiMapV2.LinkStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "changePhilandOwner",
@@ -347,8 +347,8 @@ export interface PhiMapInterface extends utils.Interface {
       string,
       BigNumberish[],
       boolean,
-      PhiMap.ObjectStruct[],
-      PhiMap.LinkStruct[]
+      PhiMapV2.ObjectStruct[],
+      PhiMapV2.LinkStruct[]
     ]
   ): string;
   encodeFunctionData(
@@ -388,11 +388,11 @@ export interface PhiMapInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "wallPaper", values: [string]): string;
   encodeFunctionData(
     functionFragment: "writeLinkToObject",
-    values: [string, BigNumberish, PhiMap.LinkStruct]
+    values: [string, BigNumberish, PhiMapV2.LinkStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "writeObjectToLand",
-    values: [string, PhiMap.ObjectStruct, PhiMap.LinkStruct]
+    values: [string, PhiMapV2.ObjectStruct, PhiMapV2.LinkStruct]
   ): string;
 
   decodeFunctionResult(
@@ -765,12 +765,12 @@ export type WriteObjectEvent = TypedEvent<
 
 export type WriteObjectEventFilter = TypedEventFilter<WriteObjectEvent>;
 
-export interface PhiMap extends BaseContract {
+export interface PhiMapV2 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PhiMapInterface;
+  interface: PhiMapV2Interface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -806,8 +806,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -828,14 +828,14 @@ export interface PhiMap extends BaseContract {
     batchWriteLinkToObject(
       name: string,
       object_indexes: BigNumberish[],
-      links: PhiMap.LinkStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     batchWriteObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct[],
-      link: PhiMap.LinkStruct[],
+      objectData: PhiMapV2.ObjectStruct[],
+      link: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -855,19 +855,19 @@ export interface PhiMap extends BaseContract {
     checkAllDepositStatus(
       name: string,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.DepositInfoStructOutput[]]>;
+    ): Promise<[PhiMapV2.DepositInfoStructOutput[]]>;
 
     checkDepositStatus(
       name: string,
       _contractAddress: string,
       _tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.DepositInfoStructOutput]>;
+    ): Promise<[PhiMapV2.DepositInfoStructOutput]>;
 
     checkWallPaper(
       name: string,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.WallPaperStructOutput]>;
+    ): Promise<[PhiMapV2.WallPaperStructOutput]>;
 
     create(
       name: string,
@@ -994,8 +994,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1024,7 +1024,7 @@ export interface PhiMap extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
-        PhiMap.LinkStructOutput
+        PhiMapV2.LinkStructOutput
       ] & {
         contractAddress: string;
         tokenId: BigNumber;
@@ -1032,7 +1032,7 @@ export interface PhiMap extends BaseContract {
         yStart: BigNumber;
         xEnd: BigNumber;
         yEnd: BigNumber;
-        link: PhiMap.LinkStructOutput;
+        link: PhiMapV2.LinkStructOutput;
       }
     >;
 
@@ -1047,7 +1047,7 @@ export interface PhiMap extends BaseContract {
     viewLinks(
       name: string,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.LinkStructOutput[]]>;
+    ): Promise<[PhiMapV2.LinkStructOutput[]]>;
 
     viewNumberOfObject(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1057,12 +1057,12 @@ export interface PhiMap extends BaseContract {
       name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.LinkStructOutput]>;
+    ): Promise<[PhiMapV2.LinkStructOutput]>;
 
     viewPhiland(
       name: string,
       overrides?: CallOverrides
-    ): Promise<[PhiMap.ObjectInfoStructOutput[]]>;
+    ): Promise<[PhiMapV2.ObjectInfoStructOutput[]]>;
 
     viewPhilandArray(
       name: string,
@@ -1083,14 +1083,14 @@ export interface PhiMap extends BaseContract {
     writeLinkToObject(
       name: string,
       object_index: BigNumberish,
-      link: PhiMap.LinkStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     writeObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct,
-      link: PhiMap.LinkStruct,
+      objectData: PhiMapV2.ObjectStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -1109,8 +1109,8 @@ export interface PhiMap extends BaseContract {
     name: string,
     remove_index_array: BigNumberish[],
     remove_check: boolean,
-    objectDatas: PhiMap.ObjectStruct[],
-    links: PhiMap.LinkStruct[],
+    objectDatas: PhiMapV2.ObjectStruct[],
+    links: PhiMapV2.LinkStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1131,14 +1131,14 @@ export interface PhiMap extends BaseContract {
   batchWriteLinkToObject(
     name: string,
     object_indexes: BigNumberish[],
-    links: PhiMap.LinkStruct[],
+    links: PhiMapV2.LinkStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   batchWriteObjectToLand(
     name: string,
-    objectData: PhiMap.ObjectStruct[],
-    link: PhiMap.LinkStruct[],
+    objectData: PhiMapV2.ObjectStruct[],
+    link: PhiMapV2.LinkStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1158,19 +1158,19 @@ export interface PhiMap extends BaseContract {
   checkAllDepositStatus(
     name: string,
     overrides?: CallOverrides
-  ): Promise<PhiMap.DepositInfoStructOutput[]>;
+  ): Promise<PhiMapV2.DepositInfoStructOutput[]>;
 
   checkDepositStatus(
     name: string,
     _contractAddress: string,
     _tokenId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PhiMap.DepositInfoStructOutput>;
+  ): Promise<PhiMapV2.DepositInfoStructOutput>;
 
   checkWallPaper(
     name: string,
     overrides?: CallOverrides
-  ): Promise<PhiMap.WallPaperStructOutput>;
+  ): Promise<PhiMapV2.WallPaperStructOutput>;
 
   create(
     name: string,
@@ -1297,8 +1297,8 @@ export interface PhiMap extends BaseContract {
     name: string,
     remove_index_array: BigNumberish[],
     remove_check: boolean,
-    objectDatas: PhiMap.ObjectStruct[],
-    links: PhiMap.LinkStruct[],
+    objectDatas: PhiMapV2.ObjectStruct[],
+    links: PhiMapV2.LinkStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1327,7 +1327,7 @@ export interface PhiMap extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
-      PhiMap.LinkStructOutput
+      PhiMapV2.LinkStructOutput
     ] & {
       contractAddress: string;
       tokenId: BigNumber;
@@ -1335,7 +1335,7 @@ export interface PhiMap extends BaseContract {
       yStart: BigNumber;
       xEnd: BigNumber;
       yEnd: BigNumber;
-      link: PhiMap.LinkStructOutput;
+      link: PhiMapV2.LinkStructOutput;
     }
   >;
 
@@ -1350,7 +1350,7 @@ export interface PhiMap extends BaseContract {
   viewLinks(
     name: string,
     overrides?: CallOverrides
-  ): Promise<PhiMap.LinkStructOutput[]>;
+  ): Promise<PhiMapV2.LinkStructOutput[]>;
 
   viewNumberOfObject(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1360,12 +1360,12 @@ export interface PhiMap extends BaseContract {
     name: string,
     object_index: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<PhiMap.LinkStructOutput>;
+  ): Promise<PhiMapV2.LinkStructOutput>;
 
   viewPhiland(
     name: string,
     overrides?: CallOverrides
-  ): Promise<PhiMap.ObjectInfoStructOutput[]>;
+  ): Promise<PhiMapV2.ObjectInfoStructOutput[]>;
 
   viewPhilandArray(
     name: string,
@@ -1386,14 +1386,14 @@ export interface PhiMap extends BaseContract {
   writeLinkToObject(
     name: string,
     object_index: BigNumberish,
-    link: PhiMap.LinkStruct,
+    link: PhiMapV2.LinkStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   writeObjectToLand(
     name: string,
-    objectData: PhiMap.ObjectStruct,
-    link: PhiMap.LinkStruct,
+    objectData: PhiMapV2.ObjectStruct,
+    link: PhiMapV2.LinkStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1412,8 +1412,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1434,14 +1434,14 @@ export interface PhiMap extends BaseContract {
     batchWriteLinkToObject(
       name: string,
       object_indexes: BigNumberish[],
-      links: PhiMap.LinkStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     batchWriteObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct[],
-      link: PhiMap.LinkStruct[],
+      objectData: PhiMapV2.ObjectStruct[],
+      link: PhiMapV2.LinkStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1461,19 +1461,19 @@ export interface PhiMap extends BaseContract {
     checkAllDepositStatus(
       name: string,
       overrides?: CallOverrides
-    ): Promise<PhiMap.DepositInfoStructOutput[]>;
+    ): Promise<PhiMapV2.DepositInfoStructOutput[]>;
 
     checkDepositStatus(
       name: string,
       _contractAddress: string,
       _tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PhiMap.DepositInfoStructOutput>;
+    ): Promise<PhiMapV2.DepositInfoStructOutput>;
 
     checkWallPaper(
       name: string,
       overrides?: CallOverrides
-    ): Promise<PhiMap.WallPaperStructOutput>;
+    ): Promise<PhiMapV2.WallPaperStructOutput>;
 
     create(
       name: string,
@@ -1594,8 +1594,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1624,7 +1624,7 @@ export interface PhiMap extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
-        PhiMap.LinkStructOutput
+        PhiMapV2.LinkStructOutput
       ] & {
         contractAddress: string;
         tokenId: BigNumber;
@@ -1632,7 +1632,7 @@ export interface PhiMap extends BaseContract {
         yStart: BigNumber;
         xEnd: BigNumber;
         yEnd: BigNumber;
-        link: PhiMap.LinkStructOutput;
+        link: PhiMapV2.LinkStructOutput;
       }
     >;
 
@@ -1647,7 +1647,7 @@ export interface PhiMap extends BaseContract {
     viewLinks(
       name: string,
       overrides?: CallOverrides
-    ): Promise<PhiMap.LinkStructOutput[]>;
+    ): Promise<PhiMapV2.LinkStructOutput[]>;
 
     viewNumberOfObject(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1657,12 +1657,12 @@ export interface PhiMap extends BaseContract {
       name: string,
       object_index: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PhiMap.LinkStructOutput>;
+    ): Promise<PhiMapV2.LinkStructOutput>;
 
     viewPhiland(
       name: string,
       overrides?: CallOverrides
-    ): Promise<PhiMap.ObjectInfoStructOutput[]>;
+    ): Promise<PhiMapV2.ObjectInfoStructOutput[]>;
 
     viewPhilandArray(
       name: string,
@@ -1683,14 +1683,14 @@ export interface PhiMap extends BaseContract {
     writeLinkToObject(
       name: string,
       object_index: BigNumberish,
-      link: PhiMap.LinkStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     writeObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct,
-      link: PhiMap.LinkStruct,
+      objectData: PhiMapV2.ObjectStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1869,8 +1869,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1891,14 +1891,14 @@ export interface PhiMap extends BaseContract {
     batchWriteLinkToObject(
       name: string,
       object_indexes: BigNumberish[],
-      links: PhiMap.LinkStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     batchWriteObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct[],
-      link: PhiMap.LinkStruct[],
+      objectData: PhiMapV2.ObjectStruct[],
+      link: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2040,8 +2040,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2094,14 +2094,14 @@ export interface PhiMap extends BaseContract {
     writeLinkToObject(
       name: string,
       object_index: BigNumberish,
-      link: PhiMap.LinkStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     writeObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct,
-      link: PhiMap.LinkStruct,
+      objectData: PhiMapV2.ObjectStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -2123,8 +2123,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2145,14 +2145,14 @@ export interface PhiMap extends BaseContract {
     batchWriteLinkToObject(
       name: string,
       object_indexes: BigNumberish[],
-      links: PhiMap.LinkStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     batchWriteObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct[],
-      link: PhiMap.LinkStruct[],
+      objectData: PhiMapV2.ObjectStruct[],
+      link: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2303,8 +2303,8 @@ export interface PhiMap extends BaseContract {
       name: string,
       remove_index_array: BigNumberish[],
       remove_check: boolean,
-      objectDatas: PhiMap.ObjectStruct[],
-      links: PhiMap.LinkStruct[],
+      objectDatas: PhiMapV2.ObjectStruct[],
+      links: PhiMapV2.LinkStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2370,14 +2370,14 @@ export interface PhiMap extends BaseContract {
     writeLinkToObject(
       name: string,
       object_index: BigNumberish,
-      link: PhiMap.LinkStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     writeObjectToLand(
       name: string,
-      objectData: PhiMap.ObjectStruct,
-      link: PhiMap.LinkStruct,
+      objectData: PhiMapV2.ObjectStruct,
+      link: PhiMapV2.LinkStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

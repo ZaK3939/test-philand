@@ -35,6 +35,7 @@ contract PhiRegistry is AccessControlUpgradeable {
     event SetBaseNode(bytes32 basenode);
     event LogCreatePhiland(address indexed sender, string name);
     event LogChangePhilandOwner(address indexed sender, string name);
+    event LogChangePhilandAddress(address indexed sender, address _phiMapAddress);
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -145,7 +146,7 @@ contract PhiRegistry is AccessControlUpgradeable {
 
     /*
      * @title changePhilandOwner
-     * @notice Send philand owner change Message from L1 to Starknet
+     * @notice Send philand owner change Message from L1
      * @param name : ENS name
      * @dev include check ENS
      */
@@ -156,5 +157,15 @@ contract PhiRegistry is AccessControlUpgradeable {
         ownerLists[name] = msg.sender;
         _map.changePhilandOwner(name, msg.sender);
         emit LogChangePhilandOwner(msg.sender, name);
+    }
+
+    /*
+     * @title changePhilandAddress
+     * @notice Send philand address
+     * @param _phiMapAddress : _phiMapAddress
+     */
+    function changePhilandAddress(address _phiMapAddress) external onlyIfNotOnwer {
+        _map = IPhiMap(_phiMapAddress);
+        emit LogChangePhilandAddress(msg.sender, _phiMapAddress);
     }
 }

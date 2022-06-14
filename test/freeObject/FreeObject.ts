@@ -5,6 +5,7 @@ import type { Artifact } from "hardhat/types";
 import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { Signers } from "../types";
 import {
+  shouldBehaveBatchGetFreeObject,
   shouldBehaveCreateObject,
   shouldBehaveGetFreeObject,
   shouldBehaveInitObject,
@@ -45,5 +46,6 @@ describe("Unit tests FreeObject", function () {
     shouldBehaveCreateObject();
     shouldBehaveInitObject();
     shouldBehaveGetFreeObject();
+    shouldBehaveBatchGetFreeObject();
   });
 });

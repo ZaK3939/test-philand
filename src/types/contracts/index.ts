@@ -15,6 +15,7 @@ export type { interfaces };
 export type { object };
 
 export type { utils };
+export type { ObjectController } from "./ObjectController";
 export type { PhiClaim } from "./PhiClaim";
 export type { PhiMap } from "./PhiMap";
 export type { PhiRegistry } from "./PhiRegistry";

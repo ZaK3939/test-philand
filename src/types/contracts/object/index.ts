@@ -4,3 +4,4 @@
 export type { FreeObject } from "./FreeObject";
 export type { PhiObject } from "./PhiObject";
 export type { PremiumObject } from "./PremiumObject";
+export type { WallPaper } from "./WallPaper";

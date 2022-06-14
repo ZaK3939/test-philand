@@ -4,8 +4,8 @@ pragma solidity >=0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import { BaseObject } from "../utils/BaseObject.sol";
 
-// PremiumObjects smart contract inherits ERC1155 interface
-contract PremiumObject is ERC1155Supply, BaseObject {
+// WallPapers smart contract inherits ERC1155 interface
+contract WallPaper is ERC1155Supply, BaseObject {
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -16,7 +16,7 @@ contract PremiumObject is ERC1155Supply, BaseObject {
     /* -------------------------------------------------------------------------- */
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
-    event InitObject(
+    event InitWallPaper(
         uint256 tokenId,
         string _uri,
         Size _size,
@@ -24,7 +24,7 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         uint256 _maxClaimed,
         uint256 _price
     );
-    event CreateObject(
+    event CreateWallPaper(
         uint256 tokenId,
         string _uri,
         Size _size,
@@ -32,7 +32,7 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         uint256 _maxClaimed,
         uint256 _price
     );
-    event LogbuyObject(address indexed sender, uint256 tokenId, uint256 value);
+    event LogbuyWallPaper(address indexed sender, uint256 tokenId, uint256 value);
 
     /* --------------------------------- ****** --------------------------------- */
 
@@ -46,12 +46,12 @@ contract PremiumObject is ERC1155Supply, BaseObject {
     /* -------------------------------------------------------------------------- */
     // initialize contract while deployment with contract's collection name and token
     constructor(address payable _treasuryAddress) ERC1155("") {
-        name = "PaidObjects";
-        symbol = "POS";
+        name = "WallPapers";
+        symbol = "WALL";
         baseMetadataURI = "https://www.arweave.net/";
         treasuryAddress = _treasuryAddress;
         royalityFee = 3000;
-        secondaryRoyalty = 100;
+        secondaryRoyalty = 500;
     }
 
     /* -------------------------------------------------------------------------- */
@@ -75,17 +75,17 @@ contract PremiumObject is ERC1155Supply, BaseObject {
     }
 
     /*
-     * @title initObject
-     * @notice init object for already created token
-     * @param tokenId : object nft tokenId
+     * @title initWallPaper
+     * @notice init WallPaper for already created token
+     * @param tokenId : WallPaper nft tokenId
      * @param _uri : baseMetadataURI + _url
-     * @param _size : object's size
+     * @param _size : WallPaper's size
      * @param _creator : creator address, 0 also allowed.
      * @param _maxClaimed : Maximum number
-     * @param _price : object price
-     * @dev check that token is already created and init object settings
+     * @param _price : WallPaper price
+     * @dev check that token is already created and init WallPaper settings
      */
-    function initObject(
+    function initWallPaper(
         uint256 tokenId,
         string memory _uri,
         Size memory _size,
@@ -99,21 +99,21 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
         changeTokenPrice(tokenId, _price);
-        emit InitObject(tokenId, _uri, _size, _creator, _maxClaimed, _price);
+        emit InitWallPaper(tokenId, _uri, _size, _creator, _maxClaimed, _price);
     }
 
     /*
-     * @title createObject
-     * @notice create object for first time
-     * @param tokenId : object nft tokenId
+     * @title createWallPaper
+     * @notice create WallPaper for first time
+     * @param tokenId : WallPaper nft tokenId
      * @param _uri : baseMetadataURI + _url
-     * @param _size : object's size
+     * @param _size : WallPaper's size
      * @param _creator : creator address, 0 also allowed.
      * @param _maxClaimed : Maximum number
-     * @param _price : object price
-     * @dev check that token is not created and set object settings
+     * @param _price : WallPaper price
+     * @dev check that token is not created and set WallPaper settings
      */
-    function createObject(
+    function createWallPaper(
         uint256 tokenId,
         string memory _uri,
         Size memory _size,
@@ -129,7 +129,7 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         changeTokenPrice(tokenId, _price);
         allObjects[tokenId].forSale = true;
         created[tokenId] = true;
-        emit CreateObject(tokenId, _uri, _size, _creator, _maxClaimed, _price);
+        emit CreateWallPaper(tokenId, _uri, _size, _creator, _maxClaimed, _price);
     }
 
     /* --------------------------------- ****** --------------------------------- */
@@ -137,13 +137,35 @@ contract PremiumObject is ERC1155Supply, BaseObject {
     /* -------------------------------------------------------------------------- */
     /*                                SHOP METHOD                                 */
     /* -------------------------------------------------------------------------- */
+
     /*
-     * @title buyObject
-     * @notice mint Object to token buyer
-     * @param tokenId : object nft token_id
+     * @title  getFreeWallPaper
+     * @notice mint WallPaper to token buyer
+     * @param tokenId : WallPaper nft token_id
      * @dev pay royality to phi wallet and creator
      */
-    function buyObject(uint256 tokenId) public payable {
+    function getFreeWallPaper(uint256 tokenId) public {
+        // check if the function caller is not an zero account address
+        require(msg.sender != address(0));
+
+        require(0 == allObjects[tokenId].price);
+        // token should be for sale
+        require(allObjects[tokenId].forSale);
+        // check if the token id of the token exists
+        isValid(tokenId);
+        // check token's MaxClaimed
+        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
+        // mint the token
+        super._mint(msg.sender, tokenId, 1, "0x00");
+    }
+
+    /*
+     * @title buyWallPaper
+     * @notice mint WallPaper to token buyer
+     * @param tokenId : WallPaper nft token_id
+     * @dev pay royality to phi wallet and creator
+     */
+    function buyWallPaper(uint256 tokenId) public payable {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
         // check if the token id of the token exists
@@ -164,38 +186,7 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         require(success2);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x");
-        emit LogbuyObject(msg.sender, tokenId, msg.value);
-    }
-
-    function batchBuyObject(uint256[] memory tokenIds) public payable {
-        uint256 allprice;
-        // check if the function caller is not an zero account address
-        require(msg.sender != address(0));
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            allprice = allprice + allObjects[tokenIds[i]].price;
-        }
-        require(msg.value == allprice);
-
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            // check if the token id of the token exists
-            isValid(tokenIds[i]);
-
-            // token should be for sale
-            require(allObjects[tokenIds[i]].forSale);
-            // check token's MaxClaimed
-            require(super.totalSupply(tokenIds[i]) <= allObjects[tokenIds[i]].maxClaimed);
-
-            // Pay royality to artist, and remaining to deployer of contract
-            uint256 royality = (allObjects[tokenIds[i]].price * royalityFee) / 10000;
-            (bool success1, ) = payable(allObjects[tokenIds[i]].creator).call{ value: royality }("");
-            require(success1);
-
-            (bool success2, ) = payable(treasuryAddress).call{ value: (allObjects[tokenIds[i]].price - royality) }("");
-            require(success2);
-            // mint the token
-            super._mint(msg.sender, tokenIds[i], 1, "0x");
-            emit LogbuyObject(msg.sender, tokenIds[i], allObjects[tokenIds[i]].price);
-        }
+        emit LogbuyWallPaper(msg.sender, tokenId, msg.value);
     }
 
     /* --------------------------------- ****** --------------------------------- */

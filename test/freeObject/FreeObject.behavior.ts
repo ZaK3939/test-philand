@@ -70,9 +70,17 @@ export function shouldBehaveInitObject(): void {
 }
 
 export function shouldBehaveGetFreeObject(): void {
-  it("should buy object with eth", async function () {
+  it("should get free object", async function () {
     await this.freeObject.connect(this.signers.alice).getFreeObject(2);
     const afterNFTbalance = await this.freeObject.connect(this.signers.alice).balanceOf(this.signers.alice.address, 2);
     expect(afterNFTbalance).to.equal(1);
+  });
+}
+
+export function shouldBehaveBatchGetFreeObject(): void {
+  it("should batch get gree object ", async function () {
+    await this.freeObject.connect(this.signers.alice).batchGetFreeObject([2, 2, 2]);
+    const afterNFTbalance = await this.freeObject.connect(this.signers.alice).balanceOf(this.signers.alice.address, 2);
+    expect(afterNFTbalance).to.equal(4);
   });
 }

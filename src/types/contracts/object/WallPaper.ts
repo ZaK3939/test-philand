@@ -43,25 +43,25 @@ export declare namespace BaseObject {
   };
 }
 
-export interface PremiumObjectInterface extends utils.Interface {
+export interface WallPaperInterface extends utils.Interface {
   functions: {
     "allObjects(uint256)": FunctionFragment;
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
-    "batchBuyObject(uint256[])": FunctionFragment;
-    "buyObject(uint256)": FunctionFragment;
+    "buyWallPaper(uint256)": FunctionFragment;
     "changeTokenPrice(uint256,uint256)": FunctionFragment;
-    "createObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
+    "createWallPaper(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
     "created(uint256)": FunctionFragment;
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
+    "getFreeWallPaper(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "getTokenPrice(uint256)": FunctionFragment;
     "getTokenURI(uint256)": FunctionFragment;
-    "initObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
+    "initWallPaper(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "name()": FunctionFragment;
@@ -97,19 +97,19 @@ export interface PremiumObjectInterface extends utils.Interface {
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
-      | "batchBuyObject"
-      | "buyObject"
+      | "buyWallPaper"
       | "changeTokenPrice"
-      | "createObject"
+      | "createWallPaper"
       | "created"
       | "exists"
       | "getBaseMetadataURI"
       | "getCreator"
+      | "getFreeWallPaper"
       | "getMaxClaimed"
       | "getSize"
       | "getTokenPrice"
       | "getTokenURI"
-      | "initObject"
+      | "initWallPaper"
       | "isApprovedForAll"
       | "mintBatchObject"
       | "name"
@@ -156,11 +156,7 @@ export interface PremiumObjectInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "batchBuyObject",
-    values: [BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "buyObject",
+    functionFragment: "buyWallPaper",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -168,7 +164,7 @@ export interface PremiumObjectInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "createObject",
+    functionFragment: "createWallPaper",
     values: [
       BigNumberish,
       string,
@@ -195,6 +191,10 @@ export interface PremiumObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getFreeWallPaper",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMaxClaimed",
     values: [BigNumberish]
   ): string;
@@ -211,7 +211,7 @@ export interface PremiumObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "initObject",
+    functionFragment: "initWallPaper",
     values: [
       BigNumberish,
       string,
@@ -323,16 +323,15 @@ export interface PremiumObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "batchBuyObject",
+    functionFragment: "buyWallPaper",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "buyObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "changeTokenPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createObject",
+    functionFragment: "createWallPaper",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "created", data: BytesLike): Result;
@@ -342,6 +341,10 @@ export interface PremiumObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getFreeWallPaper",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getMaxClaimed",
     data: BytesLike
@@ -355,7 +358,10 @@ export interface PremiumObjectInterface extends utils.Interface {
     functionFragment: "getTokenURI",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "initWallPaper",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -447,9 +453,9 @@ export interface PremiumObjectInterface extends utils.Interface {
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "ChangeTokenPrice(uint256,uint256)": EventFragment;
-    "CreateObject(uint256,string,tuple,address,uint256,uint256)": EventFragment;
-    "InitObject(uint256,string,tuple,address,uint256,uint256)": EventFragment;
-    "LogbuyObject(address,uint256,uint256)": EventFragment;
+    "CreateWallPaper(uint256,string,tuple,address,uint256,uint256)": EventFragment;
+    "InitWallPaper(uint256,string,tuple,address,uint256,uint256)": EventFragment;
+    "LogbuyWallPaper(address,uint256,uint256)": EventFragment;
     "OwnershipGranted(address,address)": EventFragment;
     "OwnershipRemoved(address,address)": EventFragment;
     "PaymentReceivedOwner(uint256)": EventFragment;
@@ -469,9 +475,9 @@ export interface PremiumObjectInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ChangeTokenPrice"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CreateObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InitObject"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "LogbuyObject"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CreateWallPaper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InitWallPaper"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogbuyWallPaper"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
@@ -513,7 +519,7 @@ export type ChangeTokenPriceEvent = TypedEvent<
 export type ChangeTokenPriceEventFilter =
   TypedEventFilter<ChangeTokenPriceEvent>;
 
-export interface CreateObjectEventObject {
+export interface CreateWallPaperEventObject {
   tokenId: BigNumber;
   _uri: string;
   _size: BaseObject.SizeStructOutput;
@@ -521,7 +527,7 @@ export interface CreateObjectEventObject {
   _maxClaimed: BigNumber;
   _price: BigNumber;
 }
-export type CreateObjectEvent = TypedEvent<
+export type CreateWallPaperEvent = TypedEvent<
   [
     BigNumber,
     string,
@@ -530,12 +536,12 @@ export type CreateObjectEvent = TypedEvent<
     BigNumber,
     BigNumber
   ],
-  CreateObjectEventObject
+  CreateWallPaperEventObject
 >;
 
-export type CreateObjectEventFilter = TypedEventFilter<CreateObjectEvent>;
+export type CreateWallPaperEventFilter = TypedEventFilter<CreateWallPaperEvent>;
 
-export interface InitObjectEventObject {
+export interface InitWallPaperEventObject {
   tokenId: BigNumber;
   _uri: string;
   _size: BaseObject.SizeStructOutput;
@@ -543,7 +549,7 @@ export interface InitObjectEventObject {
   _maxClaimed: BigNumber;
   _price: BigNumber;
 }
-export type InitObjectEvent = TypedEvent<
+export type InitWallPaperEvent = TypedEvent<
   [
     BigNumber,
     string,
@@ -552,22 +558,22 @@ export type InitObjectEvent = TypedEvent<
     BigNumber,
     BigNumber
   ],
-  InitObjectEventObject
+  InitWallPaperEventObject
 >;
 
-export type InitObjectEventFilter = TypedEventFilter<InitObjectEvent>;
+export type InitWallPaperEventFilter = TypedEventFilter<InitWallPaperEvent>;
 
-export interface LogbuyObjectEventObject {
+export interface LogbuyWallPaperEventObject {
   sender: string;
   tokenId: BigNumber;
   value: BigNumber;
 }
-export type LogbuyObjectEvent = TypedEvent<
+export type LogbuyWallPaperEvent = TypedEvent<
   [string, BigNumber, BigNumber],
-  LogbuyObjectEventObject
+  LogbuyWallPaperEventObject
 >;
 
-export type LogbuyObjectEventFilter = TypedEventFilter<LogbuyObjectEvent>;
+export type LogbuyWallPaperEventFilter = TypedEventFilter<LogbuyWallPaperEvent>;
 
 export interface OwnershipGrantedEventObject {
   operator: string;
@@ -740,12 +746,12 @@ export type URIEvent = TypedEvent<[string, BigNumber], URIEventObject>;
 
 export type URIEventFilter = TypedEventFilter<URIEvent>;
 
-export interface PremiumObject extends BaseContract {
+export interface WallPaper extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PremiumObjectInterface;
+  interface: WallPaperInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -802,12 +808,7 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
-    batchBuyObject(
-      tokenIds: BigNumberish[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    buyObject(
+    buyWallPaper(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -818,7 +819,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    createObject(
+    createWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -838,6 +839,11 @@ export interface PremiumObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getFreeWallPaper(
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
@@ -859,7 +865,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    initObject(
+    initWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1039,12 +1045,7 @@ export interface PremiumObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
-  batchBuyObject(
-    tokenIds: BigNumberish[],
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  buyObject(
+  buyWallPaper(
     tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1055,7 +1056,7 @@ export interface PremiumObject extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  createObject(
+  createWallPaper(
     tokenId: BigNumberish,
     _uri: string,
     _size: BaseObject.SizeStruct,
@@ -1072,6 +1073,11 @@ export interface PremiumObject extends BaseContract {
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
   getCreator(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  getFreeWallPaper(
+    tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   getMaxClaimed(
     tokenId: BigNumberish,
@@ -1093,7 +1099,7 @@ export interface PremiumObject extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  initObject(
+  initWallPaper(
     tokenId: BigNumberish,
     _uri: string,
     _size: BaseObject.SizeStruct,
@@ -1270,12 +1276,10 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
-    batchBuyObject(
-      tokenIds: BigNumberish[],
+    buyWallPaper(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    buyObject(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
@@ -1283,7 +1287,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    createObject(
+    createWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1303,6 +1307,11 @@ export interface PremiumObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getFreeWallPaper(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
@@ -1324,7 +1333,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    initObject(
+    initWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1481,50 +1490,50 @@ export interface PremiumObject extends BaseContract {
       _newPrice?: null
     ): ChangeTokenPriceEventFilter;
 
-    "CreateObject(uint256,string,tuple,address,uint256,uint256)"(
+    "CreateWallPaper(uint256,string,tuple,address,uint256,uint256)"(
       tokenId?: null,
       _uri?: null,
       _size?: null,
       _creator?: null,
       _maxClaimed?: null,
       _price?: null
-    ): CreateObjectEventFilter;
-    CreateObject(
+    ): CreateWallPaperEventFilter;
+    CreateWallPaper(
       tokenId?: null,
       _uri?: null,
       _size?: null,
       _creator?: null,
       _maxClaimed?: null,
       _price?: null
-    ): CreateObjectEventFilter;
+    ): CreateWallPaperEventFilter;
 
-    "InitObject(uint256,string,tuple,address,uint256,uint256)"(
+    "InitWallPaper(uint256,string,tuple,address,uint256,uint256)"(
       tokenId?: null,
       _uri?: null,
       _size?: null,
       _creator?: null,
       _maxClaimed?: null,
       _price?: null
-    ): InitObjectEventFilter;
-    InitObject(
+    ): InitWallPaperEventFilter;
+    InitWallPaper(
       tokenId?: null,
       _uri?: null,
       _size?: null,
       _creator?: null,
       _maxClaimed?: null,
       _price?: null
-    ): InitObjectEventFilter;
+    ): InitWallPaperEventFilter;
 
-    "LogbuyObject(address,uint256,uint256)"(
+    "LogbuyWallPaper(address,uint256,uint256)"(
       sender?: string | null,
       tokenId?: null,
       value?: null
-    ): LogbuyObjectEventFilter;
-    LogbuyObject(
+    ): LogbuyWallPaperEventFilter;
+    LogbuyWallPaper(
       sender?: string | null,
       tokenId?: null,
       value?: null
-    ): LogbuyObjectEventFilter;
+    ): LogbuyWallPaperEventFilter;
 
     "OwnershipGranted(address,address)"(
       operator?: string | null,
@@ -1658,12 +1667,7 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
-    batchBuyObject(
-      tokenIds: BigNumberish[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    buyObject(
+    buyWallPaper(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1674,7 +1678,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    createObject(
+    createWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1693,6 +1697,11 @@ export interface PremiumObject extends BaseContract {
     getCreator(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getFreeWallPaper(
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getMaxClaimed(
@@ -1715,7 +1724,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    initObject(
+    initWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1878,12 +1887,7 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    batchBuyObject(
-      tokenIds: BigNumberish[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    buyObject(
+    buyWallPaper(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1894,7 +1898,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    createObject(
+    createWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,
@@ -1923,6 +1927,11 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getFreeWallPaper(
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1943,7 +1952,7 @@ export interface PremiumObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initObject(
+    initWallPaper(
       tokenId: BigNumberish,
       _uri: string,
       _size: BaseObject.SizeStruct,

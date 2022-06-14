@@ -48,6 +48,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
+    "batchGetFreeObject(uint256[])": FunctionFragment;
     "changeTokenPrice(uint256,uint256)": FunctionFragment;
     "createObject(uint256,string,(uint8,uint8,uint8),address)": FunctionFragment;
     "created(uint256)": FunctionFragment;
@@ -95,6 +96,7 @@ export interface FreeObjectInterface extends utils.Interface {
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
+      | "batchGetFreeObject"
       | "changeTokenPrice"
       | "createObject"
       | "created"
@@ -151,6 +153,10 @@ export interface FreeObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "baseMetadataURI",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchGetFreeObject",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "changeTokenPrice",
@@ -299,6 +305,10 @@ export interface FreeObjectInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "baseMetadataURI",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "batchGetFreeObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -718,6 +728,11 @@ export interface FreeObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     changeTokenPrice(
       tokenId: BigNumberish,
       _newPrice: BigNumberish,
@@ -946,6 +961,11 @@ export interface FreeObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+  batchGetFreeObject(
+    tokenIds: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   changeTokenPrice(
     tokenId: BigNumberish,
     _newPrice: BigNumberish,
@@ -1167,6 +1187,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<BigNumber[]>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
@@ -1505,6 +1530,11 @@ export interface FreeObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     changeTokenPrice(
       tokenId: BigNumberish,
       _newPrice: BigNumberish,
@@ -1715,6 +1745,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
