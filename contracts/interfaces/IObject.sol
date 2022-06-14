@@ -23,6 +23,10 @@ interface IObject {
 
     function setOwner(address newOwner) external;
 
+    function isApprovedForAll(address account, address operator) external returns (bool);
+
+    function setApprovalForAll(address operator, bool approved) external;
+
     function mintBatchObject(
         address to,
         uint256[] memory ids,

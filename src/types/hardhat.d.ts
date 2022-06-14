@@ -37,6 +37,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Initializable__factory>;
     getContractFactory(
+      name: "IERC1155ReceiverUpgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1155ReceiverUpgradeable__factory>;
+    getContractFactory(
       name: "ContextUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ContextUpgradeable__factory>;
@@ -141,6 +145,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PremiumObject__factory>;
     getContractFactory(
+      name: "WallPaper",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WallPaper__factory>;
+    getContractFactory(
+      name: "ObjectController",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ObjectController__factory>;
+    getContractFactory(
       name: "PhiClaim",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiClaim__factory>;
@@ -191,6 +203,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Initializable>;
+    getContractAt(
+      name: "IERC1155ReceiverUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1155ReceiverUpgradeable>;
     getContractAt(
       name: "ContextUpgradeable",
       address: string,
@@ -321,6 +338,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PremiumObject>;
+    getContractAt(
+      name: "WallPaper",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WallPaper>;
+    getContractAt(
+      name: "ObjectController",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ObjectController>;
     getContractAt(
       name: "PhiClaim",
       address: string,

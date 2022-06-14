@@ -29,28 +29,48 @@ import type {
 
 export interface PhiRegistryInterface extends utils.Interface {
   functions: {
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "changePhilandAddress(address)": FunctionFragment;
     "changePhilandOwner(string)": FunctionFragment;
     "claimed()": FunctionFragment;
     "createPhiland(string)": FunctionFragment;
-    "owner(address)": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "ownerLists(string)": FunctionFragment;
-    "removeOwner(address)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "setBaseNode(bytes32)": FunctionFragment;
-    "setOwner(address)": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "DEFAULT_ADMIN_ROLE"
+      | "changePhilandAddress"
       | "changePhilandOwner"
       | "claimed"
       | "createPhiland"
-      | "owner"
+      | "getRoleAdmin"
+      | "grantRole"
+      | "hasRole"
+      | "initialize"
       | "ownerLists"
-      | "removeOwner"
+      | "renounceRole"
+      | "revokeRole"
       | "setBaseNode"
-      | "setOwner"
+      | "supportsInterface"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changePhilandAddress",
+    values: [string]
+  ): string;
   encodeFunctionData(
     functionFragment: "changePhilandOwner",
     values: [string]
@@ -60,15 +80,48 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "createPhiland",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getRoleAdmin",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "grantRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string, string]
+  ): string;
   encodeFunctionData(functionFragment: "ownerLists", values: [string]): string;
-  encodeFunctionData(functionFragment: "removeOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "setBaseNode",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "changePhilandAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "changePhilandOwner",
     data: BytesLike
@@ -78,32 +131,48 @@ export interface PhiRegistryInterface extends utils.Interface {
     functionFragment: "createPhiland",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "removeOwner",
+    functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "ownerLists", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setBaseNode",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Hello()": EventFragment;
+    "Initialized(uint8)": EventFragment;
+    "LogChangePhilandAddress(address,address)": EventFragment;
     "LogChangePhilandOwner(address,string)": EventFragment;
     "LogCreatePhiland(address,string)": EventFragment;
-    "OwnershipGranted(address,address)": EventFragment;
-    "OwnershipRemoved(address,address)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
     "SetBaseNode(bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Hello"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogChangePhilandAddress"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogChangePhilandOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogCreatePhiland"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipGranted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetBaseNode"): EventFragment;
 }
 
@@ -111,6 +180,25 @@ export interface HelloEventObject {}
 export type HelloEvent = TypedEvent<[], HelloEventObject>;
 
 export type HelloEventFilter = TypedEventFilter<HelloEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface LogChangePhilandAddressEventObject {
+  sender: string;
+  _phiMapAddress: string;
+}
+export type LogChangePhilandAddressEvent = TypedEvent<
+  [string, string],
+  LogChangePhilandAddressEventObject
+>;
+
+export type LogChangePhilandAddressEventFilter =
+  TypedEventFilter<LogChangePhilandAddressEvent>;
 
 export interface LogChangePhilandOwnerEventObject {
   sender: string;
@@ -136,29 +224,42 @@ export type LogCreatePhilandEvent = TypedEvent<
 export type LogCreatePhilandEventFilter =
   TypedEventFilter<LogCreatePhilandEvent>;
 
-export interface OwnershipGrantedEventObject {
-  operator: string;
-  target: string;
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
 }
-export type OwnershipGrantedEvent = TypedEvent<
-  [string, string],
-  OwnershipGrantedEventObject
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
 >;
 
-export type OwnershipGrantedEventFilter =
-  TypedEventFilter<OwnershipGrantedEvent>;
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
 
-export interface OwnershipRemovedEventObject {
-  operator: string;
-  target: string;
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
 }
-export type OwnershipRemovedEvent = TypedEvent<
-  [string, string],
-  OwnershipRemovedEventObject
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
 >;
 
-export type OwnershipRemovedEventFilter =
-  TypedEventFilter<OwnershipRemovedEvent>;
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export interface SetBaseNodeEventObject {
   basenode: string;
@@ -194,6 +295,13 @@ export interface PhiRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     changePhilandOwner(
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -206,15 +314,38 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    initialize(
+      _admin: string,
+      ens: string,
+      map: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<[string]>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -223,11 +354,18 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
   };
+
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  changePhilandAddress(
+    _phiMapAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   changePhilandOwner(
     name: string,
@@ -241,15 +379,38 @@ export interface PhiRegistry extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  owner(
-    targetAddress: string,
+  getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+  grantRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: BytesLike,
+    account: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  initialize(
+    _admin: string,
+    ens: string,
+    map: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-  removeOwner(
-    oldOwner: string,
+  renounceRole(
+    role: BytesLike,
+    account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: BytesLike,
+    account: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -258,32 +419,83 @@ export interface PhiRegistry extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  supportsInterface(
+    interfaceId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   callStatic: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     changePhilandOwner(name: string, overrides?: CallOverrides): Promise<void>;
 
     claimed(overrides?: CallOverrides): Promise<BigNumber>;
 
     createPhiland(name: string, overrides?: CallOverrides): Promise<void>;
 
-    owner(targetAddress: string, overrides?: CallOverrides): Promise<boolean>;
+    getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    initialize(
+      _admin: string,
+      ens: string,
+      map: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-    removeOwner(oldOwner: string, overrides?: CallOverrides): Promise<void>;
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setBaseNode(_basenode: BytesLike, overrides?: CallOverrides): Promise<void>;
 
-    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
   };
 
   filters: {
     "Hello()"(): HelloEventFilter;
     Hello(): HelloEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
+    "LogChangePhilandAddress(address,address)"(
+      sender?: string | null,
+      _phiMapAddress?: null
+    ): LogChangePhilandAddressEventFilter;
+    LogChangePhilandAddress(
+      sender?: string | null,
+      _phiMapAddress?: null
+    ): LogChangePhilandAddressEventFilter;
 
     "LogChangePhilandOwner(address,string)"(
       sender?: string | null,
@@ -303,29 +515,51 @@ export interface PhiRegistry extends BaseContract {
       name?: null
     ): LogCreatePhilandEventFilter;
 
-    "OwnershipGranted(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
-    OwnershipGranted(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipGrantedEventFilter;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: BytesLike | null,
+      previousAdminRole?: BytesLike | null,
+      newAdminRole?: BytesLike | null
+    ): RoleAdminChangedEventFilter;
 
-    "OwnershipRemoved(address,address)"(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
-    OwnershipRemoved(
-      operator?: string | null,
-      target?: string | null
-    ): OwnershipRemovedEventFilter;
+    "RoleGranted(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: BytesLike | null,
+      account?: string | null,
+      sender?: string | null
+    ): RoleRevokedEventFilter;
 
     "SetBaseNode(bytes32)"(basenode?: null): SetBaseNodeEventFilter;
     SetBaseNode(basenode?: null): SetBaseNodeEventFilter;
   };
 
   estimateGas: {
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     changePhilandOwner(
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -338,15 +572,41 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      _admin: string,
+      ens: string,
+      map: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     ownerLists(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -355,13 +615,22 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    changePhilandAddress(
+      _phiMapAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     changePhilandOwner(
       name: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -374,8 +643,27 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    owner(
-      targetAddress: string,
+    getRoleAdmin(
+      role: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    grantRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    hasRole(
+      role: BytesLike,
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _admin: string,
+      ens: string,
+      map: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -384,8 +672,15 @@ export interface PhiRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    removeOwner(
-      oldOwner: string,
+    renounceRole(
+      role: BytesLike,
+      account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: BytesLike,
+      account: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -394,9 +689,9 @@ export interface PhiRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    supportsInterface(
+      interfaceId: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -317,7 +317,7 @@ export interface BaseObjectInterface extends utils.Interface {
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
     "SetSecondaryRoyalityFee(uint256)": EventFragment;
-    "SetSize(uint256,tuple)": EventFragment;
+    "SetSize(uint256,uint8,uint8,uint8)": EventFragment;
     "SetTokenURI(uint256,string)": EventFragment;
     "SetTreasuryAddress(address)": EventFragment;
     "SetbaseMetadataURI(string)": EventFragment;
@@ -441,10 +441,12 @@ export type SetSecondaryRoyalityFeeEventFilter =
 
 export interface SetSizeEventObject {
   tokenId: BigNumber;
-  _size: BaseObject.SizeStructOutput;
+  x: number;
+  y: number;
+  z: number;
 }
 export type SetSizeEvent = TypedEvent<
-  [BigNumber, BaseObject.SizeStructOutput],
+  [BigNumber, number, number, number],
   SetSizeEventObject
 >;
 
@@ -1005,8 +1007,13 @@ export interface BaseObject extends BaseContract {
       _secondaryRoyalty?: null
     ): SetSecondaryRoyalityFeeEventFilter;
 
-    "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
-    SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
+    "SetSize(uint256,uint8,uint8,uint8)"(
+      tokenId?: null,
+      x?: null,
+      y?: null,
+      z?: null
+    ): SetSizeEventFilter;
+    SetSize(tokenId?: null, x?: null, y?: null, z?: null): SetSizeEventFilter;
 
     "SetTokenURI(uint256,string)"(
       tokenId?: null,

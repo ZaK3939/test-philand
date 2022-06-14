@@ -46,8 +46,8 @@ describe("Unit tests PhiClaim", function () {
   describe("PhiClaim", function () {
     before(async function () {
       const PhiClaim = await ethers.getContractFactory("PhiClaim");
-      const phiclaim = await upgrades.deployProxy(PhiClaim, [this.signers.admin.address, this.signers.admin.address]);
-      this.phiClaim = <PhiClaim>await phiclaim.connect(this.signers.admin).deployed();
+      const phiClaim = await upgrades.deployProxy(PhiClaim, [this.signers.admin.address, this.signers.admin.address]);
+      this.phiClaim = <PhiClaim>await phiClaim.deployed();
 
       // const BoxV2 = await ethers.getContractFactory("BoxV2");
       // const upgraded = await upgrades.upgradeProxy(instance.address, BoxV2);

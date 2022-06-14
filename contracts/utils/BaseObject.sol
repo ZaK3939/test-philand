@@ -51,7 +51,7 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
     event SetbaseMetadataURI(string baseuri);
     event SetMaxClaimed(uint256 tokenId, uint256 newMaxClaimed);
     event SetTokenURI(uint256 tokenId, string _uri);
-    event SetSize(uint256 tokenId, Size _size);
+    event SetSize(uint256 tokenId, uint8 x, uint8 y, uint8 z);
     event SetCreator(uint256 tokenId, address payable _creator);
     event ChangeTokenPrice(uint256 tokenId, uint256 _newPrice);
     event SetRoyalityFee(uint256 _royalityFee);
@@ -93,7 +93,7 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
 
     function setSize(uint256 tokenId, Size memory _size) public virtual onlyOwner {
         allObjects[tokenId].size = _size;
-        emit SetSize(tokenId, _size);
+        emit SetSize(tokenId, _size.x, _size.y, _size.z);
     }
 
     function setCreator(uint256 tokenId, address payable _creator) public virtual onlyOwner {

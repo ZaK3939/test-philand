@@ -113,6 +113,12 @@ contract FreeObject is ERC1155Supply, BaseObject {
         super._mint(msg.sender, tokenId, 1, "0x00");
     }
 
+    function batchGetFreeObject(uint256[] memory tokenIds) public {
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            getFreeObject(tokenIds[i]);
+        }
+    }
+
     /* --------------------------------- ****** --------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -124,7 +130,6 @@ contract FreeObject is ERC1155Supply, BaseObject {
         uint256[] memory amounts,
         bytes memory data
     ) external onlyOwner {
-        // todo for loop check token supply
         super._mintBatch(to, ids, amounts, data);
     }
 }

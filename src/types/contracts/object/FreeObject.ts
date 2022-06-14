@@ -48,6 +48,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
+    "batchGetFreeObject(uint256[])": FunctionFragment;
     "changeTokenPrice(uint256,uint256)": FunctionFragment;
     "createObject(uint256,string,(uint8,uint8,uint8),address)": FunctionFragment;
     "created(uint256)": FunctionFragment;
@@ -95,6 +96,7 @@ export interface FreeObjectInterface extends utils.Interface {
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
+      | "batchGetFreeObject"
       | "changeTokenPrice"
       | "createObject"
       | "created"
@@ -151,6 +153,10 @@ export interface FreeObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "baseMetadataURI",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchGetFreeObject",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "changeTokenPrice",
@@ -302,6 +308,10 @@ export interface FreeObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "batchGetFreeObject",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "changeTokenPrice",
     data: BytesLike
   ): Result;
@@ -433,7 +443,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
     "SetSecondaryRoyalityFee(uint256)": EventFragment;
-    "SetSize(uint256,tuple)": EventFragment;
+    "SetSize(uint256,uint8,uint8,uint8)": EventFragment;
     "SetTokenURI(uint256,string)": EventFragment;
     "SetTreasuryAddress(address)": EventFragment;
     "SetbaseMetadataURI(string)": EventFragment;
@@ -576,10 +586,12 @@ export type SetSecondaryRoyalityFeeEventFilter =
 
 export interface SetSizeEventObject {
   tokenId: BigNumber;
-  _size: BaseObject.SizeStructOutput;
+  x: number;
+  y: number;
+  z: number;
 }
 export type SetSizeEvent = TypedEvent<
-  [BigNumber, BaseObject.SizeStructOutput],
+  [BigNumber, number, number, number],
   SetSizeEventObject
 >;
 
@@ -715,6 +727,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<[BigNumber[]]>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
@@ -944,6 +961,11 @@ export interface FreeObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+  batchGetFreeObject(
+    tokenIds: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   changeTokenPrice(
     tokenId: BigNumberish,
     _newPrice: BigNumberish,
@@ -1165,6 +1187,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<BigNumber[]>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
@@ -1424,8 +1451,13 @@ export interface FreeObject extends BaseContract {
       _secondaryRoyalty?: null
     ): SetSecondaryRoyalityFeeEventFilter;
 
-    "SetSize(uint256,tuple)"(tokenId?: null, _size?: null): SetSizeEventFilter;
-    SetSize(tokenId?: null, _size?: null): SetSizeEventFilter;
+    "SetSize(uint256,uint8,uint8,uint8)"(
+      tokenId?: null,
+      x?: null,
+      y?: null,
+      z?: null
+    ): SetSizeEventFilter;
+    SetSize(tokenId?: null, x?: null, y?: null, z?: null): SetSizeEventFilter;
 
     "SetTokenURI(uint256,string)"(
       tokenId?: null,
@@ -1497,6 +1529,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<BigNumber>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
@@ -1708,6 +1745,11 @@ export interface FreeObject extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    batchGetFreeObject(
+      tokenIds: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     changeTokenPrice(
       tokenId: BigNumberish,
