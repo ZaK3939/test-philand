@@ -803,7 +803,7 @@ export interface PremiumObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
     batchBuyObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1040,7 +1040,7 @@ export interface PremiumObject extends BaseContract {
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
   batchBuyObject(
-    tokenId: BigNumberish[],
+    tokenIds: BigNumberish[],
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1271,7 +1271,7 @@ export interface PremiumObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
     batchBuyObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1659,7 +1659,7 @@ export interface PremiumObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     batchBuyObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1879,7 +1879,7 @@ export interface PremiumObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     batchBuyObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

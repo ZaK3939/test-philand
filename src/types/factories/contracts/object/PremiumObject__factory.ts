@@ -664,7 +664,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256[]",
-        name: "tokenId",
+        name: "tokenIds",
         type: "uint256[]",
       },
     ],

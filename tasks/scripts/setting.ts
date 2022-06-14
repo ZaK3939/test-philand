@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import hre from "hardhat";
+import hre, { ethers } from "hardhat";
 
 import { getAddress } from "../deploy/utils";
 
@@ -60,41 +60,26 @@ export async function settingPhi(): Promise<void> {
   const freeObjectContractInstance = await freeObjectContractFactory.attach(freeObjectAddress);
   const wallPaperContractInstance = await wallPaperContractFactory.attach(wallPaperAddress);
 
-  const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
+  const wallPaperscsv = readFileSync(`${__dirname}/csv/setting_wallPapers.csv`, {
     encoding: "utf8",
   });
-  const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
-  funcName = "setCouponType";
-  for (let i = 0; i < conditionRowList.length; i++) {
+  const wallPaperRowList = new CSV(wallPaperscsv, { header: true, cast: false }).parse();
+  funcName = "createWallPaper";
+  for (let i = 0; i < wallPaperRowList.length; i++) {
+    const size = String(wallPaperRowList[i].size);
+    const metadataURL = String(wallPaperRowList[i].json_url).split("/");
     calldata = [
-      String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
-      String(conditionRowList[i].TokenId),
-    ];
-    console.log(calldata);
-    res = await phiClaimContractInstance[funcName](...calldata);
-    console.log("phiClaim setCouponType Response:", res);
-  }
-
-  const phiObjectscsv = readFileSync(`${__dirname}/csv/setting_phiObjects.csv`, {
-    encoding: "utf8",
-  });
-  const phiObjectRowList = new CSV(phiObjectscsv, { header: true, cast: false }).parse();
-  funcName = "createObject";
-  for (let i = 0; i < phiObjectRowList.length; i++) {
-    const size = String(phiObjectRowList[i].size);
-    const metadataURL = String(phiObjectRowList[i].json_url).split("/");
-    calldata = [
-      String(phiObjectRowList[i].tokenId),
+      String(wallPaperRowList[i].tokenId),
       metadataURL.slice(-1)[0],
-      { x: size[1], y: size[3], z: size[5] },
+      { x: size[1] + size[2], y: size[4] + size[5], z: "0" },
       l1Signer.address,
-      String(phiObjectRowList[i].maxClaimed),
+      String(wallPaperRowList[i].maxClaimed),
+      ethers.utils.parseEther("0"),
     ];
     console.log(calldata);
-    res = await phiObjectContractInstance[funcName](...calldata);
+    res = await wallPaperContractInstance[funcName](...calldata);
     console.log("create Object Response:", res);
   }
-
   const premiumObjectscsv = readFileSync(`${__dirname}/csv/setting_premiumObjects.csv`, {
     encoding: "utf8",
   });
@@ -109,6 +94,7 @@ export async function settingPhi(): Promise<void> {
       { x: size[1], y: size[3], z: size[5] },
       l1Signer.address,
       String(premiumObjectRowList[i].maxClaimed),
+      ethers.utils.parseEther(premiumObjectRowList[i].price),
     ];
     console.log(calldata);
     res = await premiumObjectContractInstance[funcName](...calldata);
@@ -128,30 +114,42 @@ export async function settingPhi(): Promise<void> {
       metadataURL.slice(-1)[0],
       { x: size[1], y: size[3], z: size[5] },
       l1Signer.address,
-      String(freeObjectRowList[i].maxClaimed),
     ];
     console.log(calldata);
     res = await freeObjectContractInstance[funcName](...calldata);
     console.log("create Object Response:", res);
   }
-
-  const wallPaperscsv = readFileSync(`${__dirname}/csv/setting_wallPapers.csv`, {
+  const conditioncsv = readFileSync(`${__dirname}/csv/condition.csv`, {
     encoding: "utf8",
   });
-  const wallPaperRowList = new CSV(wallPaperscsv, { header: true, cast: false }).parse();
-  funcName = "createObject";
-  for (let i = 0; i < wallPaperRowList.length; i++) {
-    const size = String(wallPaperRowList[i].size);
-    const metadataURL = String(wallPaperRowList[i].json_url).split("/");
+  const conditionRowList = new CSV(conditioncsv, { header: true, cast: false }).parse();
+  funcName = "setCouponType";
+  for (let i = 0; i < conditionRowList.length; i++) {
     calldata = [
-      String(wallPaperRowList[i].tokenId),
+      String(conditionRowList[i].Condition) + String(conditionRowList[i].Value),
+      String(conditionRowList[i].TokenId),
+    ];
+    console.log(calldata);
+    res = await phiClaimContractInstance[funcName](...calldata);
+    console.log("phiClaim setCouponType Response:", res);
+  }
+  const phiObjectscsv = readFileSync(`${__dirname}/csv/setting_phiObjects.csv`, {
+    encoding: "utf8",
+  });
+  const phiObjectRowList = new CSV(phiObjectscsv, { header: true, cast: false }).parse();
+  funcName = "createObject";
+  for (let i = 0; i < phiObjectRowList.length; i++) {
+    const size = String(phiObjectRowList[i].size);
+    const metadataURL = String(phiObjectRowList[i].json_url).split("/");
+    calldata = [
+      String(phiObjectRowList[i].tokenId),
       metadataURL.slice(-1)[0],
       { x: size[1], y: size[3], z: size[5] },
       l1Signer.address,
-      String(wallPaperRowList[i].maxClaimed),
+      String(phiObjectRowList[i].maxClaimed),
     ];
     console.log(calldata);
-    res = await wallPaperContractInstance[funcName](...calldata);
+    res = await phiObjectContractInstance[funcName](...calldata);
     console.log("create Object Response:", res);
   }
 
@@ -177,6 +175,8 @@ export async function settingPhi(): Promise<void> {
   res = await premiumObjectContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
   res = await freeObjectContractInstance[funcName](...calldata);
+  console.log("setOwner Response:", res);
+  res = await wallPaperContractInstance[funcName](...calldata);
   console.log("setOwner Response:", res);
 
   funcName = "grantRole";

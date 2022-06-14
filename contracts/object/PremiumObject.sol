@@ -167,34 +167,34 @@ contract PremiumObject is ERC1155Supply, BaseObject {
         emit LogbuyObject(msg.sender, tokenId, msg.value);
     }
 
-    function batchBuyObject(uint256[] memory tokenId) public payable {
+    function batchBuyObject(uint256[] memory tokenIds) public payable {
         uint256 allprice;
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-        for (uint256 i = 0; i < tokenId.length; i++) {
-            allprice = allprice + allObjects[tokenId[i]].price;
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            allprice = allprice + allObjects[tokenIds[i]].price;
         }
         require(msg.value == allprice);
 
-        for (uint256 i = 0; i < tokenId.length; i++) {
+        for (uint256 i = 0; i < tokenIds.length; i++) {
             // check if the token id of the token exists
-            isValid(tokenId[i]);
+            isValid(tokenIds[i]);
 
             // token should be for sale
-            require(allObjects[tokenId[i]].forSale);
+            require(allObjects[tokenIds[i]].forSale);
             // check token's MaxClaimed
-            require(super.totalSupply(tokenId[i]) <= allObjects[tokenId[i]].maxClaimed);
+            require(super.totalSupply(tokenIds[i]) <= allObjects[tokenIds[i]].maxClaimed);
 
             // Pay royality to artist, and remaining to deployer of contract
-            uint256 royality = (allObjects[tokenId[i]].price * royalityFee) / 10000;
-            (bool success1, ) = payable(allObjects[tokenId[i]].creator).call{ value: royality }("");
+            uint256 royality = (allObjects[tokenIds[i]].price * royalityFee) / 10000;
+            (bool success1, ) = payable(allObjects[tokenIds[i]].creator).call{ value: royality }("");
             require(success1);
 
-            (bool success2, ) = payable(treasuryAddress).call{ value: (allObjects[tokenId[i]].price - royality) }("");
+            (bool success2, ) = payable(treasuryAddress).call{ value: (allObjects[tokenIds[i]].price - royality) }("");
             require(success2);
             // mint the token
-            super._mint(msg.sender, tokenId[i], 1, "0x");
-            emit LogbuyObject(msg.sender, tokenId[i], allObjects[tokenId[i]].price);
+            super._mint(msg.sender, tokenIds[i], 1, "0x");
+            emit LogbuyObject(msg.sender, tokenIds[i], allObjects[tokenIds[i]].price);
         }
     }
 

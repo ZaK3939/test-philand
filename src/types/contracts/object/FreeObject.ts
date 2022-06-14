@@ -729,7 +729,7 @@ export interface FreeObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
     batchGetFreeObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -962,7 +962,7 @@ export interface FreeObject extends BaseContract {
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
   batchGetFreeObject(
-    tokenId: BigNumberish[],
+    tokenIds: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1189,7 +1189,7 @@ export interface FreeObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
     batchGetFreeObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1531,7 +1531,7 @@ export interface FreeObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
     batchGetFreeObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1747,7 +1747,7 @@ export interface FreeObject extends BaseContract {
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     batchGetFreeObject(
-      tokenId: BigNumberish[],
+      tokenIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

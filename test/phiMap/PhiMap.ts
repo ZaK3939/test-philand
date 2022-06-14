@@ -3,6 +3,7 @@ import { artifacts, ethers, upgrades, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { ENSRegistry } from "../../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
+import { ObjectController } from "../../src/types/contracts/ObjectController";
 import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
@@ -101,6 +102,11 @@ describe("Unit tests PhiMap", function () {
     const phiMap = await upgrades.deployProxy(PhiMap, [this.signers.admin.address]);
     this.phiMap = <PhiMap>await phiMap.deployed();
 
+    const ObjectControllerArtifact: Artifact = await artifacts.readArtifact("ObjectController");
+    this.objectController = <ObjectController>(
+      await waffle.deployContract(this.signers.admin, ObjectControllerArtifact, [this.signers.admin.address])
+    );
+
     const PhiRegistry = await ethers.getContractFactory("PhiRegistry");
     const phiRegistry = await upgrades.deployProxy(PhiRegistry, [
       this.signers.admin.address,
@@ -162,6 +168,7 @@ describe("Unit tests PhiMap", function () {
     await this.freeObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.wallPaper.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
+    // const tx = await this.objectController.connect(this.signers.alice).setApproveForBasicObjects([this.freeObject.address,this.wallPaper.address,this.phiObject.address])
   });
 
   describe("PhiMap", function () {
