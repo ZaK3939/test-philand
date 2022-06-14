@@ -5,7 +5,9 @@ import type { Artifact } from "hardhat/types";
 import { PremiumObject } from "../../src/types/contracts/object/PremiumObject";
 import { Signers } from "../types";
 import {
+  CantBatchBuyObjectWithNotEnoughETH,
   CantBuyObjectWithNotEnoughETH,
+  shouldBehaveBatchBuyObject,
   shouldBehaveBuyObject,
   shouldBehaveCreateObject,
   shouldBehaveInitObject,
@@ -53,6 +55,8 @@ describe("Unit tests PremiumObject", function () {
     shouldBehaveCreateObject();
     shouldBehaveInitObject();
     shouldBehaveBuyObject();
+    shouldBehaveBatchBuyObject();
     CantBuyObjectWithNotEnoughETH();
+    CantBatchBuyObjectWithNotEnoughETH();
   });
 });

@@ -49,6 +49,7 @@ export interface PremiumObjectInterface extends utils.Interface {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "baseMetadataURI()": FunctionFragment;
+    "batchBuyObject(uint256[])": FunctionFragment;
     "buyObject(uint256)": FunctionFragment;
     "changeTokenPrice(uint256,uint256)": FunctionFragment;
     "createObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
@@ -62,6 +63,7 @@ export interface PremiumObjectInterface extends utils.Interface {
     "getTokenURI(uint256)": FunctionFragment;
     "initObject(uint256,string,(uint8,uint8,uint8),address,uint256,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "paymentBalanceOwner()": FunctionFragment;
@@ -95,6 +97,7 @@ export interface PremiumObjectInterface extends utils.Interface {
       | "balanceOf"
       | "balanceOfBatch"
       | "baseMetadataURI"
+      | "batchBuyObject"
       | "buyObject"
       | "changeTokenPrice"
       | "createObject"
@@ -108,6 +111,7 @@ export interface PremiumObjectInterface extends utils.Interface {
       | "getTokenURI"
       | "initObject"
       | "isApprovedForAll"
+      | "mintBatchObject"
       | "name"
       | "owner"
       | "paymentBalanceOwner"
@@ -150,6 +154,10 @@ export interface PremiumObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "baseMetadataURI",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchBuyObject",
+    values: [BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: "buyObject",
@@ -216,6 +224,10 @@ export interface PremiumObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintBatchObject",
+    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
@@ -310,6 +322,10 @@ export interface PremiumObjectInterface extends utils.Interface {
     functionFragment: "baseMetadataURI",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "batchBuyObject",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "buyObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "changeTokenPrice",
@@ -342,6 +358,10 @@ export interface PremiumObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintBatchObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -782,6 +802,11 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<[string]>;
 
+    batchBuyObject(
+      tokenId: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     buyObject(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -849,6 +874,14 @@ export interface PremiumObject extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1006,6 +1039,11 @@ export interface PremiumObject extends BaseContract {
 
   baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+  batchBuyObject(
+    tokenId: BigNumberish[],
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   buyObject(
     tokenId: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -1070,6 +1108,14 @@ export interface PremiumObject extends BaseContract {
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  mintBatchObject(
+    to: string,
+    ids: BigNumberish[],
+    amounts: BigNumberish[],
+    data: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -1224,6 +1270,11 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
+    batchBuyObject(
+      tokenId: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     buyObject(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     changeTokenPrice(
@@ -1288,6 +1339,14 @@ export interface PremiumObject extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1599,6 +1658,11 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    batchBuyObject(
+      tokenId: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     buyObject(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -1665,6 +1729,14 @@ export interface PremiumObject extends BaseContract {
       account: string,
       operator: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1806,6 +1878,11 @@ export interface PremiumObject extends BaseContract {
 
     baseMetadataURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    batchBuyObject(
+      tokenId: BigNumberish[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     buyObject(
       tokenId: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -1880,6 +1957,14 @@ export interface PremiumObject extends BaseContract {
       account: string,
       operator: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mintBatchObject(
+      to: string,
+      ids: BigNumberish[],
+      amounts: BigNumberish[],
+      data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;

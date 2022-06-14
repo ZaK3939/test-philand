@@ -29,6 +29,7 @@ export async function deployPhi(): Promise<void> {
   const premiumObjectAbiName = "PremiumObject";
   const phiObjectAbiName = "PhiObject";
   const freeObjectAbiName = "FreeObject";
+  const wallPaperAbiName = "WallPaper";
 
   const phiClaimAddress = getAddress(phiClaimAbiName, NETWORK);
   const phiMapAddress = getAddress(phiMapAbiName, NETWORK);
@@ -36,12 +37,16 @@ export async function deployPhi(): Promise<void> {
   const premiumObjectAddress = getAddress(premiumObjectAbiName, NETWORK);
   const phiObjectAddress = getAddress(phiObjectAbiName, NETWORK);
   const freeObjectAddress = getAddress(freeObjectAbiName, NETWORK);
+  const wallPaperAddress = getAddress(wallPaperAbiName, NETWORK);
 
   const premiumObject = await deployL1(NETWORK, "PremiumObject", BLOCK_NUMBER, [l1Signer.address]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
+  const wallPaper = await deployL1(NETWORK, "WallPaper", BLOCK_NUMBER, [l1Signer.address]);
+
   const phiClaim = await deployL1Upgrade(NETWORK, "PhiClaim", BLOCK_NUMBER, [l1Signer.address, l1Signer.address]);
-  const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
+  // const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
+  const phiMap = await contractUpgrade(NETWORK, "PhiMap", BLOCK_NUMBER, "0x8DBD08fa0b7ac9190BFE2716820D9EC224D709e7");
   const phiRegistry = await deployL1Upgrade(NETWORK, "PhiRegistry", BLOCK_NUMBER, [
     l1Signer.address,
     ENS_ADDRESS,
@@ -52,7 +57,7 @@ export async function deployPhi(): Promise<void> {
 export function printAddresses() {
   const NETWORK = hre.network.name;
 
-  const contracts = ["PremiumObject", "FreeObject", "PhiObject", "PhiMap", "PhiRegistry", "PhiClaim"];
+  const contracts = ["PremiumObject", "FreeObject", "PhiObject", "WallPaper", "PhiMap", "PhiRegistry", "PhiClaim"];
 
   const addresses = contracts.reduce((a, c) => Object.assign(a, { [c]: getAddress(c, NETWORK) }), {});
 
@@ -127,6 +132,20 @@ async function deployL1Upgrade(
       .filter((a: any) => !isEmpty(a))
       .join(" ")}`,
   );
+  await contract.deployed();
+  return contract;
+}
+
+async function contractUpgrade(network: string, name: string, blockNumber: number, address: string, saveName?: string) {
+  console.log(`Deploying: ${name}${(saveName && "/" + saveName) || ""}...`);
+  const contractFactory = await hre.ethers.getContractFactory(name);
+  console.log(address);
+  const contract = await hre.upgrades.upgradeProxy(address, contractFactory);
+  save(saveName || name, contract, hre.network.name, blockNumber);
+
+  console.log(`Waiting for upgrade to complete`);
+  console.log(`Deployed: ${saveName || name} to: ${contract.address}`);
+
   await contract.deployed();
   return contract;
 }

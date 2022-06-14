@@ -9,6 +9,7 @@ import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
 import { TestResolver } from "../../src/types/contracts/ens/TestResolver";
 import { FreeObject } from "../../src/types/contracts/object/FreeObject";
 import { PhiObject } from "../../src/types/contracts/object/PhiObject";
+import { WallPaper } from "../../src/types/contracts/object/WallPaper";
 import { Signers } from "../types";
 import {
   CantBatchUnDeposit,
@@ -21,6 +22,7 @@ import {
   shouldBehaveBatchRemoveObjectFromLand,
   shouldBehaveBatchUnDeposit,
   shouldBehaveBatchWriteObjectToLand,
+  shouldBehaveChangeWallPaper,
   shouldBehaveCheckAllDepositStatus,
   shouldBehaveCheckAllDepositStatusAfterInit,
   shouldBehaveCheckDepositStatus,
@@ -34,6 +36,7 @@ import {
   shouldBehaveViewLinks,
   shouldBehaveViewNumberOfPhiland,
   shouldBehaveViewPhiland,
+  shouldBehaveViewPhilandArray,
   shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
   shouldBehaveviewPhiland,
@@ -89,6 +92,11 @@ describe("Unit tests PhiMap", function () {
       await waffle.deployContract(this.signers.admin, freeObjectArtifact, [this.signers.treasury.address])
     );
 
+    const wallPaperArtifact: Artifact = await artifacts.readArtifact("WallPaper");
+    this.wallPaper = <WallPaper>(
+      await waffle.deployContract(this.signers.admin, wallPaperArtifact, [this.signers.treasury.address])
+    );
+
     const PhiMap = await ethers.getContractFactory("PhiMap");
     const phiMap = await upgrades.deployProxy(PhiMap, [this.signers.admin.address]);
     this.phiMap = <PhiMap>await phiMap.deployed();
@@ -99,7 +107,7 @@ describe("Unit tests PhiMap", function () {
       this.ensRegistry.address,
       this.phiMap.address,
     ]);
-    this.phiRegistry = <PhiMap>await phiRegistry.deployed();
+    this.phiRegistry = <PhiRegistry>await phiRegistry.deployed();
 
     const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -109,6 +117,7 @@ describe("Unit tests PhiMap", function () {
 
     await this.freeObject.connect(this.signers.admin).setOwner(this.phiMap.address);
     await this.phiObject.connect(this.signers.admin).setOwner(this.phiMap.address);
+    await this.wallPaper.connect(this.signers.admin).setOwner(this.phiMap.address);
 
     await this.phiObject
       .connect(this.signers.admin)
@@ -137,11 +146,22 @@ describe("Unit tests PhiMap", function () {
         this.signers.bob.address,
         200,
       );
+    await this.wallPaper
+      .connect(this.signers.admin)
+      .createWallPaper(
+        1,
+        "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU",
+        { x: 16, y: 16, z: 0 },
+        this.signers.bob.address,
+        200,
+        0,
+      );
     await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 1);
     await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 2);
     await this.phiObject.connect(this.signers.admin).getPhiObject(this.signers.alice.address, 3);
     await this.freeObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
     await this.phiObject.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
+    await this.wallPaper.connect(this.signers.alice).setApprovalForAll(this.phiMap.address, true);
   });
 
   describe("PhiMap", function () {
@@ -162,6 +182,7 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveBatchUnDeposit();
     CantBatchUnDeposit();
     shouldBehaveViewPhiland();
+    shouldBehaveViewPhilandArray();
     shouldBehaveRemoveObjectFromLand();
     shouldBehaveBatchWriteObjectToLand();
     shouldBehaveBatchRemoveAndWrite();
@@ -174,5 +195,6 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveInitialization();
     shouldBehaveCheckAllDepositStatusAfterInit();
     CantWriteObjectToLand();
+    shouldBehaveChangeWallPaper();
   });
 });

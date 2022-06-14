@@ -252,6 +252,13 @@ export function shouldBehaveBatchRemoveAndWrite(): void {
     expect(land[4].yEnd).to.equal(8);
   });
 }
+
+export function shouldBehaveViewPhilandArray(): void {
+  it("should viewPhilandArray test.eth", async function () {
+    const philandArray = await this.phiMap.connect(this.signers.admin).viewPhilandArray("test");
+  });
+}
+
 export function shouldBehaveWriteLinkToObject(): void {
   it("should write link to object 1", async function () {
     await this.phiMap.connect(this.signers.alice).writeLinkToObject("test", 1, ["zak3939", "zak3939.eth"]);
@@ -353,5 +360,17 @@ export function CantWriteObjectToLand(): void {
         .connect(this.signers.alice)
         .writeObjectToLand("test", { contractAddress: this.phiObject.address, tokenId: 3, xStart: 1, yStart: -1 }),
     ).to.be.reverted;
+  });
+}
+
+export function shouldBehaveChangeWallPaper(): void {
+  it("should ChangeWallPaper", async function () {
+    await this.wallPaper.connect(this.signers.alice).getFreeWallPaper(1);
+    const lastWallPaper = await this.phiMap.connect(this.signers.alice).checkWallPaper("test");
+    expect(lastWallPaper.contractAddress).to.equal("0x0000000000000000000000000000000000000000");
+
+    await this.phiMap.connect(this.signers.alice).changeWallPaper("test", this.wallPaper.address, 1);
+    const currentWallPaper = await this.phiMap.connect(this.signers.alice).checkWallPaper("test");
+    expect(currentWallPaper.contractAddress).to.equal("0x6C1404F6A70093be3D4dc78cF673De52881C85f7");
   });
 }

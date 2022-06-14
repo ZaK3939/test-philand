@@ -77,6 +77,8 @@ export type { PhiObject } from "./contracts/object/PhiObject";
 export { PhiObject__factory } from "./factories/contracts/object/PhiObject__factory";
 export type { PremiumObject } from "./contracts/object/PremiumObject";
 export { PremiumObject__factory } from "./factories/contracts/object/PremiumObject__factory";
+export type { WallPaper } from "./contracts/object/WallPaper";
+export { WallPaper__factory } from "./factories/contracts/object/WallPaper__factory";
 export type { PhiClaim } from "./contracts/PhiClaim";
 export { PhiClaim__factory } from "./factories/contracts/PhiClaim__factory";
 export type { PhiMap } from "./contracts/PhiMap";

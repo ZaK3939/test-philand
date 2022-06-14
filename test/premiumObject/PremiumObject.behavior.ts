@@ -110,6 +110,21 @@ export function shouldBehaveBuyObject(): void {
   });
 }
 
+export function shouldBehaveBatchBuyObject(): void {
+  it("should batch buy object with eth", async function () {
+    const ethToSend = ethers.utils.parseEther("0.10");
+    await this.premiumObject.connect(this.signers.alice).batchBuyObject([2, 2], { value: ethToSend });
+    const afterNFTbalance = await this.premiumObject
+      .connect(this.signers.alice)
+      .balanceOf(this.signers.alice.address, 2);
+    expect(afterNFTbalance).to.equal(3);
+    const afterTreasurybalance = await this.signers.treasury.getBalance();
+    expect(afterTreasurybalance).to.equal(ethers.utils.parseEther("10000.105"));
+    const afterbalance = await this.signers.carol.getBalance();
+    expect(afterbalance).to.equal(ethers.utils.parseEther("10000.045"));
+  });
+}
+
 export function CantBuyObjectWithNotEnoughETH(): void {
   it("cant buy object with not enough eth", async function () {
     const price = await this.premiumObject.connect(this.signers.admin).getTokenPrice(2);
@@ -118,5 +133,13 @@ export function CantBuyObjectWithNotEnoughETH(): void {
     expect(beforebalance).to.equal(0);
     const ethToSend = ethers.utils.parseEther("0.01");
     await expect(this.premiumObject.connect(this.signers.bob).buyObject(2, { value: ethToSend })).to.be.reverted;
+  });
+}
+
+export function CantBatchBuyObjectWithNotEnoughETH(): void {
+  it("cant batch buy object with eth", async function () {
+    const ethToSend = ethers.utils.parseEther("0.05");
+    await expect(this.premiumObject.connect(this.signers.alice).batchBuyObject([2, 2], { value: ethToSend })).to.be
+      .reverted;
   });
 }

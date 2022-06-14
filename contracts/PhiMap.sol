@@ -21,6 +21,12 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         uint256 minY;
         uint256 maxY;
     }
+    /* --------------------------------- WallPaper ------------------------------ */
+    struct WallPaper {
+        address contractAddress;
+        uint256 tokenId;
+        uint256 timestamp;
+    }
     /* --------------------------------- OBJECT --------------------------------- */
     struct Size {
         uint8 x;
@@ -67,9 +73,12 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     /* ---------------------------------- Map ----------------------------------- */
     uint256 public numberOfLand;
     mapping(string => address) public ownerLists;
+    /* --------------------------------- WallPaper ------------------------------ */
     /* --------------------------------- OBJECT --------------------------------- */
     uint256 public numberOfObject;
     mapping(string => ObjectInfo[]) public userObject;
+    /* --------------------------------- WallPaper ------------------------------ */
+    mapping(string => WallPaper) public wallPaper;
     /* --------------------------------- DEPOSIT -------------------------------- */
     mapping(string => Deposit[]) public userObjectDeposit;
     mapping(string => mapping(address => mapping(uint256 => DepositInfo))) public depositInfo;
@@ -85,6 +94,8 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     /* ---------------------------------- Map ----------------------------------- */
     event CreatedMap(string name, address indexed sender, uint256 numberOfLand);
     event ChangePhilandOwner(string name, address indexed sender);
+    /* --------------------------------- WallPaper ------------------------------ */
+    event ChangeWallPaper(string name, address contractAddress, uint256 tokenId);
     /* --------------------------------- OBJECT --------------------------------- */
     event WriteObject(string name, address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart);
     event RemoveObject(string name, uint256 index);
@@ -114,6 +125,9 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     error NotDepositEnough(string name, address contractAddress, uint256 tokenId, uint256 used, uint256 amount);
     error OutofMapRange(uint256 a, string error_boader);
     error ObjectCollision(ObjectInfo writeObjectInfo, ObjectInfo userObjectInfo, string error_boader);
+    /* --------------------------------- WallPaper ------------------------------ */
+    error NotFitWallPaper(address sender, uint256 sizeX, uint256 sizeY, uint256 mapSizeX, uint256 mapSizeY);
+    error NotBalanceWallPaper(string name, address sender, address contractAddress, uint256 tokenId);
     /* --------------------------------- OBJECT --------------------------------- */
     error NotReadyObject(address sender, uint256 object_index);
     /* --------------------------------- DEPOSIT -------------------------------- */
@@ -229,6 +243,55 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         emit ChangePhilandOwner(name, caller);
     }
 
+    /* --------------------------------- WallPaper ------------------------------ */
+    /*
+     * @title checkWallPaper
+     * @notice Functions for check WallPaper status for specific token
+     * @param name : Ens name
+     * @dev Check WallPaper information
+     */
+    function checkWallPaper(string memory name) public view returns (WallPaper memory) {
+        return wallPaper[name];
+    }
+
+    /*
+     * @title changeWallPaper
+     * @notice Receive changeWallPaper
+     * @param name : Ens name
+     * @param _contractAddress : Address of Wallpaper
+     * @param _tokenId : _tokenId
+     */
+    function changeWallPaper(
+        string memory name,
+        address _contractAddress,
+        uint256 _tokenId
+    ) external onlyIfNotPhilandOwner(name) onlyIfNotPhilandCreated(name) {
+        address lastWallPaper = wallPaper[name].contractAddress;
+        if (lastWallPaper != address(0)) {
+            IObject _lastWallPaper = IObject(_contractAddress);
+            _lastWallPaper.safeTransferFrom(address(this), msg.sender, _tokenId, 1, "0x00");
+        }
+        IObject _object = IObject(_contractAddress);
+        IObject.Size memory size = _object.getSize(_tokenId);
+        if ((size.x != mapSettings.maxX) || (size.y != mapSettings.maxY)) {
+            revert NotFitWallPaper(msg.sender, size.x, size.y, mapSettings.maxX, mapSettings.maxY);
+        }
+
+        uint256 userBalance = _object.balanceOf(msg.sender, _tokenId);
+        if (userBalance < 1) {
+            revert NotBalanceWallPaper({
+                name: name,
+                sender: msg.sender,
+                contractAddress: _contractAddress,
+                tokenId: _tokenId
+            });
+        }
+        wallPaper[name] = WallPaper(_contractAddress, _tokenId, block.timestamp);
+
+        _object.safeTransferFrom(msg.sender, address(this), _tokenId, 1, "0x00");
+        emit ChangeWallPaper(name, _contractAddress, _tokenId);
+    }
+
     /* ----------------------------------- VIEW --------------------------------- */
     /*
      * @title ownerOfPhiland
@@ -265,6 +328,29 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      */
     function viewNumberOfObject() external view returns (uint256) {
         return numberOfObject;
+    }
+
+    /*
+     * @title viewviewPhilandArray
+     * @notice Return array of philand
+     */
+    function viewPhilandArray(string memory name) external view returns (uint256[] memory) {
+        uint256 sizeX = mapSettings.maxX;
+        uint256 sizeY = mapSettings.maxY;
+        uint256[] memory philandArray = new uint256[](sizeX * sizeY);
+        for (uint256 i = 0; i < userObject[name].length; i++) {
+            uint256 xStart = userObject[name][i].xStart;
+            uint256 xEnd = userObject[name][i].xEnd;
+            uint256 yStart = userObject[name][i].yStart;
+            uint256 yEnd = userObject[name][i].yEnd;
+
+            for (uint256 x = xStart; x <= xEnd; x++) {
+                for (uint256 y = yStart; y <= yEnd; y++) {
+                    philandArray[x + 16 * y] = 1;
+                }
+            }
+        }
+        return philandArray;
     }
 
     /* ----------------------------------- WRITE -------------------------------- */

@@ -145,6 +145,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PremiumObject__factory>;
     getContractFactory(
+      name: "WallPaper",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WallPaper__factory>;
+    getContractFactory(
       name: "PhiClaim",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiClaim__factory>;
@@ -330,6 +334,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PremiumObject>;
+    getContractAt(
+      name: "WallPaper",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WallPaper>;
     getContractAt(
       name: "PhiClaim",
       address: string,
