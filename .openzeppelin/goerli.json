@@ -69,6 +69,16 @@
       "address": "0xd5c5a569d8d3A594E85bcD60110F652d73eF16Af",
       "txHash": "0x9332fbf347faa7ab9e4ac6f0a2b03846f3dbff909677bb6aea2858dad7647439",
       "kind": "transparent"
+    },
+    {
+      "address": "0x6F91E630D3b09E7c49A45715A4D8939261Ed25CB",
+      "txHash": "0xb9f7196e3aa00d7bae4ce8053ca4fb972196cf53755835c14a1a9b68a3d61377",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x52Bcd535218730236e45b2f15aaceb81b40993C9",
+      "txHash": "0x4355edf552cd7801a4d52e1c5a00548a2f9868a3746ab4f24d90a9b17c7fbb42",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -2245,6 +2255,178 @@
             "numberOfBytes": "20"
           },
           "t_contract(IPhiMap)7503": {
+            "label": "contract IPhiMap",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)595_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_string_memory_ptr,t_address)": {
+            "label": "mapping(string => address)",
+            "numberOfBytes": "32"
+          },
+          "t_string_memory_ptr": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(RoleData)595_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string"
+          }
+        }
+      }
+    },
+    "45a68e19dac158f4c1b24f5a109d00e6655da10a01a688ae23cc52189920620c": {
+      "address": "0x3B1f3f08B5090ebec4A09ceB9FbF7f06c7513a0A",
+      "txHash": "0x6f2c2bf3b89ad4ab6531cd02e9f556a65f092f011297a8e9bf1e9f3861c52c56",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_roles",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)595_storage)",
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:247"
+          },
+          {
+            "label": "_ens",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_contract(IENS)7371",
+            "contract": "PhiRegistry",
+            "src": "contracts/PhiRegistry.sol:16"
+          },
+          {
+            "label": "_map",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_contract(IPhiMap)7484",
+            "contract": "PhiRegistry",
+            "src": "contracts/PhiRegistry.sol:17"
+          },
+          {
+            "label": "claimed",
+            "offset": 0,
+            "slot": "153",
+            "type": "t_uint256",
+            "contract": "PhiRegistry",
+            "src": "contracts/PhiRegistry.sol:19"
+          },
+          {
+            "label": "baseNode",
+            "offset": 0,
+            "slot": "154",
+            "type": "t_bytes32",
+            "contract": "PhiRegistry",
+            "src": "contracts/PhiRegistry.sol:22"
+          },
+          {
+            "label": "ownerLists",
+            "offset": 0,
+            "slot": "155",
+            "type": "t_mapping(t_string_memory_ptr,t_address)",
+            "contract": "PhiRegistry",
+            "src": "contracts/PhiRegistry.sol:28"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IENS)7371": {
+            "label": "contract IENS",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IPhiMap)7484": {
             "label": "contract IPhiMap",
             "numberOfBytes": "20"
           },

@@ -133,9 +133,6 @@ contract PhiRegistry is AccessControlUpgradeable {
      * @dev include check ENS
      */
     function createPhiland(string memory name) external onlyIfNotENSOwner(name) {
-        if (ownerLists[name] != address(0)) {
-            revert AllreadyClaimedPhiland({ sender: msg.sender, owner: ownerLists[name], name: name });
-        }
         unchecked {
             claimed++;
         }
