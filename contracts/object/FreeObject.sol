@@ -108,7 +108,7 @@ contract FreeObject is ERC1155Supply, BaseObject {
         // check if the token id of the token exists
         isValid(tokenId);
         // check token's MaxClaimed
-        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
+        // require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
     }
