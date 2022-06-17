@@ -256,6 +256,8 @@ export function shouldBehaveBatchRemoveAndWrite(): void {
 export function shouldBehaveViewPhilandArray(): void {
   it("should viewPhilandArray test.eth", async function () {
     const philandArray = await this.phiMap.connect(this.signers.admin).viewPhilandArray("test");
+    await expect(this.phiMap.connect(this.signers.admin).viewPhilandArray("test")).to.not.be.reverted;
+    console.log(philandArray);
   });
 }
 

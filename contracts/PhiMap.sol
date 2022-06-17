@@ -334,19 +334,26 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      * @title viewviewPhilandArray
      * @notice Return array of philand
      */
-    function viewPhilandArray(string memory name) external view returns (uint256[] memory) {
+    function viewPhilandArray(string memory name)
+        external
+        view
+        onlyIfNotPhilandCreated(name)
+        returns (uint256[] memory)
+    {
         uint256 sizeX = mapSettings.maxX;
         uint256 sizeY = mapSettings.maxY;
         uint256[] memory philandArray = new uint256[](sizeX * sizeY);
         for (uint256 i = 0; i < userObject[name].length; i++) {
-            uint256 xStart = userObject[name][i].xStart;
-            uint256 xEnd = userObject[name][i].xEnd;
-            uint256 yStart = userObject[name][i].yStart;
-            uint256 yEnd = userObject[name][i].yEnd;
+            if (userObject[name][i].contractAddress != address(0)) {
+                uint256 xStart = userObject[name][i].xStart;
+                uint256 xEnd = userObject[name][i].xEnd;
+                uint256 yStart = userObject[name][i].yStart;
+                uint256 yEnd = userObject[name][i].yEnd;
 
-            for (uint256 x = xStart; x <= xEnd; x++) {
-                for (uint256 y = yStart; y <= yEnd; y++) {
-                    philandArray[x + 16 * y] = 1;
+                for (uint256 x = xStart; x < xEnd; x++) {
+                    for (uint256 y = yStart; y < yEnd; y++) {
+                        philandArray[x + 16 * y] = 1;
+                    }
                 }
             }
         }

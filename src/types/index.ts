@@ -21,8 +21,6 @@ export type { AccessControlUpgradeable } from "./@openzeppelin/contracts-upgrade
 export { AccessControlUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable__factory";
 export type { IAccessControlUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable";
 export { IAccessControlUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable__factory";
-export type { OwnableUpgradeable } from "./@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable";
-export { OwnableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable__factory";
 export type { Initializable } from "./@openzeppelin/contracts-upgradeable/proxy/utils/Initializable";
 export { Initializable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable__factory";
 export type { IERC1155ReceiverUpgradeable } from "./@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155ReceiverUpgradeable";
@@ -47,8 +45,6 @@ export type { IERC1155 } from "./@openzeppelin/contracts/token/ERC1155/IERC1155"
 export { IERC1155__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/IERC1155__factory";
 export type { IERC1155Receiver } from "./@openzeppelin/contracts/token/ERC1155/IERC1155Receiver";
 export { IERC1155Receiver__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/IERC1155Receiver__factory";
-export type { ERC1155Receiver } from "./@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver";
-export { ERC1155Receiver__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver__factory";
 export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC165";
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
@@ -79,8 +75,6 @@ export type { PremiumObject } from "./contracts/object/PremiumObject";
 export { PremiumObject__factory } from "./factories/contracts/object/PremiumObject__factory";
 export type { WallPaper } from "./contracts/object/WallPaper";
 export { WallPaper__factory } from "./factories/contracts/object/WallPaper__factory";
-export type { ObjectController } from "./contracts/ObjectController";
-export { ObjectController__factory } from "./factories/contracts/ObjectController__factory";
 export type { PhiClaim } from "./contracts/PhiClaim";
 export { PhiClaim__factory } from "./factories/contracts/PhiClaim__factory";
 export type { PhiMap } from "./contracts/PhiMap";
