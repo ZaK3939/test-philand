@@ -30,3 +30,8 @@ VoteOnSnapshot,10,28
 VoteOnSnapshot,30,29
 CumulativeGasFee,1,30
 SpentGasFee,01,31
+OldestTransactionDateTill,2018,32
+ETHStakingOnLido,01,33
+ETHStakingOnLido,1,34
+ETHStakingOnLido,5,35
+ETHStakingOnLido,10,36
