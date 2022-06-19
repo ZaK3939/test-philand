@@ -38,7 +38,7 @@ contract FreeObject is ERC1155Supply, BaseObject {
     /* Utility Functions */
     function isValid(uint256 tokenId) internal view {
         // Validate that the token is within range when querying
-        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (tokenId <= 0) revert InvalidTokenID();
         if (!created[tokenId]) revert InvalidTokenID();
     }
 
