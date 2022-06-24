@@ -103,7 +103,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     event Save(string name, address indexed sender);
     /* --------------------------------- DEPOSIT -------------------------------- */
     event DepositSuccess(address indexed sender, string name, address contractAddress, uint256 tokenId, uint256 amount);
-    event UnDepositSuccess(
+    event withdrawSuccess(
         address indexed sender,
         string name,
         address contractAddress,
@@ -142,7 +142,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         uint256 updateDepositAmount,
         uint256 userBalance
     );
-    error UnDepositError(uint256 amount, uint256 mapUnUsedBalance);
+    error withdrawError(uint256 amount, uint256 mapUnUsedBalance);
 
     /* ---------------------------------- LINK ---------------------------------- */
 
@@ -255,6 +255,23 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
     }
 
     /*
+     * @title withdrawWallPaper
+     * @notice withdrawWallPaper
+     * @param name : Ens name
+     * @param _contractAddress : Address of Wallpaper
+     * @param _tokenId : _tokenId
+     */
+    function withdrawWallPaper(string memory name) public onlyIfNotPhilandOwner(name) onlyIfNotPhilandCreated(name) {
+        address lastWallPaperContractAddress = wallPaper[name].contractAddress;
+        uint256 lastWallPaperTokenId = wallPaper[name].tokenId;
+        if (lastWallPaperContractAddress != address(0)) {
+            IObject _lastWallPaper = IObject(lastWallPaperContractAddress);
+            _lastWallPaper.safeTransferFrom(address(this), msg.sender, lastWallPaperTokenId, 1, "0x00");
+        }
+        wallPaper[name] = WallPaper(address(0), 0, block.timestamp);
+    }
+
+    /*
      * @title changeWallPaper
      * @notice Receive changeWallPaper
      * @param name : Ens name
@@ -265,11 +282,12 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         string memory name,
         address _contractAddress,
         uint256 _tokenId
-    ) external onlyIfNotPhilandOwner(name) onlyIfNotPhilandCreated(name) {
-        address lastWallPaper = wallPaper[name].contractAddress;
-        if (lastWallPaper != address(0)) {
-            IObject _lastWallPaper = IObject(_contractAddress);
-            _lastWallPaper.safeTransferFrom(address(this), msg.sender, _tokenId, 1, "0x00");
+    ) public onlyIfNotPhilandOwner(name) onlyIfNotPhilandCreated(name) {
+        address lastWallPaperContractAddress = wallPaper[name].contractAddress;
+        uint256 lastWallPaperTokenId = wallPaper[name].tokenId;
+        if (lastWallPaperContractAddress != address(0)) {
+            IObject _lastWallPaper = IObject(lastWallPaperContractAddress);
+            _lastWallPaper.safeTransferFrom(address(this), msg.sender, lastWallPaperTokenId, 1, "0x00");
         }
         IObject _object = IObject(_contractAddress);
         IObject.Size memory size = _object.getSize(_tokenId);
@@ -505,10 +523,13 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
      * @title initialization
      * @notice Function for clear users map objects and links
      * @param name : Ens name
-     * @param remove_check : if remove_check == 1 then remove is skipped
+     * @param remove_check : if remove_check == 0 then remove is skipped
      * @param remove_index_array : Array of Object index
      * @param objectData : Array of Object struct (address contractAddress, uint256 tokenId, uint256 xStart, uint256 yStart)
      * @param link : Array of Link struct(stirng title, string url)
+     * @param change_wall_check : if change_wall_check ==  o then wallchange is skipped
+     * @param _contractAddress : if you dont use, should be 0
+     * @param _tokenId : if you dont use, should be 0
      * @dev  Write Link method can also usefull for remove link
      */
     function save(
@@ -516,9 +537,15 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         uint256[] memory remove_index_array,
         bool remove_check,
         Object[] memory objectDatas,
-        Link[] memory links
+        Link[] memory links,
+        bool change_wall_check,
+        address _contractAddress,
+        uint256 _tokenId
     ) external onlyIfNotPhilandCreated(name) onlyIfNotPhilandOwner(name) {
         batchRemoveAndWrite(name, remove_index_array, remove_check, objectDatas, links);
+        if (change_wall_check == true) {
+            changeWallPaper(name, _contractAddress, _tokenId);
+        }
         emit Save(name, msg.sender);
     }
 
@@ -715,17 +742,17 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         }
     }
 
-    /* --------------------------------- unDeposit ------------------------------ */
+    /* --------------------------------- withdraw ------------------------------ */
     /*
-     * @title UnDeposit
+     * @title withdraw
      * @notice Functions for deposit token from this(map) contract
      * @param name : Ens name
      * @param _contractAddress : deposit contract address
      * @param _tokenId : deposit token id
      * @param _amount : deposit amount
-     * @dev Return ERROR when attempting to undeposit over unused
+     * @dev Return ERROR when attempting to withdraw over unused
      */
-    function unDeposit(
+    function withdraw(
         string memory name,
         address _contractAddress,
         uint256 _tokenId,
@@ -734,7 +761,7 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
         uint256 used = depositInfo[name][_contractAddress][_tokenId].used;
         uint256 mapUnusedAmount = depositInfo[name][_contractAddress][_tokenId].amount - used;
         if (_amount > mapUnusedAmount) {
-            revert UnDepositError(_amount, mapUnusedAmount);
+            revert withdrawError(_amount, mapUnusedAmount);
         }
         IObject _object = IObject(_contractAddress);
         _object.safeTransferFrom(address(this), msg.sender, _tokenId, _amount, "0x00");
@@ -744,25 +771,25 @@ contract PhiMap is AccessControlUpgradeable, IERC1155ReceiverUpgradeable {
             depositInfo[name][_contractAddress][_tokenId].amount -
             _amount;
 
-        emit UnDepositSuccess(msg.sender, name, _contractAddress, _tokenId, _amount);
+        emit withdrawSuccess(msg.sender, name, _contractAddress, _tokenId, _amount);
     }
 
     /*
-     * @title batchUnDeposit
-     * @notice Functions for batch undeposit tokens from this(map) contract
+     * @title batchWithdraw
+     * @notice Functions for batch withdraw tokens from this(map) contract
      * @param name : Ens name
      * @param _contractAddresses : array of deposit contract addresses
      * @param _tokenIds :  array of deposit token ids
      * @param _amounts :  array of deposit amounts
      */
-    function batchUnDeposit(
+    function batchWithdraw(
         string memory name,
         address[] memory _contractAddresses,
         uint256[] memory _tokenIds,
         uint256[] memory _amounts
     ) public onlyIfNotPhilandOwner(name) {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unDeposit(name, _contractAddresses[i], _tokenIds[i], _amounts[i]);
+            withdraw(name, _contractAddresses[i], _tokenIds[i], _amounts[i]);
         }
     }
 

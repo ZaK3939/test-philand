@@ -12,7 +12,7 @@ import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { WallPaper } from "../../src/types/contracts/object/WallPaper";
 import { Signers } from "../types";
 import {
-  CantBatchUnDeposit,
+  CantBatchWithdraw,
   CantWriteLinkToAnotherUserObject,
   CantWriteLinkToObject,
   CantWriteObjectToLand,
@@ -20,7 +20,7 @@ import {
   shouldBehaveBatchDeposit,
   shouldBehaveBatchRemoveAndWrite,
   shouldBehaveBatchRemoveObjectFromLand,
-  shouldBehaveBatchUnDeposit,
+  shouldBehaveBatchWithdraw,
   shouldBehaveBatchWriteObjectToLand,
   shouldBehaveChangeWallPaper,
   shouldBehaveCheckAllDepositStatus,
@@ -32,11 +32,11 @@ import {
   shouldBehaveOwnerOfPhiland,
   shouldBehaveRemoveLinkfromObject,
   shouldBehaveRemoveObjectFromLand,
-  shouldBehaveUnDeposit,
   shouldBehaveViewLinks,
   shouldBehaveViewNumberOfPhiland,
   shouldBehaveViewPhiland,
   shouldBehaveViewPhilandArray,
+  shouldBehaveWithdraw,
   shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
   shouldBehaveviewPhiland,
@@ -127,6 +127,7 @@ describe("Unit tests PhiMap", function () {
         { x: 1, y: 1, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
     await this.phiObject
       .connect(this.signers.admin)
@@ -136,6 +137,7 @@ describe("Unit tests PhiMap", function () {
         { x: 2, y: 1, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
     await this.phiObject
       .connect(this.signers.admin)
@@ -145,7 +147,17 @@ describe("Unit tests PhiMap", function () {
         { x: 1, y: 2, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(1, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, this.signers.bob.address);
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(2, "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU", { x: 2, y: 1, z: 2 }, this.signers.bob.address);
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(3, "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU", { x: 1, y: 2, z: 2 }, this.signers.bob.address);
     await this.wallPaper
       .connect(this.signers.admin)
       .createWallPaper(
@@ -178,10 +190,10 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveCheckAllDepositStatus();
     shouldBehaveDeposit();
     shouldBehaveAddDeposit();
-    shouldBehaveUnDeposit();
+    shouldBehaveWithdraw();
     shouldBehaveWriteObjectToLand();
-    shouldBehaveBatchUnDeposit();
-    CantBatchUnDeposit();
+    shouldBehaveBatchWithdraw();
+    CantBatchWithdraw();
     shouldBehaveViewPhiland();
     shouldBehaveRemoveObjectFromLand();
     shouldBehaveBatchWriteObjectToLand();

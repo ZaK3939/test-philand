@@ -55,6 +55,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
+    "getExp(uint256)": FunctionFragment;
     "getFreeObject(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
@@ -62,7 +63,6 @@ export interface FreeObjectInterface extends utils.Interface {
     "getTokenURI(uint256)": FunctionFragment;
     "initObject(uint256,string,(uint8,uint8,uint8),address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintBatchObject(address,uint256[],uint256[],bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "owner(address)": FunctionFragment;
     "paymentBalanceOwner()": FunctionFragment;
@@ -74,6 +74,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "secondaryRoyalty()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
+    "setExp(uint256,uint256)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyalityFee(uint256)": FunctionFragment;
@@ -103,6 +104,7 @@ export interface FreeObjectInterface extends utils.Interface {
       | "exists"
       | "getBaseMetadataURI"
       | "getCreator"
+      | "getExp"
       | "getFreeObject"
       | "getMaxClaimed"
       | "getSize"
@@ -110,7 +112,6 @@ export interface FreeObjectInterface extends utils.Interface {
       | "getTokenURI"
       | "initObject"
       | "isApprovedForAll"
-      | "mintBatchObject"
       | "name"
       | "owner"
       | "paymentBalanceOwner"
@@ -122,6 +123,7 @@ export interface FreeObjectInterface extends utils.Interface {
       | "secondaryRoyalty"
       | "setApprovalForAll"
       | "setCreator"
+      | "setExp"
       | "setMaxClaimed"
       | "setOwner"
       | "setRoyalityFee"
@@ -183,6 +185,10 @@ export interface FreeObjectInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getExp",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getFreeObject",
     values: [BigNumberish]
   ): string;
@@ -209,10 +215,6 @@ export interface FreeObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintBatchObject",
-    values: [string, BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values: [string]): string;
@@ -248,6 +250,10 @@ export interface FreeObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setCreator",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExp",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxClaimed",
@@ -326,6 +332,7 @@ export interface FreeObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getFreeObject",
     data: BytesLike
@@ -346,10 +353,6 @@ export interface FreeObjectInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "initObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintBatchObject",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -387,6 +390,7 @@ export interface FreeObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMaxClaimed",
     data: BytesLike
@@ -440,6 +444,7 @@ export interface FreeObjectInterface extends utils.Interface {
     "PaymentReceivedOwner(uint256)": EventFragment;
     "PaymentWithdrawnOwner(uint256)": EventFragment;
     "SetCreator(uint256,address)": EventFragment;
+    "SetExp(uint256,uint256)": EventFragment;
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
     "SetSecondaryRoyalityFee(uint256)": EventFragment;
@@ -459,6 +464,7 @@ export interface FreeObjectInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetExp"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
@@ -551,6 +557,14 @@ export type SetCreatorEvent = TypedEvent<
 >;
 
 export type SetCreatorEventFilter = TypedEventFilter<SetCreatorEvent>;
+
+export interface SetExpEventObject {
+  tokenId: BigNumber;
+  exp: BigNumber;
+}
+export type SetExpEvent = TypedEvent<[BigNumber, BigNumber], SetExpEventObject>;
+
+export type SetExpEventFilter = TypedEventFilter<SetExpEvent>;
 
 export interface SetMaxClaimedEventObject {
   tokenId: BigNumber;
@@ -703,6 +717,7 @@ export interface FreeObject extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -710,6 +725,7 @@ export interface FreeObject extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -758,6 +774,11 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getFreeObject(
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -796,14 +817,6 @@ export interface FreeObject extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -858,6 +871,12 @@ export interface FreeObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -936,6 +955,7 @@ export interface FreeObject extends BaseContract {
       string,
       BigNumber,
       BigNumber,
+      BigNumber,
       boolean
     ] & {
       tokenURI: string;
@@ -943,6 +963,7 @@ export interface FreeObject extends BaseContract {
       creator: string;
       maxClaimed: BigNumber;
       price: BigNumber;
+      exp: BigNumber;
       forSale: boolean;
     }
   >;
@@ -988,6 +1009,8 @@ export interface FreeObject extends BaseContract {
 
   getCreator(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  getExp(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
   getFreeObject(
     tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1026,14 +1049,6 @@ export interface FreeObject extends BaseContract {
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  mintBatchObject(
-    to: string,
-    ids: BigNumberish[],
-    amounts: BigNumberish[],
-    data: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -1088,6 +1103,12 @@ export interface FreeObject extends BaseContract {
   setCreator(
     tokenId: BigNumberish,
     _creator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setExp(
+    tokenId: BigNumberish,
+    _exp: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1163,6 +1184,7 @@ export interface FreeObject extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -1170,6 +1192,7 @@ export interface FreeObject extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -1218,6 +1241,11 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getFreeObject(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1256,14 +1284,6 @@ export interface FreeObject extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1312,6 +1332,12 @@ export interface FreeObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1431,6 +1457,9 @@ export interface FreeObject extends BaseContract {
       _creator?: null
     ): SetCreatorEventFilter;
     SetCreator(tokenId?: null, _creator?: null): SetCreatorEventFilter;
+
+    "SetExp(uint256,uint256)"(tokenId?: null, exp?: null): SetExpEventFilter;
+    SetExp(tokenId?: null, exp?: null): SetExpEventFilter;
 
     "SetMaxClaimed(uint256,uint256)"(
       tokenId?: null,
@@ -1560,6 +1589,11 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getFreeObject(
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1597,14 +1631,6 @@ export interface FreeObject extends BaseContract {
       account: string,
       operator: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1658,6 +1684,12 @@ export interface FreeObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1784,6 +1816,11 @@ export interface FreeObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getFreeObject(
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1821,14 +1858,6 @@ export interface FreeObject extends BaseContract {
       account: string,
       operator: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintBatchObject(
-      to: string,
-      ids: BigNumberish[],
-      amounts: BigNumberish[],
-      data: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1884,6 +1913,12 @@ export interface FreeObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -33,15 +33,16 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
         uint8 y;
         uint8 z;
     }
-    struct Objects {
+    struct Object {
         string tokenURI;
         Size size;
         address payable creator;
         uint256 maxClaimed;
         uint256 price;
+        uint256 exp;
         bool forSale;
     }
-    mapping(uint256 => Objects) public allObjects;
+    mapping(uint256 => Object) public allObjects;
     mapping(uint256 => bool) public created;
     /* --------------------------------- ****** --------------------------------- */
 
@@ -50,6 +51,7 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
     /* -------------------------------------------------------------------------- */
     event SetbaseMetadataURI(string baseuri);
     event SetMaxClaimed(uint256 tokenId, uint256 newMaxClaimed);
+    event SetExp(uint256 tokenId, uint256 exp);
     event SetTokenURI(uint256 tokenId, string _uri);
     event SetSize(uint256 tokenId, uint8 x, uint8 y, uint8 z);
     event SetCreator(uint256 tokenId, address payable _creator);
@@ -96,6 +98,11 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
         emit SetSize(tokenId, _size.x, _size.y, _size.z);
     }
 
+    function setExp(uint256 tokenId, uint256 _exp) public virtual onlyOwner {
+        allObjects[tokenId].exp = _exp;
+        emit SetExp(tokenId, _exp);
+    }
+
     function setCreator(uint256 tokenId, address payable _creator) public virtual onlyOwner {
         allObjects[tokenId].creator = _creator;
         emit SetCreator(tokenId, _creator);
@@ -114,6 +121,10 @@ abstract contract BaseObject is MultiOwner, IERC2981, ReentrancyGuard {
 
     function getMaxClaimed(uint256 tokenId) public view virtual returns (uint256) {
         return allObjects[tokenId].maxClaimed;
+    }
+
+    function getExp(uint256 tokenId) public view virtual returns (uint256) {
+        return allObjects[tokenId].exp;
     }
 
     function getTokenURI(uint256 tokenId) public view returns (string memory) {

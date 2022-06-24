@@ -120,16 +120,4 @@ contract FreeObject is ERC1155Supply, BaseObject {
     }
 
     /* --------------------------------- ****** --------------------------------- */
-
-    /* -------------------------------------------------------------------------- */
-    /*                                  ERC1155                                   */
-    /* -------------------------------------------------------------------------- */
-    function mintBatchObject(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) external onlyOwner {
-        super._mintBatch(to, ids, amounts, data);
-    }
 }

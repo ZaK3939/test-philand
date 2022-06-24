@@ -46,6 +46,7 @@ export function shouldInitToken(): void {
         { x: 1, y: 2, z: 3 },
         this.signers.bob.address,
         200,
+        5,
       );
     expect(await this.phiObject.connect(this.signers.alice).getMaxClaimed(1)).to.equal(200);
     expect(await this.phiObject.connect(this.signers.alice).uri(1)).to.equal(
