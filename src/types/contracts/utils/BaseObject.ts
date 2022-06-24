@@ -50,6 +50,7 @@ export interface BaseObjectInterface extends utils.Interface {
     "created(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
+    "getExp(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
     "getTokenPrice(uint256)": FunctionFragment;
@@ -62,6 +63,7 @@ export interface BaseObjectInterface extends utils.Interface {
     "royaltyInfo(uint256,uint256)": FunctionFragment;
     "secondaryRoyalty()": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
+    "setExp(uint256,uint256)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyalityFee(uint256)": FunctionFragment;
@@ -84,6 +86,7 @@ export interface BaseObjectInterface extends utils.Interface {
       | "created"
       | "getBaseMetadataURI"
       | "getCreator"
+      | "getExp"
       | "getMaxClaimed"
       | "getSize"
       | "getTokenPrice"
@@ -96,6 +99,7 @@ export interface BaseObjectInterface extends utils.Interface {
       | "royaltyInfo"
       | "secondaryRoyalty"
       | "setCreator"
+      | "setExp"
       | "setMaxClaimed"
       | "setOwner"
       | "setRoyalityFee"
@@ -132,6 +136,10 @@ export interface BaseObjectInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getCreator",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExp",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -172,6 +180,10 @@ export interface BaseObjectInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setCreator",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExp",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxClaimed",
@@ -231,6 +243,7 @@ export interface BaseObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getMaxClaimed",
     data: BytesLike
@@ -267,6 +280,7 @@ export interface BaseObjectInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMaxClaimed",
     data: BytesLike
@@ -314,6 +328,7 @@ export interface BaseObjectInterface extends utils.Interface {
     "PaymentReceivedOwner(uint256)": EventFragment;
     "PaymentWithdrawnOwner(uint256)": EventFragment;
     "SetCreator(uint256,address)": EventFragment;
+    "SetExp(uint256,uint256)": EventFragment;
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
     "SetSecondaryRoyalityFee(uint256)": EventFragment;
@@ -329,6 +344,7 @@ export interface BaseObjectInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetExp"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
@@ -406,6 +422,14 @@ export type SetCreatorEvent = TypedEvent<
 >;
 
 export type SetCreatorEventFilter = TypedEventFilter<SetCreatorEvent>;
+
+export interface SetExpEventObject {
+  tokenId: BigNumber;
+  exp: BigNumber;
+}
+export type SetExpEvent = TypedEvent<[BigNumber, BigNumber], SetExpEventObject>;
+
+export type SetExpEventFilter = TypedEventFilter<SetExpEvent>;
 
 export interface SetMaxClaimedEventObject {
   tokenId: BigNumber;
@@ -522,6 +546,7 @@ export interface BaseObject extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -529,6 +554,7 @@ export interface BaseObject extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -549,6 +575,11 @@ export interface BaseObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
@@ -599,6 +630,12 @@ export interface BaseObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -670,6 +707,7 @@ export interface BaseObject extends BaseContract {
       string,
       BigNumber,
       BigNumber,
+      BigNumber,
       boolean
     ] & {
       tokenURI: string;
@@ -677,6 +715,7 @@ export interface BaseObject extends BaseContract {
       creator: string;
       maxClaimed: BigNumber;
       price: BigNumber;
+      exp: BigNumber;
       forSale: boolean;
     }
   >;
@@ -694,6 +733,8 @@ export interface BaseObject extends BaseContract {
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
   getCreator(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  getExp(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   getMaxClaimed(
     tokenId: BigNumberish,
@@ -744,6 +785,12 @@ export interface BaseObject extends BaseContract {
   setCreator(
     tokenId: BigNumberish,
     _creator: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setExp(
+    tokenId: BigNumberish,
+    _exp: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -815,6 +862,7 @@ export interface BaseObject extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -822,6 +870,7 @@ export interface BaseObject extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -842,6 +891,11 @@ export interface BaseObject extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getMaxClaimed(
       tokenId: BigNumberish,
@@ -886,6 +940,12 @@ export interface BaseObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -988,6 +1048,9 @@ export interface BaseObject extends BaseContract {
     ): SetCreatorEventFilter;
     SetCreator(tokenId?: null, _creator?: null): SetCreatorEventFilter;
 
+    "SetExp(uint256,uint256)"(tokenId?: null, exp?: null): SetExpEventFilter;
+    SetExp(tokenId?: null, exp?: null): SetExpEventFilter;
+
     "SetMaxClaimed(uint256,uint256)"(
       tokenId?: null,
       newMaxClaimed?: null
@@ -1053,6 +1116,11 @@ export interface BaseObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1100,6 +1168,12 @@ export interface BaseObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1189,6 +1263,11 @@ export interface BaseObject extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMaxClaimed(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1238,6 +1317,12 @@ export interface BaseObject extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

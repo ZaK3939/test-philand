@@ -40,6 +40,7 @@ describe("Unit tests PhiClaim", function () {
         { x: 1, y: 1, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
   });
 

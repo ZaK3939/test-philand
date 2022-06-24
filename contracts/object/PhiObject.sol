@@ -51,6 +51,7 @@ contract PhiObject is ERC1155Supply, BaseObject {
      * @param _size : object's size
      * @param _creator : creator address, 0 also allowed.
      * @param _maxClaimed : Maximum number
+     * @param _exp : exp
      * @dev check that token is already created and init object settings
      */
     function initObject(
@@ -58,7 +59,8 @@ contract PhiObject is ERC1155Supply, BaseObject {
         string memory _uri,
         Size calldata _size,
         address payable _creator,
-        uint256 _maxClaimed
+        uint256 _maxClaimed,
+        uint256 _exp
     ) external onlyOwner {
         if (!created[tokenId]) revert InvalidTokenID();
         setMaxClaimed(tokenId, _maxClaimed);
@@ -66,6 +68,7 @@ contract PhiObject is ERC1155Supply, BaseObject {
         setSize(tokenId, _size);
         setCreator(tokenId, _creator);
         changeTokenPrice(tokenId, 0);
+        setExp(tokenId, _exp);
     }
 
     /*
@@ -76,6 +79,7 @@ contract PhiObject is ERC1155Supply, BaseObject {
      * @param _size : object's size
      * @param _creator : creator address, 0 also allowed.
      * @param _maxClaimed : Maximum number
+     * @param _exp : exp
      * @dev check that token is not created and set object settings
      */
     function createObject(
@@ -83,7 +87,8 @@ contract PhiObject is ERC1155Supply, BaseObject {
         string memory _uri,
         Size memory _size,
         address payable _creator,
-        uint256 _maxClaimed
+        uint256 _maxClaimed,
+        uint256 _exp
     ) external onlyOwner {
         if (exists(tokenId)) revert ExistentToken();
         setTokenURI(tokenId, _uri);
@@ -91,6 +96,7 @@ contract PhiObject is ERC1155Supply, BaseObject {
         setCreator(tokenId, _creator);
         setMaxClaimed(tokenId, _maxClaimed);
         changeTokenPrice(tokenId, 0);
+        setExp(tokenId, _exp);
         allObjects[tokenId].forSale = true;
         created[tokenId] = true;
     }

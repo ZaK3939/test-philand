@@ -26,48 +26,36 @@ export function shouldBehaveViewNumberOfPhiland(): void {
 
 export function shouldBehaveClaimStarterObject(): void {
   it("should mint claimStarterObject", async function () {
-    await this.freeObject
-      .connect(this.signers.admin)
-      .mintBatchObject(this.signers.admin.address, [1, 2, 3, 4, 5], [1, 1, 1, 1, 1], "0x");
+    await this.freeObject.connect(this.signers.admin).batchGetFreeObject([1, 2, 3]);
     expect(await this.freeObject.balanceOf(this.signers.admin.address, 1)).to.equal(1);
     expect(await this.freeObject.balanceOf(this.signers.admin.address, 2)).to.equal(1);
     expect(await this.freeObject.balanceOf(this.signers.admin.address, 3)).to.equal(1);
-    expect(await this.freeObject.balanceOf(this.signers.admin.address, 4)).to.equal(1);
-    expect(await this.freeObject.balanceOf(this.signers.admin.address, 5)).to.equal(1);
   });
 }
 
 export function shouldBehaveBatchDeposit(): void {
   it("should batch deposit and balance of batch 1->0", async function () {
-    await this.freeObject
-      .connect(this.signers.admin)
-      .mintBatchObject(this.signers.alice.address, [1, 2, 3, 4, 5], [1, 1, 1, 1, 1], "0x");
+    await this.freeObject.connect(this.signers.alice).batchGetFreeObject([1, 2, 3]);
     await this.phiMap
       .connect(this.signers.alice)
       .batchDeposit(
         "test",
-        [
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-          this.freeObject.address,
-        ],
-        [1, 2, 3, 4, 5],
-        [1, 1, 1, 1, 1],
+        [this.freeObject.address, this.freeObject.address, this.freeObject.address],
+        [1, 2, 3],
+        [1, 1, 1],
       );
     const blockNumBefore = await ethers.provider.getBlockNumber();
     const blockBefore = await ethers.provider.getBlock(blockNumBefore);
     const timestampBefore = blockBefore.timestamp;
-    const status = await this.phiMap.checkDepositStatus("test", this.freeObject.address, 4);
+    const status = await this.phiMap.checkDepositStatus("test", this.freeObject.address, 3);
     expect(status.amount).to.equal(1);
     expect(status.timestamp).to.equal(timestampBefore);
-    expect(await this.freeObject.balanceOf(this.signers.alice.address, 4)).to.equal(0);
+    expect(await this.freeObject.balanceOf(this.signers.alice.address, 3)).to.equal(0);
   });
 }
 export function shouldBehaveCheckDepositStatus(): void {
   it("should check single Deposit Status", async function () {
-    const deposit = await this.phiMap.checkDepositStatus("test", this.freeObject.address, 5);
+    const deposit = await this.phiMap.checkDepositStatus("test", this.freeObject.address, 2);
     expect(deposit.amount).to.equal(1);
     expect(deposit.used).to.equal(0);
   });
@@ -117,10 +105,10 @@ export function shouldBehaveAddDeposit(): void {
     expect(status.used).to.equal(0);
   });
 }
-export function shouldBehaveUnDeposit(): void {
-  it("should undeposit and balance 0->1", async function () {
+export function shouldBehaveWithdraw(): void {
+  it("should withdraw and balance 0->1", async function () {
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(0);
-    await this.phiMap.connect(this.signers.alice).unDeposit("test", this.phiObject.address, 1, 1);
+    await this.phiMap.connect(this.signers.alice).withdraw("test", this.phiObject.address, 1, 1);
     expect(await this.phiObject.balanceOf(this.signers.alice.address, 1)).to.equal(1);
   });
 }
@@ -140,18 +128,18 @@ export function shouldBehaveWriteObjectToLand(): void {
   });
 }
 
-export function shouldBehaveBatchUnDeposit(): void {
-  it("should batchUnDeposit from land", async function () {
-    await this.phiMap.connect(this.signers.alice).batchUnDeposit("test", [this.phiObject.address], [1], [1]);
+export function shouldBehaveBatchWithdraw(): void {
+  it("should batchWithdraw from land", async function () {
+    await this.phiMap.connect(this.signers.alice).batchWithdraw("test", [this.phiObject.address], [1], [1]);
     const status = await this.phiMap.checkDepositStatus("test", this.phiObject.address, 1);
     expect(status.amount).to.equal(1);
     expect(status.used).to.equal(1);
   });
 }
 
-export function CantBatchUnDeposit(): void {
-  it("cant batchUnDeposit from land because allready used", async function () {
-    await expect(this.phiMap.connect(this.signers.alice).batchUnDeposit("test", [this.phiObject.address], [1], [1])).to
+export function CantBatchWithdraw(): void {
+  it("cant batchwithdraw from land because allready used", async function () {
+    await expect(this.phiMap.connect(this.signers.alice).batchWithdraw("test", [this.phiObject.address], [1], [1])).to
       .be.reverted;
   });
 }
