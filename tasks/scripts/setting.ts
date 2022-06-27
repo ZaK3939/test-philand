@@ -148,7 +148,7 @@ export async function settingPhi(): Promise<void> {
       { x: size[1], y: size[3], z: size[5] },
       l1Signer.address,
       String(phiObjectRowList[i].maxClaimed),
-      String(phiObjectRowList[i].exp),
+      String(phiObjectRowList[i].EXP),
     ];
     console.log(calldata);
     res = await phiObjectContractInstance[funcName](...calldata);
