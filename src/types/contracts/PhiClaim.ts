@@ -41,6 +41,7 @@ export declare namespace PhiClaim {
 export interface PhiClaimInterface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "checkClaimedStatus(address,uint256)": FunctionFragment;
     "claimPhiObject(address,uint256,string,(bytes32,bytes32,uint8))": FunctionFragment;
     "getAdminSigner()": FunctionFragment;
     "getCouponType(string)": FunctionFragment;
@@ -48,7 +49,7 @@ export interface PhiClaimInterface extends utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,address)": FunctionFragment;
-    "phiClaimedLists(address,uint256)": FunctionFragment;
+    "phiClaimedLists(address,address,uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setAdminSigner(address)": FunctionFragment;
@@ -59,6 +60,7 @@ export interface PhiClaimInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "DEFAULT_ADMIN_ROLE"
+      | "checkClaimedStatus"
       | "claimPhiObject"
       | "getAdminSigner"
       | "getCouponType"
@@ -77,6 +79,10 @@ export interface PhiClaimInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkClaimedStatus",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "claimPhiObject",
@@ -108,7 +114,7 @@ export interface PhiClaimInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "phiClaimedLists",
-    values: [string, BigNumberish]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -133,6 +139,10 @@ export interface PhiClaimInterface extends utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkClaimedStatus",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -307,6 +317,12 @@ export interface PhiClaim extends BaseContract {
   functions: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    checkClaimedStatus(
+      contractAddress: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     claimPhiObject(
       contractAddress: string,
       tokenId: BigNumberish,
@@ -344,7 +360,8 @@ export interface PhiClaim extends BaseContract {
 
     phiClaimedLists(
       arg0: string,
-      arg1: BigNumberish,
+      arg1: string,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -378,6 +395,12 @@ export interface PhiClaim extends BaseContract {
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  checkClaimedStatus(
+    contractAddress: string,
+    tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   claimPhiObject(
     contractAddress: string,
@@ -416,7 +439,8 @@ export interface PhiClaim extends BaseContract {
 
   phiClaimedLists(
     arg0: string,
-    arg1: BigNumberish,
+    arg1: string,
+    arg2: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -450,6 +474,12 @@ export interface PhiClaim extends BaseContract {
 
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    checkClaimedStatus(
+      contractAddress: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     claimPhiObject(
       contractAddress: string,
@@ -488,7 +518,8 @@ export interface PhiClaim extends BaseContract {
 
     phiClaimedLists(
       arg0: string,
-      arg1: BigNumberish,
+      arg1: string,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -585,6 +616,12 @@ export interface PhiClaim extends BaseContract {
   estimateGas: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    checkClaimedStatus(
+      contractAddress: string,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     claimPhiObject(
       contractAddress: string,
       tokenId: BigNumberish,
@@ -625,7 +662,8 @@ export interface PhiClaim extends BaseContract {
 
     phiClaimedLists(
       arg0: string,
-      arg1: BigNumberish,
+      arg1: string,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -660,6 +698,12 @@ export interface PhiClaim extends BaseContract {
 
   populateTransaction: {
     DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    checkClaimedStatus(
+      contractAddress: string,
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -703,7 +747,8 @@ export interface PhiClaim extends BaseContract {
 
     phiClaimedLists(
       arg0: string,
-      arg1: BigNumberish,
+      arg1: string,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
