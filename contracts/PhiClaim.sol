@@ -26,7 +26,7 @@ contract PhiClaim is AccessControlUpgradeable {
         bytes32 s;
         uint8 v;
     }
-    mapping(address => mapping(uint256 => bool)) public phiClaimedLists;
+    mapping(address => mapping(address => mapping(uint256 => bool))) public phiClaimedLists;
     mapping(string => uint256) private couponType;
     /* --------------------------------- ****** --------------------------------- */
 
@@ -66,8 +66,8 @@ contract PhiClaim is AccessControlUpgradeable {
     /* -------------------------------------------------------------------------- */
     /*                                  MODIFIERS                                 */
     /* -------------------------------------------------------------------------- */
-    modifier onlyIfAllreadyClaimedObject(uint256 tokenId) {
-        if (phiClaimedLists[msg.sender][tokenId] == true) {
+    modifier onlyIfAllreadyClaimedObject(address contractAddress, uint256 tokenId) {
+        if (phiClaimedLists[msg.sender][contractAddress][tokenId] == true) {
             revert AllreadyClaimedObject({ sender: msg.sender, tokenId: tokenId });
         }
         _;
@@ -124,6 +124,7 @@ contract PhiClaim is AccessControlUpgradeable {
     /*
      * @title claimPhiObject
      * @notice Send create Message to PhiObject
+     * @param contractAddress : object contractAddress
      * @param tokenId : object nft token_id
      * @param condition : object related name. ex.uniswap,loot,ethbalance,...
      * @param coupon : coupon api response
@@ -134,13 +135,24 @@ contract PhiClaim is AccessControlUpgradeable {
         uint256 tokenId,
         string calldata condition,
         Coupon memory coupon
-    ) external onlyIfAllreadyClaimedObject(tokenId) {
+    ) external onlyIfAllreadyClaimedObject(contractAddress, tokenId) {
         IPhiObject _phiObject = IPhiObject(contractAddress);
         // Check that the coupon sent was signed by the admin signer
         bytes32 digest = keccak256(abi.encode(contractAddress, couponType[condition], msg.sender));
         require(isVerifiedCoupon(digest, coupon), "Invalid coupon");
-        phiClaimedLists[msg.sender][tokenId] = true;
+        phiClaimedLists[msg.sender][contractAddress][tokenId] = true;
         _phiObject.getPhiObject(msg.sender, tokenId);
         emit LogClaimObject(msg.sender, tokenId);
+    }
+
+    /*
+     * @title checkClaimedStatus
+     * @notice check PhiObject claim status
+     * @param contractAddress : object contractAddress
+     * @param tokenId : object nft token_id
+     * @dev check that the coupon was already used
+     */
+    function checkClaimedStatus(address contractAddress, uint256 tokenId) public view returns (bool) {
+        phiClaimedLists[msg.sender][contractAddress][tokenId];
     }
 }
