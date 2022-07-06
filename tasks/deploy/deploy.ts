@@ -59,7 +59,7 @@ export async function deployPhi(): Promise<void> {
 export function printAddresses() {
   const NETWORK = hre.network.name;
 
-  const contracts = ["PremiumObject", "FreeObject", "PhiObject", "WallPaper", "PhiMap", "PhiRegistry", "PhiClaim"];
+  const contracts = ["PremiumObject", "FreeObject", "PhiObject", "WallPaper", "PhiMap", "Registry", "PhiClaim"];
 
   const addresses = contracts.reduce((a, c) => Object.assign(a, { [c]: getAddress(c, NETWORK) }), {});
 
@@ -85,10 +85,15 @@ export async function deployPhiPolygon(): Promise<void> {
 
   const premiumObject = await deployL1(NETWORK, "PremiumObject", BLOCK_NUMBER, [l1Signer.address]);
   const freeObject = await deployL1(NETWORK, "FreeObject", BLOCK_NUMBER, [l1Signer.address]);
-  // const soulObject = await deployL1(NETWORK, "SoulObject", BLOCK_NUMBER, []);
   const phiObject = await deployL1(NETWORK, "PhiObject", BLOCK_NUMBER, [l1Signer.address]);
+  const wallPaper = await deployL1(NETWORK, "WallPaper", BLOCK_NUMBER, [l1Signer.address]);
   const phiMap = await deployL1Upgrade(NETWORK, "PhiMap", BLOCK_NUMBER, [l1Signer.address]);
   const phiClaim = await deployL1Upgrade(NETWORK, "PhiClaim", BLOCK_NUMBER, [l1Signer.address, l1Signer.address]);
+  const Registry = await deployL1Upgrade(NETWORK, "Registry", BLOCK_NUMBER, [
+    l1Signer.address,
+    phiMap.address,
+    l1Signer.address,
+  ]);
 }
 
 async function deployL1(network: string, name: string, blockNumber: number, calldata: any = [], saveName?: string) {
@@ -129,11 +134,7 @@ async function deployL1Upgrade(
   await contract.deployTransaction.wait();
 
   console.log(`Deployed: ${saveName || name} to: ${contract.address}`);
-  console.log(
-    `To verify: npx hardhat verify --network ${network} ${contract.address} ${calldata
-      .filter((a: any) => !isEmpty(a))
-      .join(" ")}`,
-  );
+  console.log(`To verify: npx hardhat verify --network ${network} ${contract.address}`);
   await contract.deployed();
   return contract;
 }

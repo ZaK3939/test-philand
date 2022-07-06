@@ -8,3 +8,4 @@ export * as utils from "./utils";
 export { PhiClaim__factory } from "./PhiClaim__factory";
 export { PhiMap__factory } from "./PhiMap__factory";
 export { PhiRegistry__factory } from "./PhiRegistry__factory";
+export { Registry__factory } from "./Registry__factory";

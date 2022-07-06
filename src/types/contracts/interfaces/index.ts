@@ -10,4 +10,3 @@ export type { IObject } from "./IObject";
 export type { IPhiMap } from "./IPhiMap";
 export type { IPhiObject } from "./IPhiObject";
 export type { IPhiRegistry } from "./IPhiRegistry";
-export type { ISoulObject } from "./ISoulObject";

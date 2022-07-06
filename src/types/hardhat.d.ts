@@ -117,10 +117,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPhiRegistry__factory>;
     getContractFactory(
-      name: "ISoulObject",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ISoulObject__factory>;
-    getContractFactory(
       name: "FreeObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FreeObject__factory>;
@@ -148,6 +144,10 @@ declare module "hardhat/types/runtime" {
       name: "PhiRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PhiRegistry__factory>;
+    getContractFactory(
+      name: "Registry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Registry__factory>;
     getContractFactory(
       name: "BaseObject",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -288,11 +288,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IPhiRegistry>;
     getContractAt(
-      name: "ISoulObject",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ISoulObject>;
-    getContractAt(
       name: "FreeObject",
       address: string,
       signer?: ethers.Signer
@@ -327,6 +322,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PhiRegistry>;
+    getContractAt(
+      name: "Registry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Registry>;
     getContractAt(
       name: "BaseObject",
       address: string,
