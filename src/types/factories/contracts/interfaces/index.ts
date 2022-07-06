@@ -6,4 +6,3 @@ export { IObject__factory } from "./IObject__factory";
 export { IPhiMap__factory } from "./IPhiMap__factory";
 export { IPhiObject__factory } from "./IPhiObject__factory";
 export { IPhiRegistry__factory } from "./IPhiRegistry__factory";
-export { ISoulObject__factory } from "./ISoulObject__factory";

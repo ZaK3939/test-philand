@@ -77,7 +77,7 @@ describe("Unit tests PhiRegistry", function () {
       this.ensRegistry.address,
       this.phiMap.address,
     ]);
-    this.phiRegistry = <PhiMap>await phiRegistry.deployed();
+    this.phiRegistry = <PhiRegistry>await phiRegistry.deployed();
 
     const DEFAULT_ADMIN_ROLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
     await this.phiMap.connect(this.signers.admin).grantRole(DEFAULT_ADMIN_ROLE, this.phiRegistry.address);
