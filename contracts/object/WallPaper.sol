@@ -147,7 +147,6 @@ contract WallPaper is ERC1155Supply, BaseObject {
     function getFreeWallPaper(uint256 tokenId) public {
         // check if the function caller is not an zero account address
         require(msg.sender != address(0));
-
         require(0 == allObjects[tokenId].price);
         // token should be for sale
         require(allObjects[tokenId].forSale);
@@ -189,16 +188,39 @@ contract WallPaper is ERC1155Supply, BaseObject {
         emit LogbuyWallPaper(msg.sender, tokenId, msg.value);
     }
 
+    function batchWallPaper(uint256[] memory tokenIds) public payable {
+        uint256 allprice;
+        // check if the function caller is not an zero account address
+        require(msg.sender != address(0));
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            allprice = allprice + allObjects[tokenIds[i]].price;
+        }
+        require(msg.value == allprice);
+
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            // check if the token id of the token exists
+            isValid(tokenIds[i]);
+
+            // token should be for sale
+            require(allObjects[tokenIds[i]].forSale);
+            // check token's MaxClaimed
+            require(super.totalSupply(tokenIds[i]) <= allObjects[tokenIds[i]].maxClaimed);
+
+            // Pay royality to artist, and remaining to deployer of contract
+            uint256 royality = (allObjects[tokenIds[i]].price * royalityFee) / 10000;
+            (bool success1, ) = payable(allObjects[tokenIds[i]].creator).call{ value: royality }("");
+            require(success1);
+
+            (bool success2, ) = payable(treasuryAddress).call{ value: (allObjects[tokenIds[i]].price - royality) }("");
+            require(success2);
+            // mint the token
+            super._mint(msg.sender, tokenIds[i], 1, "0x");
+            emit LogbuyWallPaper(msg.sender, tokenIds[i], allObjects[tokenIds[i]].price);
+        }
+    }
+
     /* --------------------------------- ****** --------------------------------- */
     /* -------------------------------------------------------------------------- */
     /*                                  ERC1155                                   */
     /* -------------------------------------------------------------------------- */
-    function mintBatchObject(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) external onlyOwner {
-        super._mintBatch(to, ids, amounts, data);
-    }
 }
