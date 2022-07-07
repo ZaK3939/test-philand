@@ -29,4 +29,14 @@ VoteOnSnapshot,5,27
 VoteOnSnapshot,10,28
 VoteOnSnapshot,30,29
 CumulativeGasFee,1,30
-SpentGasFee,01,31
+SpentGasFee,200,31
+OldestTransactionDateTill,2018,32
+ETHStakingOnLido,01,33
+ETHStakingOnLido,1,34
+ETHStakingOnLido,5,35
+ETHStakingOnLido,10,36
+PutObjectOnPhiLand,1,37,
+PutObjectOnPhiLand,5,38,
+PutObjectOnPhiLand,10,39,
+PutObjectOnPhiLand,50,40,
+PutObjectOnPhiLand,100,41

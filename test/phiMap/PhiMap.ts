@@ -3,7 +3,6 @@ import { artifacts, ethers, upgrades, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import { ENSRegistry } from "../../src/types/@ensdomains/ens-contracts/contracts/registry/ENSRegistry";
-import { ObjectController } from "../../src/types/contracts/ObjectController";
 import { PhiMap } from "../../src/types/contracts/PhiMap";
 import { PhiRegistry } from "../../src/types/contracts/PhiRegistry";
 import { TestRegistrar } from "../../src/types/contracts/ens/TestRegistrar";
@@ -13,7 +12,7 @@ import { PhiObject } from "../../src/types/contracts/object/PhiObject";
 import { WallPaper } from "../../src/types/contracts/object/WallPaper";
 import { Signers } from "../types";
 import {
-  CantBatchUnDeposit,
+  CantBatchWithdraw,
   CantWriteLinkToAnotherUserObject,
   CantWriteLinkToObject,
   CantWriteObjectToLand,
@@ -21,7 +20,7 @@ import {
   shouldBehaveBatchDeposit,
   shouldBehaveBatchRemoveAndWrite,
   shouldBehaveBatchRemoveObjectFromLand,
-  shouldBehaveBatchUnDeposit,
+  shouldBehaveBatchWithdraw,
   shouldBehaveBatchWriteObjectToLand,
   shouldBehaveChangeWallPaper,
   shouldBehaveCheckAllDepositStatus,
@@ -33,11 +32,11 @@ import {
   shouldBehaveOwnerOfPhiland,
   shouldBehaveRemoveLinkfromObject,
   shouldBehaveRemoveObjectFromLand,
-  shouldBehaveUnDeposit,
   shouldBehaveViewLinks,
   shouldBehaveViewNumberOfPhiland,
   shouldBehaveViewPhiland,
   shouldBehaveViewPhilandArray,
+  shouldBehaveWithdraw,
   shouldBehaveWriteLinkToObject,
   shouldBehaveWriteObjectToLand,
   shouldBehaveviewPhiland,
@@ -102,11 +101,6 @@ describe("Unit tests PhiMap", function () {
     const phiMap = await upgrades.deployProxy(PhiMap, [this.signers.admin.address]);
     this.phiMap = <PhiMap>await phiMap.deployed();
 
-    const ObjectControllerArtifact: Artifact = await artifacts.readArtifact("ObjectController");
-    this.objectController = <ObjectController>(
-      await waffle.deployContract(this.signers.admin, ObjectControllerArtifact, [this.signers.admin.address])
-    );
-
     const PhiRegistry = await ethers.getContractFactory("PhiRegistry");
     const phiRegistry = await upgrades.deployProxy(PhiRegistry, [
       this.signers.admin.address,
@@ -133,6 +127,7 @@ describe("Unit tests PhiMap", function () {
         { x: 1, y: 1, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
     await this.phiObject
       .connect(this.signers.admin)
@@ -142,6 +137,7 @@ describe("Unit tests PhiMap", function () {
         { x: 2, y: 1, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
     await this.phiObject
       .connect(this.signers.admin)
@@ -151,7 +147,17 @@ describe("Unit tests PhiMap", function () {
         { x: 1, y: 2, z: 2 },
         this.signers.bob.address,
         200,
+        5,
       );
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(1, "FmdcpWkS4lfGJxgx1H0SifowHxwLkNAxogUhSNgH-Xw", { x: 1, y: 1, z: 2 }, this.signers.bob.address);
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(2, "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU", { x: 2, y: 1, z: 2 }, this.signers.bob.address);
+    await this.freeObject
+      .connect(this.signers.admin)
+      .createObject(3, "ynH0TWRngXvDj2-99MxStGki4nfRoWnDpWRBkQ5WNDU", { x: 1, y: 2, z: 2 }, this.signers.bob.address);
     await this.wallPaper
       .connect(this.signers.admin)
       .createWallPaper(
@@ -184,15 +190,15 @@ describe("Unit tests PhiMap", function () {
     shouldBehaveCheckAllDepositStatus();
     shouldBehaveDeposit();
     shouldBehaveAddDeposit();
-    shouldBehaveUnDeposit();
+    shouldBehaveWithdraw();
     shouldBehaveWriteObjectToLand();
-    shouldBehaveBatchUnDeposit();
-    CantBatchUnDeposit();
+    shouldBehaveBatchWithdraw();
+    CantBatchWithdraw();
     shouldBehaveViewPhiland();
-    shouldBehaveViewPhilandArray();
     shouldBehaveRemoveObjectFromLand();
     shouldBehaveBatchWriteObjectToLand();
     shouldBehaveBatchRemoveAndWrite();
+    shouldBehaveViewPhilandArray();
     shouldBehaveWriteLinkToObject();
     CantWriteLinkToAnotherUserObject();
     CantWriteLinkToObject();

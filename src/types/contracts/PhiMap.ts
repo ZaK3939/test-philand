@@ -119,7 +119,7 @@ export interface PhiMapInterface extends utils.Interface {
     "batchDeposit(string,address[],uint256[],uint256[])": FunctionFragment;
     "batchRemoveAndWrite(string,uint256[],bool,(address,uint256,uint256,uint256)[],(string,string)[])": FunctionFragment;
     "batchRemoveObjectFromLand(string,uint256[])": FunctionFragment;
-    "batchUnDeposit(string,address[],uint256[],uint256[])": FunctionFragment;
+    "batchWithdraw(string,address[],uint256[],uint256[])": FunctionFragment;
     "batchWriteLinkToObject(string,uint256[],(string,string)[])": FunctionFragment;
     "batchWriteObjectToLand(string,(address,uint256,uint256,uint256)[],(string,string)[])": FunctionFragment;
     "changePhilandOwner(string,address)": FunctionFragment;
@@ -147,9 +147,8 @@ export interface PhiMapInterface extends utils.Interface {
     "removeObjectFromLand(string,uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
-    "save(string,uint256[],bool,(address,uint256,uint256,uint256)[],(string,string)[])": FunctionFragment;
+    "save(string,uint256[],bool,(address,uint256,uint256,uint256)[],(string,string)[],bool,address,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "unDeposit(string,address,uint256,uint256)": FunctionFragment;
     "userObject(string,uint256)": FunctionFragment;
     "userObjectDeposit(string,uint256)": FunctionFragment;
     "viewLinks(string)": FunctionFragment;
@@ -159,6 +158,8 @@ export interface PhiMapInterface extends utils.Interface {
     "viewPhiland(string)": FunctionFragment;
     "viewPhilandArray(string)": FunctionFragment;
     "wallPaper(string)": FunctionFragment;
+    "withdraw(string,address,uint256,uint256)": FunctionFragment;
+    "withdrawWallPaper(string)": FunctionFragment;
     "writeLinkToObject(string,uint256,(string,string))": FunctionFragment;
     "writeObjectToLand(string,(address,uint256,uint256,uint256),(string,string))": FunctionFragment;
   };
@@ -169,7 +170,7 @@ export interface PhiMapInterface extends utils.Interface {
       | "batchDeposit"
       | "batchRemoveAndWrite"
       | "batchRemoveObjectFromLand"
-      | "batchUnDeposit"
+      | "batchWithdraw"
       | "batchWriteLinkToObject"
       | "batchWriteObjectToLand"
       | "changePhilandOwner"
@@ -199,7 +200,6 @@ export interface PhiMapInterface extends utils.Interface {
       | "revokeRole"
       | "save"
       | "supportsInterface"
-      | "unDeposit"
       | "userObject"
       | "userObjectDeposit"
       | "viewLinks"
@@ -209,6 +209,8 @@ export interface PhiMapInterface extends utils.Interface {
       | "viewPhiland"
       | "viewPhilandArray"
       | "wallPaper"
+      | "withdraw"
+      | "withdrawWallPaper"
       | "writeLinkToObject"
       | "writeObjectToLand"
   ): FunctionFragment;
@@ -236,7 +238,7 @@ export interface PhiMapInterface extends utils.Interface {
     values: [string, BigNumberish[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "batchUnDeposit",
+    functionFragment: "batchWithdraw",
     values: [string, string[], BigNumberish[], BigNumberish[]]
   ): string;
   encodeFunctionData(
@@ -348,16 +350,15 @@ export interface PhiMapInterface extends utils.Interface {
       BigNumberish[],
       boolean,
       PhiMap.ObjectStruct[],
-      PhiMap.LinkStruct[]
+      PhiMap.LinkStruct[],
+      boolean,
+      string,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "unDeposit",
-    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "userObject",
@@ -387,6 +388,14 @@ export interface PhiMapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "wallPaper", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [string, string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawWallPaper",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "writeLinkToObject",
     values: [string, BigNumberish, PhiMap.LinkStruct]
   ): string;
@@ -412,7 +421,7 @@ export interface PhiMapInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "batchUnDeposit",
+    functionFragment: "batchWithdraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -507,7 +516,6 @@ export interface PhiMapInterface extends utils.Interface {
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "unDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "userObject", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "userObjectDeposit",
@@ -535,6 +543,11 @@ export interface PhiMapInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "wallPaper", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawWallPaper",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "writeLinkToObject",
     data: BytesLike
@@ -558,9 +571,9 @@ export interface PhiMapInterface extends utils.Interface {
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
     "Save(string,address)": EventFragment;
-    "UnDepositSuccess(address,string,address,uint256,uint256)": EventFragment;
     "WriteLink(string,address,uint256,string,string)": EventFragment;
     "WriteObject(string,address,uint256,uint256,uint256)": EventFragment;
+    "withdrawSuccess(address,string,address,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ChangePhilandOwner"): EventFragment;
@@ -576,9 +589,9 @@ export interface PhiMapInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Save"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UnDepositSuccess"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WriteLink"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WriteObject"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "withdrawSuccess"): EventFragment;
 }
 
 export interface ChangePhilandOwnerEventObject {
@@ -722,21 +735,6 @@ export type SaveEvent = TypedEvent<[string, string], SaveEventObject>;
 
 export type SaveEventFilter = TypedEventFilter<SaveEvent>;
 
-export interface UnDepositSuccessEventObject {
-  sender: string;
-  name: string;
-  contractAddress: string;
-  tokenId: BigNumber;
-  amount: BigNumber;
-}
-export type UnDepositSuccessEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
-  UnDepositSuccessEventObject
->;
-
-export type UnDepositSuccessEventFilter =
-  TypedEventFilter<UnDepositSuccessEvent>;
-
 export interface WriteLinkEventObject {
   name: string;
   contractAddress: string;
@@ -764,6 +762,20 @@ export type WriteObjectEvent = TypedEvent<
 >;
 
 export type WriteObjectEventFilter = TypedEventFilter<WriteObjectEvent>;
+
+export interface withdrawSuccessEventObject {
+  sender: string;
+  name: string;
+  contractAddress: string;
+  tokenId: BigNumber;
+  amount: BigNumber;
+}
+export type withdrawSuccessEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber],
+  withdrawSuccessEventObject
+>;
+
+export type withdrawSuccessEventFilter = TypedEventFilter<withdrawSuccessEvent>;
 
 export interface PhiMap extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -817,7 +829,7 @@ export interface PhiMap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    batchUnDeposit(
+    batchWithdraw(
       name: string,
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
@@ -996,6 +1008,9 @@ export interface PhiMap extends BaseContract {
       remove_check: boolean,
       objectDatas: PhiMap.ObjectStruct[],
       links: PhiMap.LinkStruct[],
+      change_wall_check: boolean,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1003,14 +1018,6 @@ export interface PhiMap extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    unDeposit(
-      name: string,
-      _contractAddress: string,
-      _tokenId: BigNumberish,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     userObject(
       arg0: string,
@@ -1080,6 +1087,19 @@ export interface PhiMap extends BaseContract {
       }
     >;
 
+    withdraw(
+      name: string,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawWallPaper(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     writeLinkToObject(
       name: string,
       object_index: BigNumberish,
@@ -1120,7 +1140,7 @@ export interface PhiMap extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  batchUnDeposit(
+  batchWithdraw(
     name: string,
     _contractAddresses: string[],
     _tokenIds: BigNumberish[],
@@ -1299,6 +1319,9 @@ export interface PhiMap extends BaseContract {
     remove_check: boolean,
     objectDatas: PhiMap.ObjectStruct[],
     links: PhiMap.LinkStruct[],
+    change_wall_check: boolean,
+    _contractAddress: string,
+    _tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1306,14 +1329,6 @@ export interface PhiMap extends BaseContract {
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  unDeposit(
-    name: string,
-    _contractAddress: string,
-    _tokenId: BigNumberish,
-    _amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   userObject(
     arg0: string,
@@ -1383,6 +1398,19 @@ export interface PhiMap extends BaseContract {
     }
   >;
 
+  withdraw(
+    name: string,
+    _contractAddress: string,
+    _tokenId: BigNumberish,
+    _amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawWallPaper(
+    name: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   writeLinkToObject(
     name: string,
     object_index: BigNumberish,
@@ -1423,7 +1451,7 @@ export interface PhiMap extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    batchUnDeposit(
+    batchWithdraw(
       name: string,
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
@@ -1596,6 +1624,9 @@ export interface PhiMap extends BaseContract {
       remove_check: boolean,
       objectDatas: PhiMap.ObjectStruct[],
       links: PhiMap.LinkStruct[],
+      change_wall_check: boolean,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1603,14 +1634,6 @@ export interface PhiMap extends BaseContract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    unDeposit(
-      name: string,
-      _contractAddress: string,
-      _tokenId: BigNumberish,
-      _amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     userObject(
       arg0: string,
@@ -1679,6 +1702,16 @@ export interface PhiMap extends BaseContract {
         timestamp: BigNumber;
       }
     >;
+
+    withdraw(
+      name: string,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawWallPaper(name: string, overrides?: CallOverrides): Promise<void>;
 
     writeLinkToObject(
       name: string,
@@ -1808,21 +1841,6 @@ export interface PhiMap extends BaseContract {
     ): SaveEventFilter;
     Save(name?: null, sender?: string | null): SaveEventFilter;
 
-    "UnDepositSuccess(address,string,address,uint256,uint256)"(
-      sender?: string | null,
-      name?: null,
-      contractAddress?: null,
-      tokenId?: null,
-      amount?: null
-    ): UnDepositSuccessEventFilter;
-    UnDepositSuccess(
-      sender?: string | null,
-      name?: null,
-      contractAddress?: null,
-      tokenId?: null,
-      amount?: null
-    ): UnDepositSuccessEventFilter;
-
     "WriteLink(string,address,uint256,string,string)"(
       name?: null,
       contractAddress?: null,
@@ -1852,6 +1870,21 @@ export interface PhiMap extends BaseContract {
       xStart?: null,
       yStart?: null
     ): WriteObjectEventFilter;
+
+    "withdrawSuccess(address,string,address,uint256,uint256)"(
+      sender?: string | null,
+      name?: null,
+      contractAddress?: null,
+      tokenId?: null,
+      amount?: null
+    ): withdrawSuccessEventFilter;
+    withdrawSuccess(
+      sender?: string | null,
+      name?: null,
+      contractAddress?: null,
+      tokenId?: null,
+      amount?: null
+    ): withdrawSuccessEventFilter;
   };
 
   estimateGas: {
@@ -1880,7 +1913,7 @@ export interface PhiMap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    batchUnDeposit(
+    batchWithdraw(
       name: string,
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
@@ -2042,20 +2075,15 @@ export interface PhiMap extends BaseContract {
       remove_check: boolean,
       objectDatas: PhiMap.ObjectStruct[],
       links: PhiMap.LinkStruct[],
+      change_wall_check: boolean,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    unDeposit(
-      name: string,
-      _contractAddress: string,
-      _tokenId: BigNumberish,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     userObject(
@@ -2090,6 +2118,19 @@ export interface PhiMap extends BaseContract {
     ): Promise<BigNumber>;
 
     wallPaper(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    withdraw(
+      name: string,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    withdrawWallPaper(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     writeLinkToObject(
       name: string,
@@ -2134,7 +2175,7 @@ export interface PhiMap extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    batchUnDeposit(
+    batchWithdraw(
       name: string,
       _contractAddresses: string[],
       _tokenIds: BigNumberish[],
@@ -2305,20 +2346,15 @@ export interface PhiMap extends BaseContract {
       remove_check: boolean,
       objectDatas: PhiMap.ObjectStruct[],
       links: PhiMap.LinkStruct[],
+      change_wall_check: boolean,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    unDeposit(
-      name: string,
-      _contractAddress: string,
-      _tokenId: BigNumberish,
-      _amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     userObject(
@@ -2365,6 +2401,19 @@ export interface PhiMap extends BaseContract {
     wallPaper(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
+      name: string,
+      _contractAddress: string,
+      _tokenId: BigNumberish,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawWallPaper(
+      name: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     writeLinkToObject(

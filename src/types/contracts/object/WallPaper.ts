@@ -56,6 +56,7 @@ export interface WallPaperInterface extends utils.Interface {
     "exists(uint256)": FunctionFragment;
     "getBaseMetadataURI()": FunctionFragment;
     "getCreator(uint256)": FunctionFragment;
+    "getExp(uint256)": FunctionFragment;
     "getFreeWallPaper(uint256)": FunctionFragment;
     "getMaxClaimed(uint256)": FunctionFragment;
     "getSize(uint256)": FunctionFragment;
@@ -75,6 +76,7 @@ export interface WallPaperInterface extends utils.Interface {
     "secondaryRoyalty()": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCreator(uint256,address)": FunctionFragment;
+    "setExp(uint256,uint256)": FunctionFragment;
     "setMaxClaimed(uint256,uint256)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyalityFee(uint256)": FunctionFragment;
@@ -104,6 +106,7 @@ export interface WallPaperInterface extends utils.Interface {
       | "exists"
       | "getBaseMetadataURI"
       | "getCreator"
+      | "getExp"
       | "getFreeWallPaper"
       | "getMaxClaimed"
       | "getSize"
@@ -123,6 +126,7 @@ export interface WallPaperInterface extends utils.Interface {
       | "secondaryRoyalty"
       | "setApprovalForAll"
       | "setCreator"
+      | "setExp"
       | "setMaxClaimed"
       | "setOwner"
       | "setRoyalityFee"
@@ -188,6 +192,10 @@ export interface WallPaperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getCreator",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExp",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -263,6 +271,10 @@ export interface WallPaperInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setCreator",
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExp",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxClaimed",
@@ -341,6 +353,7 @@ export interface WallPaperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getFreeWallPaper",
     data: BytesLike
@@ -405,6 +418,7 @@ export interface WallPaperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setCreator", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setExp", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMaxClaimed",
     data: BytesLike
@@ -461,6 +475,7 @@ export interface WallPaperInterface extends utils.Interface {
     "PaymentReceivedOwner(uint256)": EventFragment;
     "PaymentWithdrawnOwner(uint256)": EventFragment;
     "SetCreator(uint256,address)": EventFragment;
+    "SetExp(uint256,uint256)": EventFragment;
     "SetMaxClaimed(uint256,uint256)": EventFragment;
     "SetRoyalityFee(uint256)": EventFragment;
     "SetSecondaryRoyalityFee(uint256)": EventFragment;
@@ -483,6 +498,7 @@ export interface WallPaperInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "PaymentReceivedOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentWithdrawnOwner"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetCreator"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetExp"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetMaxClaimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetRoyalityFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetSecondaryRoyalityFee"): EventFragment;
@@ -631,6 +647,14 @@ export type SetCreatorEvent = TypedEvent<
 >;
 
 export type SetCreatorEventFilter = TypedEventFilter<SetCreatorEvent>;
+
+export interface SetExpEventObject {
+  tokenId: BigNumber;
+  exp: BigNumber;
+}
+export type SetExpEvent = TypedEvent<[BigNumber, BigNumber], SetExpEventObject>;
+
+export type SetExpEventFilter = TypedEventFilter<SetExpEvent>;
 
 export interface SetMaxClaimedEventObject {
   tokenId: BigNumber;
@@ -783,6 +807,7 @@ export interface WallPaper extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -790,6 +815,7 @@ export interface WallPaper extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -839,6 +865,11 @@ export interface WallPaper extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getFreeWallPaper(
       tokenId: BigNumberish,
@@ -945,6 +976,12 @@ export interface WallPaper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setMaxClaimed(
       tokenId: BigNumberish,
       _newMaxClaimed: BigNumberish,
@@ -1020,6 +1057,7 @@ export interface WallPaper extends BaseContract {
       string,
       BigNumber,
       BigNumber,
+      BigNumber,
       boolean
     ] & {
       tokenURI: string;
@@ -1027,6 +1065,7 @@ export interface WallPaper extends BaseContract {
       creator: string;
       maxClaimed: BigNumber;
       price: BigNumber;
+      exp: BigNumber;
       forSale: boolean;
     }
   >;
@@ -1073,6 +1112,8 @@ export interface WallPaper extends BaseContract {
   getBaseMetadataURI(overrides?: CallOverrides): Promise<string>;
 
   getCreator(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  getExp(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
   getFreeWallPaper(
     tokenId: BigNumberish,
@@ -1179,6 +1220,12 @@ export interface WallPaper extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setExp(
+    tokenId: BigNumberish,
+    _exp: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setMaxClaimed(
     tokenId: BigNumberish,
     _newMaxClaimed: BigNumberish,
@@ -1251,6 +1298,7 @@ export interface WallPaper extends BaseContract {
         string,
         BigNumber,
         BigNumber,
+        BigNumber,
         boolean
       ] & {
         tokenURI: string;
@@ -1258,6 +1306,7 @@ export interface WallPaper extends BaseContract {
         creator: string;
         maxClaimed: BigNumber;
         price: BigNumber;
+        exp: BigNumber;
         forSale: boolean;
       }
     >;
@@ -1307,6 +1356,11 @@ export interface WallPaper extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getFreeWallPaper(
       tokenId: BigNumberish,
@@ -1404,6 +1458,12 @@ export interface WallPaper extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1569,6 +1629,9 @@ export interface WallPaper extends BaseContract {
     ): SetCreatorEventFilter;
     SetCreator(tokenId?: null, _creator?: null): SetCreatorEventFilter;
 
+    "SetExp(uint256,uint256)"(tokenId?: null, exp?: null): SetExpEventFilter;
+    SetExp(tokenId?: null, exp?: null): SetExpEventFilter;
+
     "SetMaxClaimed(uint256,uint256)"(
       tokenId?: null,
       newMaxClaimed?: null
@@ -1699,6 +1762,11 @@ export interface WallPaper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getFreeWallPaper(
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1799,6 +1867,12 @@ export interface WallPaper extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1927,6 +2001,11 @@ export interface WallPaper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getExp(
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getFreeWallPaper(
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2029,6 +2108,12 @@ export interface WallPaper extends BaseContract {
     setCreator(
       tokenId: BigNumberish,
       _creator: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setExp(
+      tokenId: BigNumberish,
+      _exp: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

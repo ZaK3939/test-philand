@@ -38,7 +38,7 @@ contract FreeObject is ERC1155Supply, BaseObject {
     /* Utility Functions */
     function isValid(uint256 tokenId) internal view {
         // Validate that the token is within range when querying
-        if (tokenId <= 0 || totalSupply(tokenId) >= allObjects[tokenId].maxClaimed) revert InvalidTokenID();
+        if (tokenId <= 0) revert InvalidTokenID();
         if (!created[tokenId]) revert InvalidTokenID();
     }
 
@@ -108,7 +108,7 @@ contract FreeObject is ERC1155Supply, BaseObject {
         // check if the token id of the token exists
         isValid(tokenId);
         // check token's MaxClaimed
-        require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
+        // require(super.totalSupply(tokenId) <= allObjects[tokenId].maxClaimed);
         // mint the token
         super._mint(msg.sender, tokenId, 1, "0x00");
     }
@@ -120,16 +120,4 @@ contract FreeObject is ERC1155Supply, BaseObject {
     }
 
     /* --------------------------------- ****** --------------------------------- */
-
-    /* -------------------------------------------------------------------------- */
-    /*                                  ERC1155                                   */
-    /* -------------------------------------------------------------------------- */
-    function mintBatchObject(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) external onlyOwner {
-        super._mintBatch(to, ids, amounts, data);
-    }
 }

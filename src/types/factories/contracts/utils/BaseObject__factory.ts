@@ -155,6 +155,25 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "exp",
+        type: "uint256",
+      },
+    ],
+    name: "SetExp",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "newMaxClaimed",
         type: "uint256",
       },
@@ -317,6 +336,11 @@ const _abi = [
         type: "uint256",
       },
       {
+        internalType: "uint256",
+        name: "exp",
+        type: "uint256",
+      },
+      {
         internalType: "bool",
         name: "forSale",
         type: "bool",
@@ -402,6 +426,25 @@ const _abi = [
         internalType: "address payable",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getExp",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -627,6 +670,24 @@ const _abi = [
       },
     ],
     name: "setCreator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_exp",
+        type: "uint256",
+      },
+    ],
+    name: "setExp",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
